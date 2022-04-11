@@ -44,8 +44,14 @@
         <p v-if="status == 'error_login'">identifiants de connexion incorrects</p>
         </div>
         <div class="form__valid">
-            <button class="button" type= "button" :class="{'button--disabled' : !loginValidation}" @click="login" v-if=" mode == 'login'">Se connecter</button>
-            <button  class="button" type="button" :class="{'button--disabled' : !signupValidation}" @click="createAccount" v-else>S'inscrire</button>
+            <button class="button" type= "button" :class="{'button--disabled' : !loginValidation}" @click="login" v-if=" mode == 'login'">
+                <span v-if="status == 'loading'">Connexion en cours...</span>
+                <span v-else>Connexion</span>
+            </button>
+            <button  class="button" type="button" :class="{'button--disabled' : !signupValidation}" @click="createAccount" v-else>
+                <span v-if="status == 'loading'">Connexion en cours...</span>
+                <span v-else>Créer mon compte</span>
+            </button>
             
         </div>
     </form> 
@@ -138,8 +144,8 @@ export default ({
             const self = this;
             this.$store
                 .dispatch('login', {
-                email: this.event.email,
-                password: this.event.password})
+                    email: this.event.email,
+                    password: this.event.password})
                 .then((res => {
                     self.$router.push('Home')
                     console.log(res)
@@ -152,10 +158,10 @@ export default ({
             const self = this;
             this.$store
                 .dispatch('createAccount', {
-                firstName: this.event.firstName,
-                lastName: this.event.lastName,
-                email: this.event.email,
-                password: this.event.password})
+                    firstName: this.event.firstName,
+                    lastName: this.event.lastName,
+                    email: this.event.email,
+                    password: this.event.password})
                 .then((res => {
                     self.login();
                     console.log(res)

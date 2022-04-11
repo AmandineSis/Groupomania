@@ -5,12 +5,37 @@ const instance = axios.create({
   baseURL: 'http://localhost:3000/api/'
 });
 
+//Initialisation du local storage
+let user = localStorage.getItem('user');
+if (!user) {
+  user = {
+    userId: -1,
+    token: '',
+  }; 
+} else {
+    try {
+      user = JSON.parse(user);
+      instance.defaults.headers.common = {'Authorization': `bearer ${user.token}`}
+    } catch (ex) {
+      user = {
+        userId: -1,
+        token: '',
+      };
+  }
+}
+
 export default createStore({
+
   state: {
     status: '',
-    user: {
-      userId: -1,
-      token: ''
+    user: user,
+    userInfos: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      profilePicUrl: "",
+      moderator: 0
     }
   },
   getters: {
@@ -20,15 +45,22 @@ export default createStore({
       state.status = status;
     },
     logUser(state, user){
-      state.user = user
+      instance.defaults.headers.common = {'Authorization': `bearer ${user.token}`}
+      localStorage.setItem('user', JSON.stringify(user));
+      state.user = user;
+    },
+    userInfos(state, userInfos){
+      state.userInfos = userInfos;
     }
   },
+
+
   actions: {
-    login: ({ commit }, userInfos ) => {
-      commit;
+    login: ({ commit }, loginInfos ) => {
+      commit('setStatus', 'loading');
       return new Promise ((resolve, reject) => {
         instance
-          .post('/user/login', userInfos)
+          .post('/user/login', loginInfos)
           .then(function (response) {
             commit('setStatus', '')
             commit('logUser', response.data )
@@ -54,7 +86,19 @@ export default createStore({
             reject(error)
           });
         });
-      }      
+    },
+    getUser: ({commit}) => {
+      instance
+        .get(`/user/${user.userId}`)
+        .then( function (response) {
+          commit('userInfos', response.data.results[0]);
+          
+          
+        })
+        .catch(function () {
+          
+        });
+      }
   },
   modules: {
   }
