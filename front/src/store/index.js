@@ -27,16 +27,17 @@ export default createStore({
     login: ({ commit }, userInfos ) => {
       commit;
       return new Promise ((resolve, reject) => {
-        instance.post('/user/login', userInfos)
-        .then(function (response) {
-          commit('setStatus', '')
-          commit('logUser', response.data )
-          resolve(response)
-        })
-        .catch(function (error) {
-          commit('setStatus', 'error_login')
-          reject(error)
-        });
+        instance
+          .post('/user/login', userInfos)
+          .then(function (response) {
+            commit('setStatus', '')
+            commit('logUser', response.data )
+            resolve(response)
+          })
+          .catch(function (error) {
+            commit('setStatus', 'error_login')
+            reject(error)
+          });
       })
     },
     createAccount: ({ commit }, userInfos ) => {

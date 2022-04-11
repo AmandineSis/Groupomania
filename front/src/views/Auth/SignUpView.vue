@@ -109,6 +109,7 @@ export default ({
             : (this.passwordValid= false, this.error.passwordError = true);
         },   
         createAccount() {
+            const self = this;
             this.$store
                 .dispatch('createAccount', {
                 firstName: this.event.firstName,
@@ -116,6 +117,7 @@ export default ({
                 email: this.event.email,
                 password: this.event.password})
                 .then((res => {
+                    self.login();
                     console.log(res)
                 }), (err => {
                     console.log(err)
