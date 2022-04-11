@@ -2,8 +2,8 @@
   <div class="card">
       <h1 class="card__title" v-if="mode == 'login'">Connexion</h1>
       <h1 class="card__title" v-else>Inscription</h1>
-    <p  class="card__subtitle" v-if="mode == 'login'">Pas encore de compte ? <span @click="switchToSignup">Créer un compte</span></p>
-    <p  class="card__subtitle" v-else>Tu as déjà un compte ? <span @click="switchToLogin">Se connecter</span></p>
+    <p  class="card__subtitle" v-if="mode == 'login'">Pas encore de compte ? <span class="card__action" @click="switchToSignup">Créer un compte</span></p>
+    <p  class="card__subtitle" v-else>Tu as déjà un compte ? <span class="card__action" @click="switchToLogin">Se connecter</span></p>
     <form class="form" >
         <div class="inputContainer">
         <BaseInput
@@ -44,7 +44,7 @@
         <p v-if="status == 'error_login'">identifiants de connexion incorrects</p>
         </div>
         <div class="form__valid">
-            <button class="button" type= "button" @click="login" v-if=" mode == 'login'">Se connecter</button>
+            <button class="button" type= "button" :class="{'button--disabled' : !loginValidation}" @click="login" v-if=" mode == 'login'">Se connecter</button>
             <button  class="button" type="button" :class="{'button--disabled' : !signupValidation}" @click="createAccount" v-else>S'inscrire</button>
             
         </div>
@@ -90,6 +90,13 @@ export default ({
         }
     },
     computed: {
+        loginValidation(){
+            if ( this.event.email !== "" && this.event.password !== "") {
+                return true;
+            }else{
+                return false
+                }
+            },
         signupValidation(){
             if ( this.firstNameValid && this.lastNameValid && this.emailValid && this.passwordValid) {
                 return true;
@@ -186,6 +193,13 @@ export default ({
   color:#666;
   font-weight: 500;
   margin-top: 10px;
+  }
+  &__action {
+    color:#2196F3;
+    text-decoration: underline;
+    &:hover {
+        cursor:pointer;
+    }
   }
 }
 

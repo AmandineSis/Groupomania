@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Auth from '../views/Auth/AuthView.vue'
+import Auth from '../views/AuthView.vue'
 
 
 const routes = [
@@ -8,26 +8,6 @@ const routes = [
     path: '/',
     name: 'auth',
     component: Auth,
-    children: [
-      {
-        // LoginView will be rendered inside Auth's <router-view>
-        // when /login is matched
-      path: '/',
-      component: () => import(/* webpackChunkName: "login" */ '../views/Auth/LoginView.vue')
-      },
-      {
-        // LoginView will be rendered inside Auth's <router-view>
-        // when /login is matched
-      path: 'login',
-      component: () => import(/* webpackChunkName: "login" */ '../views/Auth/LoginView.vue')
-      },
-      {
-        // LoginView will be rendered inside Auth's <router-view>
-        // when /signup is matched
-      path: 'signup',
-      component: () => import(/* webpackChunkName: "signup" */ '../views/Auth/SignUpView.vue')
-      }
-    ]
   },
   {
     path: '/home',
