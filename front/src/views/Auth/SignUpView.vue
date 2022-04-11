@@ -1,22 +1,28 @@
 <template>
+    <h1 v-if="mode == login">Connexion</h1>
+    <h1 v-else>Inscription</h1>
+    <p  v-if="mode == 'login'">Pas encore de compte ? <span @click="switchToSignup()">Créer un compte</span></p>
+    <p  v-else>Tu as déjà un compte ? <span @click="switchToLogin()">Se connecter</span></p>
     <form class="form" >
         <div class="inputContainer">
         <BaseInput
+            v-if=" mode == signup"
             class="form__input"
             v-model="event.firstName"
             v-on:change="isFirstNameValid"
             label="firstName"
             type="text"
         />
-        <p v-if="error.firstNameError">Veuillez saisir au moins 3 caratères</p>
+        <p v-if="mode == signup && error.firstNameError">Veuillez saisir au moins 3 caratères</p>
          <BaseInput
+            v-if=" mode == signup"
             class="form__input"
             v-model="event.lastName"
             v-on:change="isLastNameValid"
             label="lastName"
             type="text"
         />
-         <p v-if="error.lastNameError">Veuillez saisir au moins 3 caratères</p>
+         <p v-if="mode == signup && error.lastNameError">Veuillez saisir au moins 3 caratères</p>
          <BaseInput
             class="form__input"
             v-model="event.email"
@@ -24,8 +30,8 @@
             label="email"
             type="email"
         />
-         <p v-if="error.emailError">Veuillez saisir un email valide</p>
-         <p v-if="error.emailExists">Cet email existe déjà</p>
+         <p v-if="mode == signup && error.emailError">Veuillez saisir un email valide</p>
+         <p v-if="mode == signup && error.emailExists">Cet email existe déjà</p>
          <BaseInput
             class="form__input"
             v-model="event.password"
@@ -33,18 +39,21 @@
             label="password"
             type="password"
         />
-         <p v-if="error.passwordError">Veuillez saisir au moins 8 caratères, une majuscule, une minuscule, un chiffre et un caractère spécial</p>
+         <p v-if="mode == signup && error.passwordError">Veuillez saisir au moins 8 caratères, une majuscule, une minuscule, un chiffre et un caractère spécial</p>
+        <p v-if="status == 'error_login'">identifiants de connexion incorrects</p>
         </div>
         <div class="form__valid">
-            <button class="button" type="reset">Annuler</button>
-            <button  class="button" type="button" :class="{'button--disabled' : !signupValidation}" @click="createAccount" >S'inscrire</button>
+            <button class="button" type= "button" @click="login" v-if=" mode == login">Se connecter</button>
+            <button  class="button" type="button" :class="{'button--disabled' : !signupValidation}" @click="createAccount" v-else>S'inscrire</button>
+            
         </div>
     </form> 
 </template>
 
 <script>
 import BaseInput from '@/components/Base/BaseInput.vue'
-//import axios from 'axios'
+import { mapState } from 'vuex'
+
 
 export default ({
     name: 'SignupForm',
@@ -53,6 +62,7 @@ export default ({
     },
     data(){
         return{
+            mode: 'login',
             event: {
                 firstName: '',
                 lastName: '',
@@ -84,9 +94,16 @@ export default ({
             }else{
                 return false
                 }
-            }
+            },
+            ...mapState(['status'])
     },
     methods: {  
+        switchToCreateAccount: function () {
+            this.mode = 'create';
+        },
+        switchToLogin: function () {
+            this.mode = 'login';
+        },
         isFirstNameValid() {
             this.nameReg.test(this.event.firstName) 
             ? (this.firstNameValid= true, this.error.firstNameError = false) 
@@ -108,6 +125,20 @@ export default ({
             ? (this.passwordValid= true, this.error.passwordError = false) 
             : (this.passwordValid= false, this.error.passwordError = true);
         },   
+        login(){
+            const self = this;
+            this.$store
+                .dispatch('login', {
+                email: this.event.email,
+                password: this.event.password})
+                .then((res => {
+                    self.$router.push('Home')
+                    console.log(res)
+                }), (err => {
+                    console.log(err)
+                    this.error.loginError = true;
+                }))
+        },
         createAccount() {
             const self = this;
             this.$store
