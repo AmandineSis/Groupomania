@@ -51,6 +51,13 @@ export default createStore({
     },
     userInfos(state, userInfos){
       state.userInfos = userInfos;
+    },
+    logout(state) {
+      state.user = {
+        userId: -1,
+        token: '',
+      }
+      localStorage.removeItem('user');
     }
   },
 
