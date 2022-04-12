@@ -40,6 +40,9 @@ export default createStore({
     posts: []
   },
   getters: {
+    fullname(state){
+      return `${state.userInfos.firstName}-${state.userInfos.lastName}`
+    }
   },
   mutations: {
     setStatus(state, status){

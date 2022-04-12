@@ -23,7 +23,7 @@
   <div class="settingsBlock" v-if="settings">Settings</div>
 
   <NewPost/>   
-  <div class="BlockPosts" v-for="postItem in posts" :key="postItem">
+  <div class="BlockPosts" v-for="postItem in posts" :key="postItem.postId">
         <p class="BlockPosts__content">{{postItem.content}}</p>
         <img class="BlockPosts__image" :src="postItem.imageUrl" alt="photo de profil">
 
@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 import NewPost from '@/components/Home/NewPost.vue'
 
 
@@ -71,14 +71,12 @@ export default {
         },
     
     computed: {
-        fullname(){
-            return this.$store.state.userInfos.firstName + ' ' + this.$store.state.userInfos.lastName;
-        },
         ...mapState({
             status: 'status',
             user: 'userInfos',
             posts: 'posts'
-    })
+        }),
+        ...mapGetters(['fullname'])
   },
   methods: {
     logout() {
