@@ -1,31 +1,39 @@
 <template>
-    <nav class="topBar" >
-        <ul>
-            <li><router-link to="/"><font-awesome-icon icon="sign-out-alt" /></router-link></li>
-            <li><font-awesome-icon icon="gear" @click="showSettings"/></li>
-            <li><font-awesome-icon icon="magnifying-glass" @click="showSearchBar" />
+  <div class="topBar">
+    <nav class="topBar__nav">
+        <ul class="topBar__nav__list">
+            <li class="topBar__nav__list__item"><router-link to="/"><font-awesome-icon icon="sign-out-alt" /></router-link></li>
+            <li class="topBar__nav__list__item"><font-awesome-icon icon="gear" @click="showSettings"/></li>
+            <li class="topBar__nav__list__item"><font-awesome-icon icon="magnifying-glass" @click="showSearchBar" />
                 <form v-if="search" method="POST">   
                     <p>
-                        <input class="search_entryField" type="search" name="user" placeholder="Rechercher..."/>
+                        <input class="animated fadeInLeft search__entryField" type="search" name="user" placeholder="Rechercher..."/>
                     </p>
                 </form>
             </li>
         </ul>
     </nav>
-    <div v-if="settings">Settings</div>
-    <div class="home__card">
-      <p>{{ user.firstName }}</p>
-      <p>{{ user.lastName }}</p>
-      <p>{{ user.email }}</p>
-      <img :src="user.profilePicUrl" alt="user profile">
+    <div class="userProfile" >
+        <!-- <router-link class="link" :to="{ name: 'Profile', params: { userId: status.user.userId } }"> -->
+            <p class="userProfile__fullname" >{{ fullname }}</p> 
+            <img class="userProfile__picture" :src="user.profilePicUrl" alt="photo de profil">
+        <!-- </router-link> -->
     </div>
+  </div> 
+  <div class="settingsBlock" v-if="settings">Settings</div>
+  <NewPost/>   
+     
 </template>
 
 <script>
 import { mapState } from 'vuex';
+import NewPost from '@/components/Home/NewPost.vue'
 
 export default {
   name: 'HomeView',
+  components : {
+    NewPost
+  },
   data(){
         return{
             search: false,
@@ -44,8 +52,13 @@ export default {
     console.log(this.$store.state.userInfos.firstName)   
   },
   computed: {
-    ...mapState({
-      user: 'userInfos',
+      fullname(){
+          return this.$store.state.userInfos.firstName + ' ' + this.$store.state.userInfos.lastName;
+      },
+      ...mapState({
+          status: 'status',
+          user: 'userInfos',
+          
     })
   },
   methods: {
@@ -65,6 +78,7 @@ export default {
 
 <style scoped lang="scss">
 
+/********************** TOPNAV ****************** */
 p {
   color: black;
 }
@@ -78,44 +92,84 @@ p {
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
+        &__nav {
+            width: 50%;
+            margin-left: 15px;
+            &__list {
+                display: flex;
+                flex-direction: row;
+                justify-content: left;
+                align-items: top;
+                &__item {
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: left;
+                    margin: 0 10px;
+                    height: 18px;
+                }
+            }
+        }
     }
 
-    nav {
-       
-        width: 50%;
-     
-        margin-left: 15px;
-    }
-    ul {
-        display: flex;
-        flex-direction: row;
-        justify-content: left;
-        align-items: top;
-    
-        }
-    li {
-        display: flex;
-        flex-direction: row;
-        justify-content: left;
-        margin: 0 10px;
-        height: 18px;
-        
-    }
-   
-    input {
+    .search__entryField {
         margin: 0 10px;
         padding-left: 7px;
         border: 2px #F2F2F2 solid;
         border-radius: 20px;
-       // animation: slide-right 0.5s ;
-
+        animation: slide-right 1s ;
     }
     .svg-inline--fa {
         color: white;
         font-size: 1.2rem;
     }
     @keyframes slide-right {
-    from{transform: translateX(0px)}
-    to{transform: translateX(70px)} 
+    from{transform: translateX(0)}
+    to{transform: translateX(1)} 
     }
+   
+/*************************************************** */    
+
+/***************** userProfile ********************* */
+.userProfile {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-right: 20px;
+    &__fullname {
+        margin: 0 10px;
+        font-family: 'RobotoBold';
+        color: white;
+    }
+    &__picture {
+        width: 90px;
+        height: 90px;
+        border-radius: 50px;
+        border: 2px solid #999999;
+    }
+}
+    
+  /*  .link {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }*/
+
+/*************************************************** */
+/**************Settings block ********************** */
+.settingsBlock {
+        border: 2px solid #999999;
+        background-color: white;
+        margin: 30px auto;
+        width: 500px;
+        height: 100px;
+        align-items: center;
+        border-radius: 20px;
+      /* position: absolute;
+        z-index: 3;*/
+    }
+
+
+
+
+/*************************************************** */
 </style>

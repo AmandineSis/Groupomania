@@ -63,6 +63,7 @@ export default createStore({
 
 
   actions: {
+    /**************************** USER ********************** */
     login: ({ commit }, loginInfos ) => {
       commit('setStatus', 'loading');
       return new Promise ((resolve, reject) => {
@@ -99,13 +100,27 @@ export default createStore({
         .get(`/user/${user.userId}`)
         .then( function (response) {
           commit('userInfos', response.data.results[0]);
-          
-          
         })
         .catch(function () {
-          
         });
-      }
+      },
+      
+    /**************************** POSTS ********************** */  
+    createPost: ({ commit }, newPost ) => {
+      commit('setStatus', 'sending');
+      return new Promise ((resolve, reject) => {
+        instance
+          .post('/posts', newPost)
+          .then(function (response) {
+            commit('setStatus', 'post_added')
+            resolve(response)
+          })
+          .catch(function (error) {
+            commit('setStatus', 'error_newPost')
+            reject(error)
+          });
+        });
+    }
   },
   modules: {
   }
