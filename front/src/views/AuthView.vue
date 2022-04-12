@@ -1,61 +1,61 @@
 <template>
-  <div class="card">
-      <h1 class="card__title" v-if="mode == 'login'">Connexion</h1>
-      <h1 class="card__title" v-else>Inscription</h1>
-    <p  class="card__subtitle" v-if="mode == 'login'">Pas encore de compte ? <span class="card__action" @click="switchToSignup">Créer un compte</span></p>
-    <p  class="card__subtitle" v-else>Tu as déjà un compte ? <span class="card__action" @click="switchToLogin">Se connecter</span></p>
-    <form class="form" >
-        <div class="inputContainer">
-        <BaseInput
-            v-if=" mode == 'signup'"
-            class="form__input"
-            v-model="event.firstName"
-            v-on:change="isFirstNameValid"
-            label="firstName"
-            type="text"
-        />
-        <p v-if="mode == 'signup' && error.firstNameError">Veuillez saisir au moins 3 caratères</p>
-         <BaseInput
-            v-if=" mode == 'signup'"
-            class="form__input"
-            v-model="event.lastName"
-            v-on:change="isLastNameValid"
-            label="lastName"
-            type="text"
-        />
-         <p v-if="mode == 'signup' && error.lastNameError">Veuillez saisir au moins 3 caratères</p>
-         <BaseInput
-            class="form__input"
-            v-model="event.email"
-            v-on:change="isEmailValid"
-            label="email"
-            type="email"
-        />
-         <p v-if="mode == 'signup' && error.emailError">Veuillez saisir un email valide</p>
-         <p v-if="mode == 'signup' && error.emailExists">Cet email existe déjà</p>
-         <BaseInput
-            class="form__input"
-            v-model="event.password"
-            v-on:change="isPasswordValid"
-            label="password"
-            type="password"
-        />
-         <p v-if="mode == 'signup' && error.passwordError">Veuillez saisir au moins 8 caratères, une majuscule, une minuscule, un chiffre et un caractère spécial</p>
-        <p v-if="status == 'error_login'">identifiants de connexion incorrects</p>
-        </div>
-        <div class="form__valid">
-            <button class="button" type= "button" :class="{'button--disabled' : !loginValidation}" @click="login" v-if=" mode == 'login'">
-                <span v-if="status == 'loading'">Connexion en cours...</span>
-                <span v-else>Connexion</span>
-            </button>
-            <button  class="button" type="button" :class="{'button--disabled' : !signupValidation}" @click="createAccount" v-else>
-                <span v-if="status == 'loading'">Connexion en cours...</span>
-                <span v-else>Créer mon compte</span>
-            </button>
-            
-        </div>
-    </form> 
-  </div>
+    <div class="card">
+        <h1 class="card__title" v-if="mode == 'login'">Connexion</h1>
+        <h1 class="card__title" v-else>Inscription</h1>
+            <p  class="card__subtitle" v-if="mode == 'login'">Pas encore de compte ? <span class="card__action" @click="switchToSignup">Créer un compte</span></p>
+            <p  class="card__subtitle" v-else>Tu as déjà un compte ? <span class="card__action" @click="switchToLogin">Se connecter</span></p>
+        <form class="form" >
+            <div class="inputContainer">
+                <BaseInput
+                    v-if=" mode == 'signup'"
+                    class="form__input"
+                    v-model="event.firstName"
+                    v-on:change="isFirstNameValid"
+                    label="firstName"
+                    type="text"
+                />
+                <p v-if="mode == 'signup' && error.firstNameError">Veuillez saisir au moins 3 caratères</p>
+                <BaseInput
+                    v-if=" mode == 'signup'"
+                    class="form__input"
+                    v-model="event.lastName"
+                    v-on:change="isLastNameValid"
+                    label="lastName"
+                    type="text"
+                />
+                <p v-if="mode == 'signup' && error.lastNameError">Veuillez saisir au moins 3 caratères</p>
+                <BaseInput
+                    class="form__input"
+                    v-model="event.email"
+                    v-on:change="isEmailValid"
+                    label="email"
+                    type="email"
+                />
+                <p v-if="mode == 'signup' && error.emailError">Veuillez saisir un email valide</p>
+                <p v-if="mode == 'signup' && error.emailExists">Cet email existe déjà</p>
+                <BaseInput
+                    class="form__input"
+                    v-model="event.password"
+                    v-on:change="isPasswordValid"
+                    label="password"
+                    type="password"
+                />
+                <p v-if="mode == 'signup' && error.passwordError">Veuillez saisir au moins 8 caratères, une majuscule, une minuscule, un chiffre et un caractère spécial</p>
+                <p v-if="status == 'error_login'">identifiants de connexion incorrects</p>
+            </div>
+            <div class="form__valid">
+                <button class="button" type= "button" :class="{'button--disabled' : !loginValidation}" @click="login" v-if=" mode == 'login'">
+                    <span v-if="status == 'loading'">Connexion en cours...</span>
+                    <span v-else>Connexion</span>
+                </button>
+                <button  class="button" type="button" :class="{'button--disabled' : !signupValidation}" @click="createAccount" v-else>
+                    <span v-if="status == 'loading'">Connexion en cours...</span>
+                    <span v-else>Créer mon compte</span>
+                </button>
+
+            </div>
+        </form> 
+    </div>
 </template>
 
 <script>

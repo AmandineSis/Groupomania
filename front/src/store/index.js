@@ -36,6 +36,15 @@ export default createStore({
       password: "",
       profilePicUrl: "",
       moderator: 0
+    },
+    postDetails: {
+      postId: -1,
+      userId: -1,
+      created: "",
+      content: "",
+      likes: 0,
+      comments: 0,
+      imageUrl: ""
     }
   },
   getters: {
@@ -52,6 +61,9 @@ export default createStore({
     userInfos(state, userInfos){
       state.userInfos = userInfos;
     },
+    postDetails(state, postDetails){
+        state.postDetails = postDetails;
+      },
     logout(state) {
       state.user = {
         userId: -1,
@@ -120,7 +132,16 @@ export default createStore({
             reject(error)
           });
         });
-    }
+    },
+    getPostsByDate: ({commit}) => {
+        instance
+          .get(`/posts`)
+          .then( function (response) {
+            commit('postDetails', response.data.results[4]);
+          })
+          .catch(function () {
+          });
+        },
   },
   modules: {
   }

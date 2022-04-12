@@ -21,7 +21,14 @@
     </div>
   </div> 
   <div class="settingsBlock" v-if="settings">Settings</div>
+
   <NewPost/>   
+  <div class="BlockPosts" >
+        
+
+
+
+    </div>
      
 </template>
 
@@ -29,36 +36,40 @@
 import { mapState } from 'vuex';
 import NewPost from '@/components/Home/NewPost.vue'
 
+
 export default {
-  name: 'HomeView',
-  components : {
-    NewPost
-  },
-  data(){
+    name: 'HomeView',
+    components : {
+        NewPost
+    },
+    data(){
         return{
             search: false,
             settings: false,
         
         }
-  },
-  mounted: function(){
-    console.log(this.$store.state.user)
-    //Si userId = -1, retour à la page de connexion
-    if(this.$store.state.user.userId == -1){
-      this.$router.push('/');
-      return;
-    }
-    this.$store.dispatch('getUser');
-    console.log(this.$store.state.userInfos.firstName)   
-  },
-  computed: {
-      fullname(){
-          return this.$store.state.userInfos.firstName + ' ' + this.$store.state.userInfos.lastName;
-      },
-      ...mapState({
-          status: 'status',
-          user: 'userInfos',
-          
+    },
+    mounted:
+        function(){
+            console.log(this.$store.state.user)
+            //Si userId = -1, retour à la page de connexion
+            if(this.$store.state.user.userId == -1){
+                this.$router.push('/');
+                return;
+            }
+            this.$store.dispatch('getUser');
+            this.$store.dispatch('getPostsByDate');
+            console.log(this.$store.state.postDetails.content); 
+        },
+    
+    computed: {
+        fullname(){
+            return this.$store.state.userInfos.firstName + ' ' + this.$store.state.userInfos.lastName;
+        },
+        ...mapState({
+            status: 'status',
+            user: 'userInfos'
+           // posts: 'postDetails'
     })
   },
   methods: {
@@ -110,7 +121,10 @@ p {
             }
         }
     }
-
+    .svg-inline--fa {
+        color: white;
+        font-size: 1.2rem;
+    }
     .search__entryField {
         margin: 0 10px;
         padding-left: 7px;
@@ -118,10 +132,7 @@ p {
         border-radius: 20px;
         animation: slide-right 1s ;
     }
-    .svg-inline--fa {
-        color: white;
-        font-size: 1.2rem;
-    }
+
     @keyframes slide-right {
     from{transform: translateX(0)}
     to{transform: translateX(1)} 
@@ -154,8 +165,7 @@ p {
         align-items: center;
     }*/
 
-/*************************************************** */
-/**************Settings block ********************** */
+/************************settings block*************************** */
 .settingsBlock {
         border: 2px solid #999999;
         background-color: white;
@@ -167,8 +177,18 @@ p {
       /* position: absolute;
         z-index: 3;*/
     }
-
-
+/**********************Post block ******************************** */
+.BlockPosts {
+        border: 2px solid #999999;
+        background-color: white;
+        margin: 30px auto;
+        width: 500px;
+        height: 100px;
+        align-items: center;
+        border-radius: 20px;
+      /* position: absolute;
+        z-index: 3;*/
+    }
 
 
 /*************************************************** */

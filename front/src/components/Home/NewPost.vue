@@ -11,7 +11,8 @@
             </textarea>
            
             <div class="form__valid">
-                <input type="file" @click="onFileSelected" ref="fileupload">
+                <label for="uploadImage" class="form__btn form__btn__upload"><font-awesome-icon icon="image" /></label>
+                <input id="uploadImage" type="file" @click="onFileSelected" ref="fileupload">
                 <button
                     class="form__btn form__btn__submit"
                     type="submit"
@@ -58,13 +59,13 @@ export default ({
                     .dispatch('createPost', fd)
                     .then((res => {
                         console.log(res)
-                        this.$refs.fileupload.value=null;
-                        this.event.post=null
+                        this.$refs.fileupload.value="";
+                        this.event.post="";
                     }), (err => {
                         console.log(err)
                     }))
             }
-        }    
+        }      
     }
 })
 </script>
@@ -102,8 +103,7 @@ export default ({
             top: -50px;
             right: -150px;
         }
-    }
-    button {
+        &__btn {
         padding: 0px;
         width: 70px;
         border-radius: 100px;
@@ -111,6 +111,11 @@ export default ({
         background-color: #FFFFFF;
         border: solid 1.5px #a71e05;
         color: #a71e05;
+        &__upload {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
         &:hover {
             background-color: #a71e05;
             color: #ffffff;
@@ -119,7 +124,17 @@ export default ({
             color: #a71e05;
             background-color: #ffffff;
         }
-}
+    }
+    }
+  
+
+    #uploadImage {
+       opacity: 0;
+       position: absolute;
+       z-index: -1;
+    }
+
+    
 
     
 </style>
