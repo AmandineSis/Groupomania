@@ -37,15 +37,7 @@ export default createStore({
       profilePicUrl: "",
       moderator: 0
     },
-    postDetails: {
-      postId: -1,
-      userId: -1,
-      created: "",
-      content: "",
-      likes: 0,
-      comments: 0,
-      imageUrl: ""
-    }
+    posts: []
   },
   getters: {
   },
@@ -61,8 +53,8 @@ export default createStore({
     userInfos(state, userInfos){
       state.userInfos = userInfos;
     },
-    postDetails(state, postDetails){
-        state.postDetails = postDetails;
+    posts(state, posts){
+        state.posts = posts;
       },
     logout(state) {
       state.user = {
@@ -111,7 +103,7 @@ export default createStore({
       instance
         .get(`/user/${user.userId}`)
         .then( function (response) {
-          commit('userInfos', response.data.results[0]);
+          commit('userInfos', response.data.results);
         })
         .catch(function () {
         });
@@ -137,7 +129,7 @@ export default createStore({
         instance
           .get(`/posts`)
           .then( function (response) {
-            commit('postDetails', response.data.results[4]);
+            commit('posts', response.data.results);
           })
           .catch(function () {
           });

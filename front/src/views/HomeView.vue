@@ -23,9 +23,9 @@
   <div class="settingsBlock" v-if="settings">Settings</div>
 
   <NewPost/>   
-  <div class="BlockPosts" >
-        
-
+  <div class="BlockPosts" v-for="postItem in posts" :key="postItem">
+        <p class="BlockPosts__content">{{postItem.content}}</p>
+        <img class="BlockPosts__image" :src="postItem.imageUrl" alt="photo de profil">
 
 
     </div>
@@ -57,9 +57,17 @@ export default {
                 this.$router.push('/');
                 return;
             }
-            this.$store.dispatch('getUser');
-            this.$store.dispatch('getPostsByDate');
-            console.log(this.$store.state.postDetails.content); 
+            this.$store
+                .dispatch('getUser')
+                .then(() => {
+                    console.log("getUSer dispatch done !")
+            });
+            this.$store
+                .dispatch('getPostsByDate')
+                .then(() => {
+                    console.log("getPostsByDate dispatch done !")
+            });
+            
         },
     
     computed: {
@@ -68,8 +76,8 @@ export default {
         },
         ...mapState({
             status: 'status',
-            user: 'userInfos'
-           // posts: 'postDetails'
+            user: 'userInfos',
+            posts: 'posts'
     })
   },
   methods: {
@@ -183,11 +191,18 @@ p {
         background-color: white;
         margin: 30px auto;
         width: 500px;
-        height: 100px;
+        //height: 100px;
         align-items: center;
-        border-radius: 20px;
+        border-radius: 20px 20px 0 0;
       /* position: absolute;
         z-index: 3;*/
+        &__content{
+            margin: 20px 10px;
+        }
+        &__image{
+            width: 100%;
+            margin: 0 auto;
+        }
     }
 
 
