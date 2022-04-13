@@ -1,46 +1,44 @@
 <template>
-  <div class="topBar">
-    <nav class="topBar__nav">
-        <ul class="topBar__nav__list">
-            <li class="topBar__nav__list__item"><router-link to="/"><font-awesome-icon icon="sign-out-alt" /></router-link></li>
-            <li class="topBar__nav__list__item"><font-awesome-icon icon="gear" @click="showSettings"/></li>
-            <li class="topBar__nav__list__item"><font-awesome-icon icon="magnifying-glass" @click="showSearchBar" />
-                <form v-if="search" method="POST">   
-                    <p>
-                        <input class="animated fadeInLeft search__entryField" type="search" name="user" placeholder="Rechercher..."/>
-                    </p>
-                </form>
-            </li>
-        </ul>
-    </nav>
-    <div class="userProfile" >
-        <!-- <router-link class="link" :to="{ name: 'Profile', params: { userId: status.user.userId } }"> -->
-            <p class="userProfile__fullname" >{{ fullname }}</p> 
-            <img class="userProfile__picture" :src="user.profilePicUrl" alt="photo de profil">
-        <!-- </router-link> -->
-    </div>
-  </div> 
-  <div class="settingsBlock" v-if="settings">Settings</div>
+    <div class="topBar">
+        <nav class="topBar__nav">
+            <ul class="topBar__nav__list">
+                <li class="topBar__nav__list__item"><router-link to="/"><font-awesome-icon icon="sign-out-alt" /></router-link></li>
+                <li class="topBar__nav__list__item"><font-awesome-icon icon="gear" @click="showSettings"/></li>
+                <li class="topBar__nav__list__item"><font-awesome-icon icon="magnifying-glass" @click="showSearchBar" />
+                    <form v-if="search" method="POST">   
+                        <p>
+                            <input class="animated fadeInLeft search__entryField" type="search" name="user" placeholder="Rechercher..."/>
+                        </p>
+                    </form>
+                </li>
+            </ul>
+        </nav>
+        <div class="userProfile" >
+            <!-- <router-link class="link" :to="{ name: 'Profile', params: { userId: status.user.userId } }"> -->
+                <p class="userProfile__fullname" >{{ fullName }}</p> 
+                <img class="userProfile__picture" :src="user.profilePicUrl" alt="photo de profil">
+            <!-- </router-link> -->
+        </div>
+    </div> 
+    <div class="settingsBlock" v-if="settings">Settings</div>
 
-  <NewPost/>   
-  <div class="BlockPosts" v-for="postItem in posts" :key="postItem.postId">
-        <p class="BlockPosts__content">{{postItem.content}}</p>
-        <img class="BlockPosts__image" :src="postItem.imageUrl" alt="photo de profil">
+    <NewPost/>   
+    <RecentPosts/>   
+    
 
-
-    </div>
-     
 </template>
 
 <script>
 import { mapGetters, mapState } from 'vuex';
 import NewPost from '@/components/Home/NewPost.vue'
+import RecentPosts from '@/components/Home/RecentPosts.vue'
 
 
 export default {
     name: 'HomeView',
     components : {
-        NewPost
+        NewPost,
+        RecentPosts
     },
     data(){
         return{
@@ -62,31 +60,24 @@ export default {
                 .then(() => {
                     console.log("getUSer dispatch done !")
             });
-            this.$store
-                .dispatch('getPostsByDate')
-                .then(() => {
-                    console.log("getPostsByDate dispatch done !")
-            });
-            
         },
     
     computed: {
         ...mapState({
             status: 'status',
-            user: 'userInfos',
-            posts: 'posts'
+            user: 'userInfos'
         }),
-        ...mapGetters(['fullname'])
-  },
-  methods: {
-    logout() {
-      this.$store.commit('logout');
-      this.$router.push('/');
+        ...mapGetters(['fullName'])
     },
-    showSearchBar(){
+    methods: {
+        logout() {
+            this.$store.commit('logout');
+            this.$router.push('/');
+        },
+        showSearchBar(){
                 this.search=!this.search;
                 },
-            showSettings(){
+        showSettings(){
                 this.settings=!this.settings;
             }
   }
@@ -95,7 +86,7 @@ export default {
 
 <style scoped lang="scss">
 
-/********************** TOPNAV ****************** */
+/************************** TOPNAV ******************* */
 p {
   color: black;
 }
@@ -143,10 +134,9 @@ p {
     from{transform: translateX(0)}
     to{transform: translateX(1)} 
     }
-   
-/*************************************************** */    
+    
+/********************** userProfile ************************** */
 
-/***************** userProfile ********************* */
 .userProfile {
     display: flex;
     flex-direction: row;
@@ -183,26 +173,6 @@ p {
       /* position: absolute;
         z-index: 3;*/
     }
-/**********************Post block ******************************** */
-.BlockPosts {
-        border: 2px solid #999999;
-        background-color: white;
-        margin: 30px auto;
-        width: 500px;
-        //height: 100px;
-        align-items: center;
-        border-radius: 20px 20px 0 0;
-      /* position: absolute;
-        z-index: 3;*/
-        &__content{
-            margin: 20px 10px;
-        }
-        &__image{
-            width: 100%;
-            margin: 0 auto;
-        }
-    }
 
 
-/*************************************************** */
 </style>

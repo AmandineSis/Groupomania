@@ -29,19 +29,12 @@ export default createStore({
   state: {
     status: '',
     user: user,
-    userInfos: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      password: "",
-      profilePicUrl: "",
-      moderator: 0
-    },
+    userInfos: [],
     posts: []
   },
   getters: {
-    fullname(state){
-      return `${state.userInfos.firstName}-${state.userInfos.lastName}`
+    fullName(state){
+      return `${state.userInfos.firstName} ${state.userInfos.lastName}`
     }
   },
   mutations: {
@@ -106,7 +99,7 @@ export default createStore({
       instance
         .get(`/user/${user.userId}`)
         .then( function (response) {
-          commit('userInfos', response.data.results);
+          commit('userInfos', response.data.results[0]);
         })
         .catch(function () {
         });
