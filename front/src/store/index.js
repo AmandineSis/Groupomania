@@ -30,7 +30,10 @@ export default createStore({
     status: '',
     user: user,
     userInfos: [],
-    posts: []
+    posts: [],
+//like and comment counter test
+    like:0,
+    comment:0
   },
   getters: {
     fullName(state){
@@ -58,11 +61,17 @@ export default createStore({
         token: '',
       }
       localStorage.removeItem('user');
+    },
+    INCREMENT_LIKE_COUNT(state) {
+      state.like++
+    },
+    INCREMENT_COM_COUNT(state) {
+      state.comment++
     }
   },
 
-
   actions: {
+
     /**************************** USER ********************** */
     login: ({ commit }, loginInfos ) => {
       commit('setStatus', 'loading');
@@ -95,9 +104,9 @@ export default createStore({
           });
         });
     },
-    getUser: ({commit}) => {
+    getUser: ({commit}, userId) => {
       instance
-        .get(`/user/${user.userId}`)
+        .get(`/user/${userId}`)
         .then( function (response) {
           commit('userInfos', response.data.results[0]);
         })
@@ -106,6 +115,7 @@ export default createStore({
       },
       
     /**************************** POSTS ********************** */  
+    
     createPost: ({ commit }, newPost ) => {
       commit('setStatus', 'sending');
       return new Promise ((resolve, reject) => {
@@ -121,6 +131,7 @@ export default createStore({
           });
         });
     },
+
     getPostsByDate: ({commit}) => {
         instance
           .get(`/posts`)

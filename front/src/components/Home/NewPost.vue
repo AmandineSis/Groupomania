@@ -59,8 +59,8 @@ export default ({
                     .dispatch('createPost', fd)
                     .then((res => {
                         console.log(res)
-                        this.$refs.fileupload.value="";
-                        this.event.post="";
+                        
+                        location.reload();
                     }), (err => {
                         console.log(err)
                     }))

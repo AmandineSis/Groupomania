@@ -21,10 +21,13 @@
         </div>
     </div> 
     <div class="settingsBlock" v-if="settings">Settings</div>
-
-    <NewPost/>   
-    <RecentPosts/>   
-    
+    <div class="newPost">
+        <NewPost/>  
+    </div>
+       
+    <div class="recentPosts">
+        <RecentPosts/>   
+    </div>
 
 </template>
 
@@ -55,8 +58,10 @@ export default {
                 this.$router.push('/');
                 return;
             }
+            const userId = this.$store.state.user.userId;
+            console.log(userId);
             this.$store
-                .dispatch('getUser')
+                .dispatch('getUser', userId )
                 .then(() => {
                     console.log("getUSer dispatch done !")
             });
@@ -172,6 +177,14 @@ p {
         border-radius: 20px;
       /* position: absolute;
         z-index: 3;*/
+    }
+/************************new post*************************** */
+.newPost{
+        height: 130px;
+    }
+/************************new post*************************** */
+.recentPosts{
+        height: 130px;
     }
 
 

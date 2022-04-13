@@ -181,6 +181,7 @@ export default ({
 
 
 <style scoped lang="scss">
+
 .card {
   max-width: 100%;
   width: 540px;
@@ -194,6 +195,8 @@ export default ({
   width: 540px;
   background:white;
   border-radius: 16px;
+  border: 2px solid #EEEEEE;
+  box-shadow: 10px 10px 6px grey;
   margin: 32px auto;
   padding:32px;
   &__title {
