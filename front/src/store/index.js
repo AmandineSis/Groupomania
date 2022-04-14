@@ -30,6 +30,7 @@ export default createStore({
     status: '',
     user: user,
     userInfos: [],
+    currentPost: "",
     posts: [],
 //like and comment counter test
     like:0,
@@ -39,6 +40,7 @@ export default createStore({
     fullName(state){
       return `${state.userInfos.firstName} ${state.userInfos.lastName}`
     }
+
   },
   mutations: {
     setStatus(state, status){
