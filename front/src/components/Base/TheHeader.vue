@@ -1,5 +1,5 @@
 <template>
-    <div id="mainHeader">
+    <div id="mainHeader" v-once>
          <img alt="logo groupomania" src="@/assets/images/logo.png">
     </div>
 </template>

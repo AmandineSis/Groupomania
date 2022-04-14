@@ -36,9 +36,24 @@
                         <span class="posts__review__block__right__icon" @click="addComment" ref="comment"><font-awesome-icon :icon="['far', 'comment']" />comment</span>
                     </div>            
             </div>
-            <div class="posts__review__comments" v-if="comments">
-                        Comments...
+            <!-- -------------------------COMMENT COMPONENT---------------------------------------------------- -->
+
+            <div class="posts__review__comments" v-if="showComment">
+                <form class="form__comments">
+                    <textarea 
+                        class="form__comments__input"
+                        rows ="1" 
+                        v-model="event.comment"
+                        name ="newComment"
+                        placeholder = "Ajoutez un commentaire...">
+                    </textarea> 
+                </form>       
+                <div class="recentComments">
+                    comments...
+                </div> 
             </div>    
+
+            <!-- -------------------------/COMMENT COMPONENT---------------------------------------------------- -->
         </div>
     </div>
     
@@ -51,7 +66,10 @@ export default ({
     name: 'RecentPosts',
     data(){
         return {
-            comments: false
+            showComment: false,
+            event:{
+                comment:""
+            }
         }
     },
     mounted:
@@ -77,7 +95,7 @@ export default ({
             this.$store.commit('INCREMENT_LIKE_COUNT')
         },
         addComment(){
-            this.comments=!this.comments;
+            this.showComment=!this.showComment;
             this.$store.commit('INCREMENT_COM_COUNT')
         }
     }
@@ -135,7 +153,6 @@ export default ({
         &__review {
             display: flex;
             flex-direction: column;
-         
             padding: 5px 0;
             &__block {
                 display: flex;
@@ -143,7 +160,7 @@ export default ({
                 justify-content: space-between;
                 margin: 0;
                 &__left {
-                   margin: 0;
+                    margin: 0;
                     &__icon{
                     margin: 0 5px;
                     color: grey;
@@ -161,9 +178,8 @@ export default ({
                 }
             }
             &__comments {
-                padding: 10px 0;
-                    border: 2px solid #999999;
-                    background-color: white;
+                    padding: 10px 0;
+                    background-color: #D9D9D9;
                     margin: 0px auto;
                     width: 500px;
                     height: 100px;
@@ -172,10 +188,29 @@ export default ({
             }    
         }
     }
-/*
-.svg-inline--fa {
-        color: grey;
-        font-size: 1.2rem;
-    }*/
+
+.form__comments {
+
+     /*   margin: 30px auto;
+        width: 500px;
+        height: 100px;
+        align-items: center;
+        border-radius: 20px;*/
+        &__input {
+            width:90%;
+            height:  30px;
+            background-color: white;
+            border: 2px solid #999999;
+            resize: none;
+            border-radius: 20px;
+            padding: 5px 15px;
+            background-color: white;
+            display: inline-block;
+            white-space: normal;
+            color: grey;
+        }
+}
+
+
     
 </style>

@@ -1,5 +1,5 @@
 <template>
-    <div class="topBar">
+    <div class="topBar" v-once>
         <nav class="topBar__nav">
             <ul class="topBar__nav__list">
                 <li class="topBar__nav__list__item"><router-link to="/"><font-awesome-icon icon="sign-out-alt" /></router-link></li>
