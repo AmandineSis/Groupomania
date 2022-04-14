@@ -1,7 +1,7 @@
 <template>
     <div class="posts" v-for="(postItem, index) in posts" :key="postItem.postId">
         
-        <div class="posts__user" :index="index" ref="index">
+        <div class="posts__user"  >
             <div class="posts__user__name">
                 <img class="posts__user__name__picture" src="@/assets/images/profilePicDefault.jpg" alt="">
                 <h2 class="posts__user__name__id">{{postItem.userId}} --- {{index}}</h2>
@@ -32,8 +32,8 @@
 
                     </div>
                     <div class="posts__review__block__right">
-                        <span class="posts__review__block__right__icon" @click="increaseLikeCount" ref="like"><font-awesome-icon :icon="['far', 'heart']" />like</span>
-                        <span class="posts__review__block__right__icon" @click="addComment" ref="comment"><font-awesome-icon :icon="['far', 'comment']" />comment</span>
+                        <span class="posts__review__block__right__icon" @click="likePost"><font-awesome-icon :icon="['far', 'heart']" />like</span>
+                        <span class="posts__review__block__right__icon" @click="addComment"><font-awesome-icon :icon="['far', 'comment']" />comment</span>
                     </div>            
             </div>
             <!-- -------------------------COMMENT COMPONENT---------------------------------------------------- -->
@@ -59,7 +59,6 @@
     
 </template>
 
-
 <script>
 import { mapGetters, mapState } from 'vuex';
 export default ({
@@ -68,6 +67,7 @@ export default ({
         return {
             showComment: false,
             event:{
+                like: false,
                 comment:""
             }
         }
@@ -83,21 +83,27 @@ export default ({
             
         },
     computed: {
+      /*  getPost(index) {
+            return this.$store.getters.getPostById(index)
+        },*/
+        
         ...mapState({
             posts: 'posts',
             like: 'like',
             comment: 'comment'
         }),
-        ...mapGetters(['fullname'])
+        ...mapGetters({
+            fullname: 'fullname',
+        })
     },
     methods: {
-        increaseLikeCount(){
-            this.$store.commit('INCREMENT_LIKE_COUNT')
+     /*   likePost(){
+            !this.event.like;
+            console.log(this.event.like);
         },
         addComment(){
-            this.showComment=!this.showComment;
-            this.$store.commit('INCREMENT_COM_COUNT')
-        }
+            
+        }*/
     }
 })
 </script>

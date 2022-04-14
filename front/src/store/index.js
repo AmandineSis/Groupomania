@@ -39,7 +39,10 @@ export default createStore({
   getters: {
     fullName(state){
       return `${state.userInfos.firstName} ${state.userInfos.lastName}`
-    }
+    },
+   /* getPostById: (state) => (postId) => {
+      return state.posts.find(post => post.postId === postId)
+    }*/
 
   },
   mutations: {
@@ -63,12 +66,6 @@ export default createStore({
         token: '',
       }
       localStorage.removeItem('user');
-    },
-    INCREMENT_LIKE_COUNT(state) {
-      state.like++
-    },
-    INCREMENT_COM_COUNT(state) {
-      state.comment++
     }
   },
 
@@ -142,7 +139,22 @@ export default createStore({
           })
           .catch(function () {
           });
-        },
+        }
+/*
+  incrementLike({commit}, index) {
+    let postId = this.getters.getPostById(index)
+    return new Promise ((resolve, reject) => {
+      instance
+        .post(`/posts/${postId}/like`, newPost)
+        .then(function (response) {
+          commit('setStatus', 'post_added')
+          resolve(response)
+        })
+        .catch(function (error) {
+          commit('setStatus', 'error_newPost')
+          reject(error)
+        });
+      });*/
   },
   modules: {
   }
