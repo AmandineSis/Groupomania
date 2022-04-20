@@ -9,7 +9,6 @@
                 placeholder = "Que souhaitez vous partager ?">
                 
             </textarea>
-           
             <div class="form__valid">
                 <label for="uploadImage" class="form__btn form__btn__upload"><font-awesome-icon icon="image" /></label>
                 <input id="uploadImage" type="file" @click="onFileSelected" ref="fileupload">

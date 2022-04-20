@@ -1,12 +1,12 @@
 <template>
-    <div class="posts" v-for="(postItem, index) in posts" :key="postItem.postId">
+    <div class="posts" v-for="(postItem) in posts" :key="postItem.postId">
         
         <div class="posts__user"  >
             <div class="posts__user__name">
                 <img class="posts__user__name__picture" src="@/assets/images/profilePicDefault.jpg" alt="">
-                <h2 class="posts__user__name__id">{{postItem.userId}} --- {{index}}</h2>
+                <h2 class="posts__user__name__id">{{postItem.firstName}} {{postItem.lastName}}</h2>
             </div>
-            <p class="posts__date">{{ $filters.timeAgo(Date.now(postItem.created)) }}</p>
+            <p class="posts__date">{{postItem.created}}</p>
 
         </div>
 

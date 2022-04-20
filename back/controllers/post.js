@@ -20,7 +20,7 @@ require('dotenv').config();
 //Récupération de tous les posts
 //results = tous les posts du plus récent au plus ancien (max 20)
 exports.getPostsByDate = (req, res, next) => {
-    let sql = 'SELECT * FROM posts ORDER BY created DESC LIMIT 20';
+    let sql = 'SELECT * FROM posts JOIN users WHERE posts.userId=users.userId ORDER BY created DESC LIMIT 20';
     db.query(sql, (error, results, fields) => {
         if (error) throw ({ error });
         let post = results[0];

@@ -1,18 +1,7 @@
 <template>
     <div class="topBar" v-once>
-        <nav class="topBar__nav">
-            <ul class="topBar__nav__list">
-                <li class="topBar__nav__list__item"><router-link to="/"><font-awesome-icon icon="sign-out-alt" /></router-link></li>
-                <li class="topBar__nav__list__item"><font-awesome-icon icon="gear" @click="showSettings"/></li>
-                <li class="topBar__nav__list__item"><font-awesome-icon icon="magnifying-glass" @click="showSearchBar" />
-                    <form v-if="search" method="POST">   
-                        <p>
-                            <input class="animated fadeInLeft search__entryField" type="search" name="user" placeholder="Rechercher..."/>
-                        </p>
-                    </form>
-                </li>
-            </ul>
-        </nav>
+        <TopBar @show-settings="openSettings"/>
+        
         <div class="userProfile" >
             <!-- <router-link class="link" :to="{ name: 'Profile', params: { userId: status.user.userId } }"> -->
                 <p class="userProfile__fullname" >{{ fullName }}</p> 
@@ -20,7 +9,12 @@
             <!-- </router-link> -->
         </div>
     </div> 
-    <div class="settingsBlock" v-if="settings">Settings</div>
+
+    
+    <div class="settingsBlock" v-if="settings">
+        Settings
+    </div>
+
     <div class="newPost">
         <NewPost/>  
     </div>
@@ -35,13 +29,17 @@
 import { mapGetters, mapState } from 'vuex';
 import NewPost from '@/components/Home/NewPost.vue'
 import RecentPosts from '@/components/Home/RecentPosts.vue'
+import TopBar from '@/components/Home/TopBar.vue'
+
 
 
 export default {
     name: 'HomeView',
     components : {
+        TopBar,
         NewPost,
         RecentPosts
+      
     },
     data(){
         return{
@@ -79,10 +77,10 @@ export default {
             this.$store.commit('logout');
             this.$router.push('/');
         },
-        showSearchBar(){
-                this.search=!this.search;
+        displaySearch(){
+                console.log("click ok !")
                 },
-        showSettings(){
+        openSettings(){
                 this.settings=!this.settings;
             }
   }
@@ -105,40 +103,8 @@ p {
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        &__nav {
-            width: 50%;
-            margin-left: 15px;
-            &__list {
-                display: flex;
-                flex-direction: row;
-                justify-content: left;
-                align-items: top;
-                &__item {
-                    display: flex;
-                    flex-direction: row;
-                    justify-content: left;
-                    margin: 0 10px;
-                    height: 18px;
-                }
-            }
-        }
     }
-    .svg-inline--fa {
-        color: white;
-        font-size: 1.2rem;
-    }
-    .search__entryField {
-        margin: 0 10px;
-        padding-left: 7px;
-        border: 2px #F2F2F2 solid;
-        border-radius: 20px;
-        animation: slide-right 1s ;
-    }
-
-    @keyframes slide-right {
-    from{transform: translateX(0)}
-    to{transform: translateX(1)} 
-    }
+    
     
 /********************** userProfile ************************** */
 

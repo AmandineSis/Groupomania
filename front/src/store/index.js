@@ -58,8 +58,8 @@ export default createStore({
       state.userInfos = userInfos;
     },
     posts(state, posts){
-        state.posts = posts;
-      },
+      state.posts = posts;
+    },
     logout(state) {
       state.user = {
         userId: -1,

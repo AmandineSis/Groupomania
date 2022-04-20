@@ -1,9 +1,12 @@
 <template>
     <div class="card">
-        <h1 class="card__title" v-if="mode == 'login'">Connexion</h1>
-        <h1 class="card__title" v-else>Inscription</h1>
+        <h1 class="home__tile">Bienvenue</h1>
+        <h2 class="card__title" v-if="mode == 'login'">Connexion</h2>
+        <h2 class="card__title" v-else>Inscription</h2>
             <p  class="card__subtitle" v-if="mode == 'login'">Pas encore de compte ? <span class="card__action" @click="switchToSignup">Créer un compte</span></p>
             <p  class="card__subtitle" v-else>Tu as déjà un compte ? <span class="card__action" @click="switchToLogin">Se connecter</span></p>
+        
+        
         <form class="form" >
             <div class="inputContainer">
                 <BaseInput
@@ -43,6 +46,8 @@
                 <p v-if="mode == 'signup' && error.passwordError">Veuillez saisir au moins 8 caratères, une majuscule, une minuscule, un chiffre et un caractère spécial</p>
                 <p v-if="status == 'error_login'">identifiants de connexion incorrects</p>
             </div>
+
+
             <div class="form__valid">
                 <button class="button" type= "button" :class="{'button--disabled' : !loginValidation}" @click="login" v-if=" mode == 'login'">
                     <span v-if="status == 'loading'">Connexion en cours...</span>
@@ -52,8 +57,8 @@
                     <span v-if="status == 'loading'">Connexion en cours...</span>
                     <span v-else>Créer mon compte</span>
                 </button>
-
             </div>
+
         </form> 
     </div>
 </template>
@@ -182,12 +187,11 @@ export default ({
 
 <style scoped lang="scss">
 
-.card {
-  max-width: 100%;
-  width: 540px;
-  background:white;
-  border-radius: 16px;
-  padding:32px;
+.home__tile {
+    text-align:center;
+    font-weight: 900;
+    font-size: 50px;
+    margin: 20px;
 }
 
 .card {
