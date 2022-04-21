@@ -74,7 +74,6 @@ export default ({
     },
     mounted:
         function(){
-            //const self = this;
             this.$store
                 .dispatch('getPostsByDate')
                 .then(() => {

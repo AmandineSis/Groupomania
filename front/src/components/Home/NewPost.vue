@@ -4,14 +4,15 @@
             <textarea 
                 class="form__input"
                 rows ="5" 
-                v-model="event.post"
+                v-model="post"
                 name ="newPost"
                 placeholder = "Que souhaitez vous partager ?">
                 
             </textarea>
             <div class="form__valid">
+                <span v-if="imageUrl">{{imageUrl.name}}</span>
                 <label for="uploadImage" class="form__btn form__btn__upload"><font-awesome-icon icon="image" /></label>
-                <input id="uploadImage" type="file" @click="onFileSelected" ref="fileupload">
+                <input id="uploadImage" type="file" @change="onFileSelected">
                 <button
                     class="form__btn form__btn__submit"
                     type="submit"
@@ -33,33 +34,35 @@ export default ({
     },
     data(){
         return {
-            event: {
                 post: "",
                 imageUrl:""
-            },
-            
         }
     },
     methods: {
         onFileSelected(e){
-            this.event.imageUrl = e.target.files[0];
+            this.imageUrl = e.target.files[0];
+            console.log(this.imageUrl);
         },
         createPost(e) {
             e.preventDefault();
             const fd = new FormData();
-            if (this.event.post != "") {
-                 fd.append('content', this.event.post);
+            if (this.post != "") {
+                fd.append('content', this.post);
             }
-            if (this.event.imageUrl) {
-                fd.append('image', this.event.imageUrl, 'image');
+            if (this.imageUrl) {
+                fd.append('image', this.imageUrl, this.imageUrl.name);
             }
-            if (this.event.post || this.event.imageUrl) {
+            if (this.post || this.imageUrl) {
                 this.$store
                     .dispatch('createPost', fd)
                     .then((res => {
                         console.log(res)
-                        
-                        location.reload();
+                        this.$store
+                            .dispatch('getPostsByDate')
+                            .then(() => {
+                                console.log("getPostsByDate dispatch done !")
+                                this.$form.reset();
+                            });
                     }), (err => {
                         console.log(err)
                     }))
