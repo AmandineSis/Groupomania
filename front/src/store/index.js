@@ -31,19 +31,19 @@ export default createStore({
     user: user,
     userInfos: [],
     currentPost: "",
-    posts: [],
-//like and comment counter test
-    like:0,
-    comment:0
+    posts: []
   },
   getters: {
     fullName(state){
       return `${state.userInfos.firstName} ${state.userInfos.lastName}`
     },
-   /* getPostById: (state) => (postId) => {
-      return state.posts.find(post => post.postId === postId)
-    }*/
-
+    getPostById: (state) => (postId) => {
+      if (state.posts.postId == postId){
+        let userId = state.posts.userId;
+        return userId;
+      
+      }
+    }
   },
   mutations: {
     setStatus(state, status){
@@ -139,23 +139,26 @@ export default createStore({
           })
           .catch(function () {
           });
-        }
-/*
-  incrementLike({commit}, index) {
-    let postId = this.getters.getPostById(index)
-    return new Promise ((resolve, reject) => {
-      instance
-        .post(`/posts/${postId}/like`, newPost)
-        .then(function (response) {
-          commit('setStatus', 'post_added')
-          resolve(response)
-        })
-        .catch(function (error) {
-          commit('setStatus', 'error_newPost')
-          reject(error)
+        },
+
+    likePost({commit}, postLike) {
+      return new Promise ((resolve, reject) => {
+        let userId = this.state.user.userId;
+
+        instance
+          .post(`/posts/${postLike.postId}/like`, {userId, like: postLike.like})
+          .then(function (response) {
+            commit('setStatus', 'post_liked')
+            resolve(response)
+          })
+          .catch(function (error) {
+            commit('setStatus', 'error_like')
+            reject(error)
+          });
         });
-      });*/
+    }
   },
   modules: {
   }
+
 })

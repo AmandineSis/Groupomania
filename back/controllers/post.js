@@ -217,7 +217,6 @@ exports.likePost = (req, res, next) => {
     let postId = req.params.postId;
     let userId = req.token.userId;
 
-
     let sql = 'SELECT * FROM likes WHERE postId = ? AND userId = ?';
     db.query(sql, [postId, userId], (error, results, fields) => {
 
@@ -250,7 +249,7 @@ exports.likePost = (req, res, next) => {
                 let sqlLike = 'DELETE FROM likes WHERE likeId =' + db.escape(postLiked.likeId);
                 db.query(sqlLike, (error, results, fields) => {
                     if (error) throw ({ error });
-                    res.status(401).json({ message: "Vous n'aimez plus ce post !" });
+                    res.status(200).json({ message: "Vous n'aimez plus ce post !" });
                 });
             });
         } else {

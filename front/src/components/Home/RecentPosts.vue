@@ -1,5 +1,5 @@
 <template>
-    <div class="posts" v-for="(postItem) in posts" :key="postItem.postId">
+    <div class="posts" v-for="postItem in posts" :key="postItem.postId">
         
         <div class="posts__user"  >
             <div class="posts__user__name">
@@ -18,42 +18,34 @@
             <div class="posts__review__block">
                     <div class="posts__review__block__left">
                         <span class="posts__review__block__left__icon">
-                            <font-awesome-icon :icon="['far', 'heart']" v-if="like == 0"/>
+                            <font-awesome-icon :icon="['far', 'heart']" v-if="postItem.likes == 0"/>
                             <font-awesome-icon icon="heart" class="posts__review__block__left__icon__full" v-else/>
-                            {{ like }}
-                             <!-- {{ postItem.likes }} -->
+                            {{ postItem.likes }} 
                         </span>
                         <span class="posts__review__block__left__icon">
-                            <font-awesome-icon :icon="['far', 'comment']" v-if="comment == 0"/>
+                            <font-awesome-icon :icon="['far', 'comment']" v-if="postItem.comments == '' "/>
                             <font-awesome-icon icon="comment" class="posts__review__block__left__icon__full" v-else/>
-                            {{ comment }}
-                            <!-- {{postItem.comments}} -->
+                            {{postItem.comments}}
                         </span>
 
                     </div>
                     <div class="posts__review__block__right">
-                        <span class="posts__review__block__right__icon" @click="likePost"><font-awesome-icon :icon="['far', 'heart']" />like</span>
-                        <span class="posts__review__block__right__icon" @click="addComment"><font-awesome-icon :icon="['far', 'comment']" />comment</span>
+                        <span class="posts__review__block__right__icon" @click="likePost(postItem.postId)"><font-awesome-icon :icon="['far', 'heart']" />like</span>
+                        <span class="posts__review__block__right__icon" @click="displayComment(postItem.postId)"><font-awesome-icon :icon="['far', 'comment']" />comment</span>
                     </div>            
             </div>
-            <!-- -------------------------COMMENT COMPONENT---------------------------------------------------- -->
 
-            <div class="posts__review__comments" v-if="showComment">
-                <form class="form__comments">
-                    <textarea 
-                        class="form__comments__input"
-                        rows ="1" 
-                        v-model="event.comment"
-                        name ="newComment"
-                        placeholder = "Ajoutez un commentaire...">
-                    </textarea> 
-                </form>       
+            <div class="posts__review__comments" >
+                
+                <PostComments postId="postItem.postId"/>
+
                 <div class="recentComments">
                     comments...
                 </div> 
+            
             </div>    
 
-            <!-- -------------------------/COMMENT COMPONENT---------------------------------------------------- -->
+           
         </div>
     </div>
     
@@ -61,15 +53,17 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex';
+import PostComments from '@/components/Home/PostComments.vue'
+
 export default ({
     name: 'RecentPosts',
+    components: {
+            PostComments
+    },
     data(){
         return {
-            showComment: false,
-            event:{
-                like: false,
-                comment:""
-            }
+            commentSection: false,
+            comment:''
         }
     },
     mounted:
@@ -82,27 +76,41 @@ export default ({
             
         },
     computed: {
-      /*  getPost(index) {
-            return this.$store.getters.getPostById(index)
-        },*/
-        
         ...mapState({
             posts: 'posts',
-            like: 'like',
-            comment: 'comment'
         }),
         ...mapGetters({
             fullname: 'fullname',
         })
     },
     methods: {
-     /*   likePost(){
-            !this.event.like;
-            console.log(this.event.like);
+        likePost(postId){
+            //toggle like value between 0 and 1
+            this.likes = !this.likes;
+            //création du corps de la requête => (userId, like)
+            const postLike = {
+                postId,
+                like: this.likes
+            };
+            //envoie requête vers store - requête LikePost
+            this.$store
+                .dispatch('likePost', postLike)
+                .then((res) => {
+                    console.log(res)
+                    console.log("likePost dispatch done !")
+                    //recentPosts refreshed
+                    this.$store
+                            .dispatch('getPostsByDate')
+                            .then(() => {
+                                console.log("getPostsByDate dispatch done !")
+                            });
+                })
         },
-        addComment(){
-            
-        }*/
+        //toggle visibility of comment section
+        displayComment(postId){
+            this.commentSection = !this.commentSection;
+            console.log(postId);
+        }
     }
 })
 </script>
@@ -194,28 +202,4 @@ export default ({
         }
     }
 
-.form__comments {
-
-     /*   margin: 30px auto;
-        width: 500px;
-        height: 100px;
-        align-items: center;
-        border-radius: 20px;*/
-        &__input {
-            width:90%;
-            height:  30px;
-            background-color: white;
-            border: 2px solid #999999;
-            resize: none;
-            border-radius: 20px;
-            padding: 5px 15px;
-            background-color: white;
-            display: inline-block;
-            white-space: normal;
-            color: grey;
-        }
-}
-
-
-    
 </style>

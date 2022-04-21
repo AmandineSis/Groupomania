@@ -10,16 +10,16 @@
                 
             </textarea>
             <div class="form__valid">
-                <span v-if="imageUrl">{{imageUrl.name}}</span>
                 <label for="uploadImage" class="form__btn form__btn__upload"><font-awesome-icon icon="image" /></label>
                 <input id="uploadImage" type="file" @change="onFileSelected">
+                
                 <button
                     class="form__btn form__btn__submit"
                     type="submit"
                     @click="createPost"
                 ><font-awesome-icon icon="paper-plane" /></button> 
             </div>
-            
+            <p class=form__valid__image v-if="imageUrl">{{imageUrl.name}}</p>
         </form>
     </div>
 </template>
@@ -60,8 +60,9 @@ export default ({
                         this.$store
                             .dispatch('getPostsByDate')
                             .then(() => {
-                                console.log("getPostsByDate dispatch done !")
-                                this.$form.reset();
+                                console.log("getPostsByDate dispatch done !");
+                                this.post= "";
+                                this.imageUrl="";
                             });
                     }), (err => {
                         console.log(err)
@@ -73,9 +74,7 @@ export default ({
 </script>
 
 <style scoped lang="scss">
-
     .form {
-
         margin: 30px auto;
         width: 500px;
         height: 100px;
@@ -104,6 +103,11 @@ export default ({
             position: relative;
             top: -50px;
             right: -150px;
+            &__image {
+            position: relative;
+            top: -100px;
+            left: -200px;
+        }
         }
         &__btn {
         padding: 0px;
@@ -126,17 +130,15 @@ export default ({
             color: #a71e05;
             background-color: #ffffff;
         }
+        
     }
     }
   
-
     #uploadImage {
        opacity: 0;
        position: absolute;
        z-index: -1;
     }
-
     
-
     
 </style>
