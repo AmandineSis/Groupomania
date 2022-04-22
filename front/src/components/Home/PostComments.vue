@@ -1,7 +1,7 @@
 <template>
     <form class="form__comments" >
-        <label for="uploadImage" class="form__comments__btn form__comments__btn__upload"><font-awesome-icon icon="image" /></label>
-        <input class="commentImage" type="file" @change="onFileSelected">
+        <label for="uploadCommentImage" class="form__comments__btn form__comments__btn__upload"><font-awesome-icon icon="image" /></label>
+        <input class="commentImage" type="file" @change="addImage(postId)" >
         <textarea 
             class="form__comments__input"
             rows ="1" 
@@ -9,12 +9,15 @@
             name ="newComment"
             placeholder = "Ajoutez un commentaire...">
         </textarea> 
-        <button class="form__comments__btn form__comments__btn__submit" type="submit" @click="addComment(postItem.postId)"><font-awesome-icon icon="paper-plane" /></button> 
+        <button class="form__comments__btn form__comments__btn__submit" type="submit" @click="addComment(postId)"><font-awesome-icon icon="paper-plane" /></button> 
     </form> 
+    <div class="recentComments" v-for="postComment in postComments" :key="postComment.postId">
+                    <p>{{postComment.comment}}</p>
+                </div> 
 </template>
 
 <script>
-//import { mapGetters, mapState } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 export default ({
     name: 'PostComments',
     props: {
@@ -27,22 +30,14 @@ export default ({
             imageUrl: ""
         }
     },
-    
-    methods: {
-        onFileSelected(e){
-            this.imageUrl = e.target.files[0];
-            console.log(this.imageUrl);
-        },
-        addComment(postId){
-            //req.body = {comment: string, imageUrl:string}
-            console.log(postId);
-           /* const postCom = {
-                comment: this.comment,
-                imageUrl: this.imageUrl
-            }
-            console.log(postCom)*/
-        }
-    }
+    computed: {
+        ...mapState({
+            postComments: 'postComments',
+        }),
+        ...mapGetters({
+            fullname: 'fullname',
+        })
+    }   
 })
 </script>
 

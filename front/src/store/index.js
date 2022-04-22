@@ -31,7 +31,8 @@ export default createStore({
     user: user,
     userInfos: [],
     currentPost: "",
-    posts: []
+    posts: [],
+    postComments: []
   },
   getters: {
     fullName(state){
@@ -66,6 +67,9 @@ export default createStore({
         token: '',
       }
       localStorage.removeItem('user');
+    },
+    postComments(state, postComments){
+      state.postComments = postComments;
     }
   },
 
@@ -103,7 +107,7 @@ export default createStore({
           });
         });
     },
-    getUser: ({commit}, userId) => {
+    getUser: ({ commit }, userId) => {
       instance
         .get(`/user/${userId}`)
         .then( function (response) {
@@ -130,21 +134,18 @@ export default createStore({
           });
         });
     },
-
-    getPostsByDate: ({commit}) => {
+    getPostsByDate: ({ commit }) => {
         instance
           .get(`/posts`)
           .then( function (response) {
             commit('posts', response.data.results);
           })
           .catch(function () {
-          });
-        },
-
-    likePost({commit}, postLike) {
+        });
+    },
+    likePost: ({ commit }, postLike) => {
       return new Promise ((resolve, reject) => {
         let userId = this.state.user.userId;
-
         instance
           .post(`/posts/${postLike.postId}/like`, {userId, like: postLike.like})
           .then(function (response) {

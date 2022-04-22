@@ -34,18 +34,9 @@
                         <span class="posts__review__block__right__icon" @click="displayComment(postItem.postId)"><font-awesome-icon :icon="['far', 'comment']" />comment</span>
                     </div>            
             </div>
-
             <div class="posts__review__comments" >
-                
-                <PostComments postId="postItem.postId"/>
-
-                <div class="recentComments">
-                    comments...
-                </div> 
-            
-            </div>    
-
-           
+                <PostComments :postId="postItem.postId"/>
+            </div>
         </div>
     </div>
     
@@ -87,7 +78,7 @@ export default ({
         likePost(postId){
             //toggle like value between 0 and 1
             this.likes = !this.likes;
-            //création du corps de la requête => (userId, like)
+           
             const postLike = {
                 postId,
                 like: this.likes

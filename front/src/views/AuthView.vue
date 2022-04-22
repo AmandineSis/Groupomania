@@ -100,12 +100,6 @@ export default ({
             passwordValid: false
         }
     },
-    /*mounted: function () {
-        if (this.$store.state.user.userId != -1) {
-            this.$router.push('/home');
-        return ;
-        }
-    },*/
     computed: {
         loginValidation(){
             if ( this.event.email !== "" && this.event.password !== "") {

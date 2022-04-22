@@ -1,6 +1,6 @@
 <template>
-    <div class="form" >
-        <form >
+    <div class="newPost">
+        <form class="form">
             <textarea 
                 class="form__input"
                 rows ="5" 
@@ -9,15 +9,17 @@
                 placeholder = "Que souhaitez vous partager ?">
                 
             </textarea>
+
             <div class="form__valid">
+
                 <label for="uploadImage" class="form__btn form__btn__upload"><font-awesome-icon icon="image" /></label>
                 <input id="uploadImage" type="file" @change="onFileSelected">
-                
                 <button
                     class="form__btn form__btn__submit"
                     type="submit"
-                    @click="createPost"
-                ><font-awesome-icon icon="paper-plane" /></button> 
+                    @click="createPost">
+                <font-awesome-icon icon="paper-plane" />
+                </button> 
             </div>
             <p class=form__valid__image v-if="imageUrl">{{imageUrl.name}}</p>
         </form>
@@ -74,19 +76,21 @@ export default ({
 </script>
 
 <style scoped lang="scss">
-    .form {
+    .newPost {
         margin: 30px auto;
         width: 500px;
-        height: 100px;
         align-items: center;
         border-radius: 20px;
+    }
+    .form {
+       
         &__input {
             width:100%;
-            height:  100%;
+            height: 91%;
             background-color: white;
             border: 2px solid #999999;
             resize: none;
-            border-radius: 20px;
+            border-radius: 20px 20px 0 0;
             padding: 5px 15px;
             background-color: white;
             display: inline-block;
@@ -94,20 +98,18 @@ export default ({
             color: grey;
         }
         &__valid{
-            
             display: flex;
             flex-direction: row;
-            justify-content: space-between;;
-            margin: 30px auto;
-            width: 30%;
-            position: relative;
-            top: -50px;
-            right: -150px;
+            justify-content: space-between;
+            
+            width: 100%;
+           
             &__image {
-            position: relative;
-            top: -100px;
-            left: -200px;
-        }
+                text-align: left;
+                position: relative;
+                top: -70px;
+                left: 10px;
+            }
         }
         &__btn {
         padding: 0px;
@@ -115,19 +117,19 @@ export default ({
         border-radius: 100px;
         height: 40px;
         background-color: #FFFFFF;
-        border: solid 1.5px #a71e05;
-        color: #a71e05;
+        border: solid 1.5px #ee7575;
+        color: #ee7575;
         &__upload {
             display: flex;
             justify-content: center;
             align-items: center;
         }
         &:hover {
-            background-color: #a71e05;
+            background-color: #ee7575;
             color: #ffffff;
         }
         &:active {
-            color: #a71e05;
+            color: #ee7575;
             background-color: #ffffff;
         }
         

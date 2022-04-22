@@ -3,14 +3,12 @@
         <TopBar @show-settings="openSettings"/>
         <UserProfile/>
     </div> 
+    <UserSettings v-if="settings"/>
 
-    <div class="settingsBlock" v-if="settings">
-        Settings
-    </div>
 
-    <div class="newPost" v-once>
-        <NewPost/>  
-    </div>
+    
+        <NewPost v-once/>  
+    
        
     <div class="recentPosts">
         <RecentPosts/>   
@@ -20,6 +18,7 @@
 
 <script>
 import TopBar from '@/components/Home/TopBar.vue'
+import UserSettings from '@/components/Home/Settings/UserSettings.vue'
 import UserProfile from '@/components/Home/UserProfile.vue'
 import NewPost from '@/components/Home/NewPost.vue'
 import RecentPosts from '@/components/Home/RecentPosts.vue'
@@ -28,6 +27,7 @@ export default {
     name: 'HomeView',
     components : {
         TopBar,
+        UserSettings,
         UserProfile,
         NewPost,
         RecentPosts
@@ -63,23 +63,7 @@ p {
         justify-content: space-between;
         align-items: center;
     }
-
-/************************settings block*************************** */
-.settingsBlock {
-        border: 2px solid #999999;
-        background-color: white;
-        margin: 30px auto;
-        width: 500px;
-        height: 100px;
-        align-items: center;
-        border-radius: 20px;
-      /* position: absolute;
-        z-index: 3;*/
-    }
 /************************new post*************************** */
-.newPost{
-        height: 130px;
-    }
 /************************new post*************************** */
 .recentPosts{
         height: 130px;

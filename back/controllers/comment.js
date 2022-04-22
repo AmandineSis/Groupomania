@@ -17,7 +17,8 @@ require('dotenv').config();
 
 //Récupération de tous les commentaires
 exports.getAllComments = (req, res, next) => {
-    let sql = 'SELECT * FROM comments ORDER BY comId ASC LIMIT 20';
+    //let sql = 'SELECT * FROM comments ORDER BY comId ASC LIMIT 20';
+    let sql = 'SELECT * FROM `comments` JOIN posts WHERE comments.postId = posts.postId ORDER BY comId ASC LIMIT 20';
     db.query(sql, (error, results, fields) => {
         if (error) {
             res.status(500).json({ error })
