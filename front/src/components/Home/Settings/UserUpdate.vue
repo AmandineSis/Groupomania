@@ -30,7 +30,7 @@
 
 
         <div class="userUpdate__form__valid">
-            <button class="button" type= "button" @click="updateUser" > Valider
+            <button class="userUpdate__form__valid__button" type= "button" @click="updateUser" > Valider
                 <!-- <span v-if="status == 'loading'">Modification en cours...</span>
                 <span v-else>Modifié</span> -->
             </button>
@@ -123,29 +123,39 @@ export default {
 .userUpdate {
     display: flex;
     flex-direction: column;
-    &__input {
+    width: 50%;
+    &__form{
         display: flex;
         flex-direction: column;
-        align-items: center;
-        width: 50%;
-        margin: 2px;
-        &__btn {
-            font-size: 1em;
-            color: white;
+        width: 100%;
+        &__input {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             width: 90%;
             height: 25px;
-            margin: 3px auto;
             border-radius: 5px;
-            background-color: #ee7575;
-            transition: .4s background-color;
-            &:hover {
-                background-color: #a71e05;
-                color: #ffffff;
-            }
-            &__delete{
-                color: #ee7575;
-                background-color: #ffffff;
-                border: 1px solid #ee7575;
+            margin: 3px auto;}
+        &__valid{
+            width: 100%;
+            &__button {
+                font-size: 1em;
+                color: white;
+                width: 90%;
+                height: 25px;
+                margin: 3px auto;
+                border-radius: 5px;
+                background-color: #ee7575;
+                transition: .4s background-color;
+                &:hover {
+                    background-color: #a71e05;
+                    color: #ffffff;
+                }
+                &__delete{
+                    color: #ee7575;
+                    background-color: #ffffff;
+                    border: 1px solid #ee7575;
+                }
             }
         }
     }
