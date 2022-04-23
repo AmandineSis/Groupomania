@@ -32,7 +32,11 @@ export default createStore({
     userInfos: [],
     currentPost: "",
     posts: [],
-    postComments: []
+    postComments: [
+      {postId: 67,comId:1, comment:'salut !'},
+      {postId:67,comId:2, comment:'Super photo !'}
+      
+    ]
   },
   getters: {
     fullName(state){

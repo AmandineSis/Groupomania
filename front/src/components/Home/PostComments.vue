@@ -11,9 +11,10 @@
         </textarea> 
         <button class="form__comments__btn form__comments__btn__submit" type="submit" @click="addComment(postId)"><font-awesome-icon icon="paper-plane" /></button> 
     </form> 
-    <div class="recentComments" v-for="postComment in postComments" :key="postComment.postId">
-                    <p>{{postComment.comment}}</p>
-                </div> 
+    <div class="recentComments" v-for="item in postComments" :key=item.postId>
+        <p class="form__comments__input form__comments__input__sent" v-if="item.comment !='' ">{{ item.comment }}</p>
+        <p class="form__comments__input form__comments__input__sent" v-else>Aucun commentaire...</p>
+    </div> 
 </template>
 
 <script>
@@ -25,7 +26,7 @@ export default ({
     },
     data(){
         return {
-            showComment: false,
+            mode: 'ble',
             comment: "",
             imageUrl: ""
         }
@@ -57,6 +58,9 @@ export default ({
         display: inline-block;
         white-space: normal;
         color: grey;
+        &__sent{
+            width: 95%;
+        }
         }
     &__btn {
         padding: 0px;
