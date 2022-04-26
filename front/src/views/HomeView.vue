@@ -4,12 +4,7 @@
         <UserProfile/>
     </div> 
     <UserSettings v-if="settings"/>
-
-
-    
-        <NewPost v-once/>  
-    
-       
+    <NewPost v-once/>  
     <div class="recentPosts">
         <RecentPosts/>   
     </div>

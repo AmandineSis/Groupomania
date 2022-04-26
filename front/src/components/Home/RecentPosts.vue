@@ -3,7 +3,7 @@
         
         <div class="posts__user"  >
             <div class="posts__user__name">
-                <img class="posts__user__name__picture" src="@/assets/images/profilePicDefault.jpg" alt="">
+                <img class="posts__user__name__picture" :src="postItem.profilePicUrl" alt="">
                 <h2 class="posts__user__name__id">{{postItem.firstName}} {{postItem.lastName}}</h2>
             </div>
             <p class="posts__date">{{postItem.created}}</p>
@@ -34,9 +34,7 @@
                         <span class="posts__review__block__right__icon" @click="displayComment(postItem.postId)"><font-awesome-icon :icon="['far', 'comment']" />comment</span>
                     </div>            
             </div>
-            <div class="posts__review__comments" >
-                <PostComments :postId="postItem.postId"/>
-            </div>
+            <PostComments :postId="postItem.postId" v-if="showComment"/>
         </div>
     </div>
     
@@ -53,8 +51,9 @@ export default ({
     },
     data(){
         return {
-            commentSection: false,
-            comment:''
+            showComment: false,
+            hasComment:'',
+            isLiked: ''
         }
     },
     mounted:
@@ -75,13 +74,19 @@ export default ({
         })
     },
     methods: {
+        /**************Like post function OK ***************** */
         likePost(postId){
             //toggle like value between 0 and 1
-            this.likes = !this.likes;
-           
+            this.isLiked = !this.isLiked;
+            
+            if( this.isLiked == true){
+                this.posts.likes= 1;
+            }else{
+                this.posts.likes = 0;
+            }
             const postLike = {
                 postId,
-                like: this.likes
+                like: this.posts.likes
             };
             //envoie requête vers store - requête LikePost
             this.$store
@@ -97,10 +102,19 @@ export default ({
                             });
                 })
         },
+        /******************************************************** */
         //toggle visibility of comment section
         displayComment(postId){
-            this.commentSection = !this.commentSection;
-            console.log(postId);
+            this.showComment= !this.showComment;
+            if(this.showComment==true){
+                this.$store 
+                    .dispatch('getCommentsByPostId', postId)
+                            .then(() => {
+                                    console.log("getAllComments dispatch done !");
+                                });
+            }else{
+                return;
+            }
         }
     }
 })
@@ -186,7 +200,7 @@ export default ({
                     background-color: #D9D9D9;
                     margin: 0px auto;
                     width: 500px;
-                    height: 100px;
+                    //height: 100px;
                     align-items: center;
                     border-radius: 0 0 20px 20px;
             }    

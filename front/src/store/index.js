@@ -32,11 +32,7 @@ export default createStore({
     userInfos: [],
     currentPost: "",
     posts: [],
-    postComments: [
-      {postId: 67,comId:1, comment:'salut !'},
-      {postId:67,comId:2, comment:'Super photo !'}
-      
-    ]
+    postComments: []
   },
   getters: {
     fullName(state){
@@ -119,8 +115,7 @@ export default createStore({
         })
         .catch(function () {
         });
-      },
-      
+    },
     /**************************** POSTS ********************** */  
     
     createPost: ({ commit }, newPost ) => {
@@ -147,11 +142,14 @@ export default createStore({
           .catch(function () {
         });
     },
-    likePost: ({ commit }, postLike) => {
+    /*******************likepost function ok**************/
+    likePost: ({ commit, state }, postLike) => {
       return new Promise ((resolve, reject) => {
-        let userId = this.state.user.userId;
-        instance
-          .post(`/posts/${postLike.postId}/like`, {userId, like: postLike.like})
+        let userId = state.user.userId;
+        let like = postLike.like;
+        console.log(like)
+;        instance
+          .post(`/posts/${postLike.postId}/like`, {userId, like})
           .then(function (response) {
             commit('setStatus', 'post_liked')
             resolve(response)
@@ -161,7 +159,35 @@ export default createStore({
             reject(error)
           });
         });
-    }
+    },
+
+
+    //gestion de l'envoi du nouveau commentaire au backend
+    createComment: ({ commit }, postId, fdComment ) => {
+      commit('setStatus', 'sending');
+      return new Promise ((resolve, reject) => {
+        instance
+          .post(`/posts/${postId}/comment`, {fdComment}) //envoi de FORMDATA
+          .then(function (response) {
+            commit('setStatus', 'post_added')
+            resolve(response) //retourne "commentaire ajouté"
+          })
+          .catch(function (error) { //sinon retourne erreur
+            commit('setStatus', 'error_newPost')
+            reject(error)
+          });
+        });
+    },
+    getCommentsByPostId: ({ commit }, postId) => {
+      instance
+        .get(`/posts/${postId}/comment`)
+        .then( function (response) {
+          console.log(response.data.results)
+          commit('postComments', response.data.results);
+        })
+        .catch(function () {
+      });
+  },
   },
   modules: {
   }

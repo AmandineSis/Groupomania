@@ -15,11 +15,12 @@ require('dotenv').config();
 /**Implémentation de la logique métier                     */
 /***********************************************************/
 
-//Récupération de tous les commentaires
+//Récupération de tous les commentaires d'un post
 exports.getAllComments = (req, res, next) => {
+    let postId = req.params.postId; 
     //let sql = 'SELECT * FROM comments ORDER BY comId ASC LIMIT 20';
-    let sql = 'SELECT * FROM `comments` JOIN posts WHERE comments.postId = posts.postId ORDER BY comId ASC LIMIT 20';
-    db.query(sql, (error, results, fields) => {
+    let sql = 'SELECT * FROM `comments` WHERE comments.postId =' + db.escape(postId) + 'ORDER BY comId ASC LIMIT 20; ';
+    db.query(sql, postId, (error, results, fields) => {
         if (error) {
             res.status(500).json({ error })
         } else {
@@ -34,15 +35,15 @@ exports.getAllComments = (req, res, next) => {
 };
 
 //création d'un commentaire
-//req.body = {comment: string, imageUrl:string}
+//req.body = {commentContent: string, imageUrl:string}
 //req.token.userId
 exports.createComment = (req, res, next) => {
     //Vérification des données de la requête
-    const content = (req.body.content) ? req.body.content : " ";
+    const commentContent = (req.body.commentContent) ? req.body.commentContent : " ";
     const imageUrl = (req.file) ? `${req.protocol}://${req.get('host')}/images/comment/${req.file.filename}` : "";
     const postId = req.params.postId;
     //S'il n'y a pas de contenu ET pas d'image => erreur
-    if (content == "" && imageUrl == "") {
+    if (commentContent == "" && imageUrl == "") {
         return res.status(400).json({ message: "Ce post est vide, impossible d'accéder à la requête !" })
     }
 
@@ -50,12 +51,12 @@ exports.createComment = (req, res, next) => {
     const comment = new Comment(
         req.token.userId,
         postId,
-        content,
+        commentContent,
         imageUrl,
     )
     //Ajout du nouveau post à la BDD
     let sql = 'INSERT INTO comments SET ?';
-    db.query(sql, [comment], (error, results, fields) => {
+    db.query(sql, comment, (error, results, fields) => {
         if (error) throw ({ error });
             let sqlPost = 'UPDATE posts SET comments = comments + 1 WHERE postId =' + db.escape(postId);
 
@@ -91,11 +92,11 @@ exports.updateComment = (req, res, next) => {
             return res.status(401).json({ message: "utilisateur non authorisé !" });
         }
 
-        let content = (req.body.content) ? req.body.content : " ";
+        let commentContent = (req.body.commentContent) ? req.body.commentContent : " ";
         let imageUrl = (req.file) ? `${req.protocol}://${req.get('host')}/images/comment/${req.file.filename}` : " ";
         
         //S'il n'y a pas de contenu ET pas d'image => erreur
-        if (content == " " && imageUrl == " ") {
+        if (commentContent == " " && imageUrl == " ") {
             return res.status(400).json({ message: "Veuillez ajouter un contenu !" })
         }
         ////récupération et suppression de l'image avant modification sur le serveur
@@ -109,7 +110,7 @@ exports.updateComment = (req, res, next) => {
         const comment = new Comment(
             req.token.userId,
             postId,
-            content,
+            commentContent,
             imageUrl
         );
         let sqlUpdate = 'UPDATE comments SET ? WHERE comId =' + db.escape(comId);
@@ -155,7 +156,7 @@ exports.deleteComment = (req, res, next) => {
         db.query(sqlDelete, (error, results, fields) => {
             if (error) throw ({ error });
             let sqlPost = 'UPDATE posts SET comments = comments - 1 WHERE postId =' + db.escape(postId);
-
+           
             db.query(sqlPost, (error, results, fields) => {
                 if (error) throw ({ error });
                 res.status(201).json({ message: "commentaire supprimé !" })

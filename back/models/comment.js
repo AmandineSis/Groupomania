@@ -2,11 +2,11 @@
 /**Création d'un schéma de données POST                                                       */
 /******************************************************************************************** */
 class Comment {
-    constructor(userId, postId, content, imageUrl)
+    constructor(userId, postId, commentContent, imageUrl)
     {
         this.userId = userId,
         this.postId = postId,
-        this.content = content,
+        this.commentContent = commentContent,
         this.imageUrl = imageUrl
     }
   
