@@ -16,56 +16,31 @@
         
         <div class="posts__footer">
             <div class="posts__footer__top">
-                  
-                        <span class="posts__footer__top__icon">
-                            <font-awesome-icon :icon="['far', 'heart']" v-if="postItem.likes == 0"/>
-                            <font-awesome-icon icon="heart" class="posts__footer__top__icon__full" v-else/>
-                            {{ postItem.likes }} 
-                        </span>
-                        <span class="posts__footer__top__icon">
-                            <font-awesome-icon :icon="['far', 'comment']" v-if="postItem.comments == '' "/>
-                            <font-awesome-icon icon="comment" class="posts__footer__top__icon__full" v-else/>
-                            {{postItem.comments}}
-                        </span>
-
-                    </div>
-
-                    <div class="posts__footer__bottom">
-                        <span class="posts__footer__bottom__icon" @click="likePost(postItem.postId)">
-                            <font-awesome-icon class="posts__footer__bottom__icon__like" :icon="['far', 'heart']" />
-                            like
-                        </span>
-                        <span class="posts__footer__bottom__icon" @click="displayComment(postItem.postId)">
-                            <font-awesome-icon class="posts__footer__bottom__icon__comment" :icon="['far', 'comment']" />
-                            comment
-                        </span>
-                    </div>            
+                <span class="posts__footer__top__icon">
+                    <font-awesome-icon :icon="['far', 'heart']" v-if="postItem.likes == 0"/>
+                    <font-awesome-icon icon="heart" class="posts__footer__top__icon__full" v-else/>
+                    {{ postItem.likes }} 
+                </span>
+                <span class="posts__footer__top__icon">
+                    <font-awesome-icon :icon="['far', 'comment']" v-if="postItem.comments == '' "/>
+                    <font-awesome-icon icon="comment" class="posts__footer__top__icon__full" v-else/>
+                    {{postItem.comments}}
+                </span>
             </div>
-
-<!--
-
-            <div class="posts__footer__block">
-                    <div class="posts__footer__block__left">
-                        <span class="posts__footer__block__left__icon">
-                            <font-awesome-icon :icon="['far', 'heart']" v-if="postItem.likes == 0"/>
-                            <font-awesome-icon icon="heart" class="posts__footer__block__left__icon__full" v-else/>
-                            {{ postItem.likes }} 
-                        </span>
-                        <span class="posts__footer__block__left__icon">
-                            <font-awesome-icon :icon="['far', 'comment']" v-if="postItem.comments == '' "/>
-                            <font-awesome-icon icon="comment" class="posts__footer__block__left__icon__full" v-else/>
-                            {{postItem.comments}}
-                        </span>
-
-                    </div>
-                    <div class="posts__footer__block__right">
-                        <span class="posts__footer__block__right__icon" @click="likePost(postItem.postId)"><font-awesome-icon :icon="['far', 'heart']" />like</span>
-                        <span class="posts__footer__block__right__icon" @click="displayComment(postItem.postId)"><font-awesome-icon :icon="['far', 'comment']" />comment</span>
-                    </div>            
-            </div>-->
-            <div>
-            <PostComments :postId="postItem.postId" v-if="showComment"/>
+            <div class="posts__footer__bottom">
+                <span class="posts__footer__bottom__icon" @click="likePost(postItem.postId)">
+                    <font-awesome-icon class="posts__footer__bottom__icon__like" :icon="['far', 'heart']" />
+                    like
+                </span>
+                <span class="posts__footer__bottom__icon" @click="displayComment(postItem.postId)">
+                    <font-awesome-icon class="posts__footer__bottom__icon__comment" :icon="['far', 'comment']" />
+                    comment
+                </span>
+            </div>            
         </div>
+        
+            <PostComments :postId="postItem.postId" v-if="showComment"/>
+    
     </div>
     
 </template>

@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import {mapState} from 'vuex';
 import TopBar from '@/components/Home/TopBar.vue'
 import UserSettings from '@/components/Home/Settings/UserSettings.vue'
 import UserProfile from '@/components/Home/UserProfile.vue'
@@ -32,6 +33,11 @@ export default {
             search: false,
             settings: false,
         }
+    },
+    computed: {
+        ...mapState({
+            posts: 'posts',
+        })
     },
     methods: {
         openSettings(){

@@ -13,13 +13,19 @@
             <button class="form__comments__btn form__comments__btn__submit" type="button" @click="addComment(postId)"><font-awesome-icon icon="paper-plane" /></button> 
         </form> 
         <p>{{this.comment}}</p>
-        <div class="recentComments" v-for="item in postComments" :key=item.comId>
-                <img class="form__comments__profile" :src="item.profilePicUrl" alt="">
-                <div class="form__comments__content">
-                    <p class="form__comments__input form__comments__input__sent" v-if="item.commentContent" >{{ item.commentContent }}</p>
-                    <img class="form__comments__image" v-if="item.imageUrl" :src="item.imageUrl" alt="post photo">
-                </div>
-        </div> 
+        <div v-if="postComments != '' ">
+            <div class="recentComments" v-for="item in postComments" :key=item.comId>
+                    <img class="form__comments__profile" :src="item.profilePicUrl" alt="">
+                    <div class="form__comments__content">
+                        <p class="form__comments__input form__comments__input__sent" v-if="item.commentContent" >{{ item.commentContent }}</p>
+                        <img class="form__comments__image" v-if="item.imageUrl" :src="item.imageUrl" alt="post photo">
+                    </div>
+                    <div class="form__comments__settings">    
+                        <font-awesome-icon class="form__comments__settings__delete" icon="xmark" v-if="item.userId == user.userId " @click="deleteComment(item.comId, item.postId)"/>
+                    <!--<font-awesome-icon class="form__comments__settings__update" icon="pen-clip" v-if="item.userId == user.userId "/>-->
+                    </div>
+            </div> 
+        </div>
     </div>    
 </template>
 
@@ -34,11 +40,14 @@ export default ({
         return {
             //mode: '',
             comment: "",
-            imageUrl: ""
+            imageUrl: "",
+            selectedIndex: null,
+            selectedComId: null,
         }
     },
     computed: {
         ...mapState({
+            user: 'user',
             postComments: 'postComments',
         }),
         ...mapGetters({
@@ -73,8 +82,28 @@ export default ({
                     console.log(err)
                 }))
             }
-        } 
-    }   
+        },
+        deleteComment(comId,postId) {
+      
+            console.log(comId);
+
+            console.log(postId);
+            this.$store //=> on l'envoie au store pour gérer l'envoi des données vers le backend
+                .dispatch('deleteComment', {comId,postId})
+                .then((res) => {
+                    console.log("deleteComment dispatch done !");
+                    console.log(res);
+                    //si res ok, affichage mis à jour des commentaires du poste
+                    this.$store
+                        .dispatch('getCommentsByPostId', postId)
+                        .then(() => {
+                                console.log("getAllComments dispatch done !");
+                            });
+                }), (err => {
+                    console.log(err)
+                })
+            }
+        }  
 })
 </script>
 
