@@ -28,14 +28,14 @@
                 </span>
             </div>
             <div class="posts__footer__bottom">
-                <span class="posts__footer__bottom__icon" @click="likePost(postItem.postId)">
+                <button class="posts__footer__bottom__icon" @click="likePost(postItem.postId)">
                     <font-awesome-icon class="posts__footer__bottom__icon__like" :icon="['far', 'heart']" />
                     like
-                </span>
-                <span class="posts__footer__bottom__icon" @click="displayComment(postItem.postId)">
+                </button>
+                <button class="posts__footer__bottom__icon" @click="displayComment(postItem.postId)">
                     <font-awesome-icon class="posts__footer__bottom__icon__comment" :icon="['far', 'comment']" />
                     comment
-                </span>
+                </button>
             </div>            
         </div>
         

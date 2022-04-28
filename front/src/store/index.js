@@ -203,6 +203,8 @@ export default createStore({
           commit('deleteComments', commentToDelete.comId);
           console.log(response)
         })
+        .catch(function () {
+        });
 
     }
   },

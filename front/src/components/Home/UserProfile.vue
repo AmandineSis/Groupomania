@@ -12,7 +12,7 @@ import { mapGetters, mapState } from 'vuex';
 
 export default {
     name: 'UserProfile',
-    mounted:
+    beforeCreate:
         function(){
             console.log(this.$store.state.user)
             //Si userId = -1, retour à la page de connexion

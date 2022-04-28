@@ -147,7 +147,7 @@ exports.deleteComment = (req, res, next) => {
             return res.status(401).json({ message: "utilisateur non authorisé !" });
         }
         //récupération et suppression de l'image avant modification sur le serveur s'il y en a une
-        if (comExists.imageUrl !== null) {
+        if (comExists.imageUrl !== "") {
             const filename = comExists.imageUrl.split('/comment/')[1];
             fs.unlink(`images/comment/${filename}`, (error) => {
                 if (error) throw ({ error });

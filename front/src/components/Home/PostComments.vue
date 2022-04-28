@@ -13,19 +13,19 @@
             <button class="form__comments__btn form__comments__btn__submit" type="button" @click="addComment(postId)"><font-awesome-icon icon="paper-plane" /></button> 
         </form> 
         <p>{{this.comment}}</p>
-        <div v-if="postComments != '' ">
-            <div class="recentComments" v-for="item in postComments" :key=item.comId>
-                    <img class="form__comments__profile" :src="item.profilePicUrl" alt="">
-                    <div class="form__comments__content">
-                        <p class="form__comments__input form__comments__input__sent" v-if="item.commentContent" >{{ item.commentContent }}</p>
-                        <img class="form__comments__image" v-if="item.imageUrl" :src="item.imageUrl" alt="post photo">
-                    </div>
-                    <div class="form__comments__settings">    
-                        <font-awesome-icon class="form__comments__settings__delete" icon="xmark" v-if="item.userId == user.userId " @click="deleteComment(item.comId, item.postId)"/>
-                    <!--<font-awesome-icon class="form__comments__settings__update" icon="pen-clip" v-if="item.userId == user.userId "/>-->
-                    </div>
-            </div> 
-        </div>
+        
+        <div class="recentComments" v-for="item in postComments" :key=item.comId>
+                <img class="form__comments__profile" :src="item.profilePicUrl" alt="">
+                <div class="form__comments__content">
+                    <p class="form__comments__input form__comments__input__sent" v-if="item.commentContent" >{{ item.commentContent }}</p>
+                    <img class="form__comments__image" v-if="item.imageUrl" :src="item.imageUrl" alt="post photo">
+                </div>
+                <div class="form__comments__settings">    
+                    <button class="form__comments__settings__delete" v-if="item.userId == user.userId " @click="deleteComment(item.comId, item.postId)"><font-awesome-icon icon="xmark" /></button>
+                <!--<font-awesome-icon class="form__comments__settings__update" icon="pen-clip" v-if="item.userId == user.userId "/>-->
+                </div>
+        </div> 
+        
     </div>    
 </template>
 
@@ -53,7 +53,8 @@ export default ({
         ...mapGetters({
             fullname: 'fullname',
         })
-    }, methods: {
+    },
+    methods: {
         addComment(postId) {
             //création de l'objet FormData
             const fdComment = new FormData();
@@ -83,6 +84,8 @@ export default ({
                 }))
             }
         },
+    
+   // afterCreated: {
         deleteComment(comId,postId) {
       
             console.log(comId);
@@ -137,7 +140,7 @@ export default ({
         &__sent{
             width: 95%;
             height: auto;
-            
+            text-align: left;
         }
     }
     &__profile {

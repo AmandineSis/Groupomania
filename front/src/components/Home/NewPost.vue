@@ -96,6 +96,7 @@ export default ({
             display: inline-block;
             white-space: normal;
             color: grey;
+      
         }
         &__valid{
             display: flex;
@@ -113,16 +114,20 @@ export default ({
         }
         &__btn {
         padding: 0px;
-        width: 70px;
+        width: 50%;
         border-radius: 100px;
         height: 40px;
         background-color: #FFFFFF;
         border: solid 1.5px #ee7575;
         color: #ee7575;
+        &__submit {
+            border-radius: 0 0 20px 0;
+        }
         &__upload {
             display: flex;
             justify-content: center;
             align-items: center;
+            border-radius: 0 0 0 20px;
         }
         &:hover {
             background-color: #ee7575;
