@@ -19,7 +19,7 @@ require('dotenv').config();
 exports.getAllComments = (req, res, next) => {
     let postId = req.params.postId; 
     //let sql = 'SELECT * FROM comments ORDER BY comId ASC LIMIT 20';
-    let sql = 'SELECT * FROM `comments` WHERE comments.postId =' + db.escape(postId) + 'ORDER BY comId ASC LIMIT 20; ';
+    let sql = 'SELECT * FROM `comments` JOIn users WHERE comments.postId =' + db.escape(postId) + ' AND comments.userId = users.userId ORDER BY comId ASC LIMIT 20; ';
     db.query(sql, postId, (error, results, fields) => {
         if (error) {
             res.status(500).json({ error })

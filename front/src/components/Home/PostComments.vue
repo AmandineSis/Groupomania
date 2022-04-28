@@ -5,7 +5,7 @@
             <input class="commentImage" type="file" @change="addImage(postId)" >
             <textarea 
                 class="form__comments__input"
-                rows ="1" 
+                rows ="2" 
                 v-model="comment"
                 name ="newComment"
                 placeholder = "Ajoutez un commentaire...">
@@ -14,11 +14,11 @@
         </form> 
         <p>{{this.comment}}</p>
         <div class="recentComments" v-for="item in postComments" :key=item.comId>
-            <div >
-                <p class="form__comments__input form__comments__input__sent" v-if="item.commentContent" >{{ item.commentContent }}</p>
-                <img class="form__comments__image" v-if="item.imageUrl" :src="item.imageUrl" alt="post photo">
-            </div>
-            
+                <img class="form__comments__profile" :src="item.profilePicUrl" alt="">
+                <div class="form__comments__content">
+                    <p class="form__comments__input form__comments__input__sent" v-if="item.commentContent" >{{ item.commentContent }}</p>
+                    <img class="form__comments__image" v-if="item.imageUrl" :src="item.imageUrl" alt="post photo">
+                </div>
         </div> 
     </div>    
 </template>
@@ -78,9 +78,20 @@ export default ({
 </script>
 
 <style scoped lang="scss">
+
+.posts__review__comments {
+    background-color: white;
+    padding: 10px 0;
+    border-radius: 0 0 20px 20px;
+}
 .form__comments {
     display: flex;
     flex-direction: row;
+    &__content {
+        display: flex;
+        flex-direction: column;
+        width:100%;
+    }
     &__input {
         width:70%;
         height: 30px;
@@ -95,7 +106,15 @@ export default ({
         color: grey;
         &__sent{
             width: 95%;
+            height: auto;
+            
         }
+    }
+    &__profile {
+        width: 40px;
+        height: 40px;
+        border-radius: 50px;
+        border: 0.5px solid #999999;
     }
     &__image {
         width:70%;
@@ -129,7 +148,10 @@ export default ({
         }
     }
 }
-
+.recentComments{
+display: flex;
+margin: 5px;
+}
 .commentImage {
        opacity: 0;
        position: absolute;

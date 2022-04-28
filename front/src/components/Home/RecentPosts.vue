@@ -1,39 +1,69 @@
 <template>
     <div class="posts" v-for="postItem in posts" :key="postItem.postId">
         
-        <div class="posts__user"  >
-            <div class="posts__user__name">
-                <img class="posts__user__name__picture" :src="postItem.profilePicUrl" alt="">
-                <h2 class="posts__user__name__id">{{postItem.firstName}} {{postItem.lastName}}</h2>
+        <div class="posts__header"  >
+            <div class="posts__header__name">
+                <img class="posts__header__name__picture" :src="postItem.profilePicUrl" alt="">
+                <h2 class="posts__header__name__id">{{postItem.firstName}} {{postItem.lastName}}</h2>
             </div>
-            <p class="posts__date">{{postItem.created}}</p>
-
+            <p class="posts__header__date">{{postItem.created}}</p>
         </div>
 
-        <p class="posts__content" v-if="postItem.content" >{{postItem.content}}</p>
+        <div class="posts__content">
+            <p class="posts__content__text" v-if="postItem.content" >{{postItem.content}}</p>
+            <img class="posts__content__image" v-if="postItem.imageUrl" :src="postItem.imageUrl" alt="post photo">
+        </div>
         
-        <img class="posts__image" v-if="postItem.imageUrl" :src="postItem.imageUrl" alt="post photo">
-        
-        <div class="posts__review">
-            <div class="posts__review__block">
-                    <div class="posts__review__block__left">
-                        <span class="posts__review__block__left__icon">
+        <div class="posts__footer">
+            <div class="posts__footer__top">
+                  
+                        <span class="posts__footer__top__icon">
                             <font-awesome-icon :icon="['far', 'heart']" v-if="postItem.likes == 0"/>
-                            <font-awesome-icon icon="heart" class="posts__review__block__left__icon__full" v-else/>
+                            <font-awesome-icon icon="heart" class="posts__footer__top__icon__full" v-else/>
                             {{ postItem.likes }} 
                         </span>
-                        <span class="posts__review__block__left__icon">
+                        <span class="posts__footer__top__icon">
                             <font-awesome-icon :icon="['far', 'comment']" v-if="postItem.comments == '' "/>
-                            <font-awesome-icon icon="comment" class="posts__review__block__left__icon__full" v-else/>
+                            <font-awesome-icon icon="comment" class="posts__footer__top__icon__full" v-else/>
                             {{postItem.comments}}
                         </span>
 
                     </div>
-                    <div class="posts__review__block__right">
-                        <span class="posts__review__block__right__icon" @click="likePost(postItem.postId)"><font-awesome-icon :icon="['far', 'heart']" />like</span>
-                        <span class="posts__review__block__right__icon" @click="displayComment(postItem.postId)"><font-awesome-icon :icon="['far', 'comment']" />comment</span>
+
+                    <div class="posts__footer__bottom">
+                        <span class="posts__footer__bottom__icon" @click="likePost(postItem.postId)">
+                            <font-awesome-icon class="posts__footer__bottom__icon__like" :icon="['far', 'heart']" />
+                            like
+                        </span>
+                        <span class="posts__footer__bottom__icon" @click="displayComment(postItem.postId)">
+                            <font-awesome-icon class="posts__footer__bottom__icon__comment" :icon="['far', 'comment']" />
+                            comment
+                        </span>
                     </div>            
             </div>
+
+<!--
+
+            <div class="posts__footer__block">
+                    <div class="posts__footer__block__left">
+                        <span class="posts__footer__block__left__icon">
+                            <font-awesome-icon :icon="['far', 'heart']" v-if="postItem.likes == 0"/>
+                            <font-awesome-icon icon="heart" class="posts__footer__block__left__icon__full" v-else/>
+                            {{ postItem.likes }} 
+                        </span>
+                        <span class="posts__footer__block__left__icon">
+                            <font-awesome-icon :icon="['far', 'comment']" v-if="postItem.comments == '' "/>
+                            <font-awesome-icon icon="comment" class="posts__footer__block__left__icon__full" v-else/>
+                            {{postItem.comments}}
+                        </span>
+
+                    </div>
+                    <div class="posts__footer__block__right">
+                        <span class="posts__footer__block__right__icon" @click="likePost(postItem.postId)"><font-awesome-icon :icon="['far', 'heart']" />like</span>
+                        <span class="posts__footer__block__right__icon" @click="displayComment(postItem.postId)"><font-awesome-icon :icon="['far', 'comment']" />comment</span>
+                    </div>            
+            </div>-->
+            <div>
             <PostComments :postId="postItem.postId" v-if="showComment"/>
         </div>
     </div>
@@ -126,7 +156,7 @@ export default ({
         margin: 50px auto;
         width: 500px;
         border-radius: 20px 20px 0 0;
-        &__user{
+        &__header{
             background-color: #efefef;      
             &__name{
                 display: flex;
@@ -148,28 +178,82 @@ export default ({
                 margin: 0;
                 }
             }
-        }
-        &__date{
-            background-color: grey;
-            height: 35px;
-            font-size: 0.7rem;
-            text-align: left;
-            padding: 5px 80px;
-            border-radius: 20px 20px 0 0 ;
-            margin: 0;
+            &__date{
+                background-color: grey;
+                height: 35px;
+                font-size: 0.7rem;
+                text-align: left;
+                padding: 5px 80px;
+                border-radius: 20px 20px 0 0 ;
+                margin: 0;
+            }
         }
         &__content{
-            background-color: white;
-            border: 1px solid grey;
-            padding: 10px;
-            text-align: left;
-            margin: 0;
+            &__text{
+                background-color: white;
+                border: 1px 1px 1px 0 solid grey;
+                padding: 10px;
+                text-align: left;
+                margin: 0;
+            }
+            &__image{
+                width: 100%;
+                margin: 0 auto;
+            }
+        }    
+        &__footer{
+
+            &__top{
+                display: flex;
+                flex-direction: row;
+               // justify-content: start;
+                background-color: white;
+                padding: 5px 0;
+                &__icon{
+                    margin: 0 5px;
+                    color: grey;
+                    font-size: 1.2rem;
+                        &__full{
+                            color: #ee7575;
+                        }
+                    }
+            }
+            &__bottom  {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-around;
+                background-color: white;
+                padding:  0;
+                border-top: 1px solid grey;
+                &__icon{
+                    padding: 5px;
+                    color: grey;
+                    font-size: 1.2rem;
+                    width: 50%;
+                    height: 30px;
+                    &__like, &__comment {
+                        padding-right: 5px;
+                    }
+                    &:hover {
+                        background-color: #ee7575;
+                        color: white;
+                        cursor: pointer;
+;                        }
+                        &__full{
+                            color: #ee7575;
+                        }
+                    }
+            }
         }
-        &__image{
-            width: 100%;
-            margin: 0 auto;
-        }
-        &__review {
+
+
+
+
+
+
+
+
+      /*  &__review {
             display: flex;
             flex-direction: column;
             padding: 5px 0;
@@ -205,7 +289,7 @@ export default ({
                     align-items: center;
                     border-radius: 0 0 20px 20px;
             }    
-        }
+        }*/
     }
 
 </style>
