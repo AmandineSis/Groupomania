@@ -66,7 +66,8 @@ export default ({
                         .dispatch('getCommentsByPostId', postId)
                         .then(() => {
                                 console.log("getAllComments dispatch done !");
-                               
+                                this.comment= "";
+                                this.imageUrl="";
                             });
                 }), (err => {
                     console.log(err)
