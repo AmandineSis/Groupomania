@@ -163,11 +163,12 @@ export default createStore({
 
 
     //gestion de l'envoi du nouveau commentaire au backend
-    createComment: ({ commit }, postId, fdComment ) => {
+    createComment: ({ commit }, newComment ) => {
       commit('setStatus', 'sending');
+      console.log(newComment.fdComment);
       return new Promise ((resolve, reject) => {
         instance
-          .post(`/posts/${postId}/comment`, {fdComment}) //envoi de FORMDATA
+          .post(`/posts/${newComment.postId}/comment`, newComment.fdComment) //envoi de FORMDATA
           .then(function (response) {
             commit('setStatus', 'post_added')
             resolve(response) //retourne "commentaire ajouté"

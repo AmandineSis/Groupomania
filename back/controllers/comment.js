@@ -42,6 +42,8 @@ exports.createComment = (req, res, next) => {
     const commentContent = (req.body.commentContent) ? req.body.commentContent : " ";
     const imageUrl = (req.file) ? `${req.protocol}://${req.get('host')}/images/comment/${req.file.filename}` : "";
     const postId = req.params.postId;
+    console.log(commentContent);
+    console.log(imageUrl);
     //S'il n'y a pas de contenu ET pas d'image => erreur
     if (commentContent == "" && imageUrl == "") {
         return res.status(400).json({ message: "Ce post est vide, impossible d'accéder à la requête !" })

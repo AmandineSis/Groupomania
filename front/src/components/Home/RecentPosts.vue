@@ -105,6 +105,7 @@ export default ({
         /******************************************************** */
         //toggle visibility of comment section
         displayComment(postId){
+            console.log(postId);
             this.showComment= !this.showComment;
             if(this.showComment==true){
                 this.$store 

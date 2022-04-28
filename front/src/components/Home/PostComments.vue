@@ -13,7 +13,7 @@
             <button class="form__comments__btn form__comments__btn__submit" type="button" @click="addComment(postId)"><font-awesome-icon icon="paper-plane" /></button> 
         </form> 
         <p>{{this.comment}}</p>
-        <div class="recentComments" v-for="item in postComments" :key=item.postId>
+        <div class="recentComments" v-for="item in postComments" :key=item.comId>
             <div >
                 <p class="form__comments__input form__comments__input__sent" v-if="item.commentContent" >{{ item.commentContent }}</p>
                 <img class="form__comments__image" v-if="item.imageUrl" :src="item.imageUrl" alt="post photo">
@@ -57,7 +57,7 @@ export default ({
             //Si FormData != null 
             if (this.comment || this.imageUrl) {
             this.$store //=> on l'envoie au store pour gérer l'envoi des données vers le backend
-                .dispatch('createComment', postId,fdComment)
+                .dispatch('createComment', {postId,fdComment})
                 .then((res => {
                     console.log("createComment dispatch done !");
                     console.log(res.data)
