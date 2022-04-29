@@ -84,8 +84,6 @@ export default ({
                 }))
             }
         },
-    
-   // afterCreated: {
         deleteComment(comId,postId) {
       
             console.log(comId);

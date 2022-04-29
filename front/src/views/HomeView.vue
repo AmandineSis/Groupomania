@@ -5,8 +5,8 @@
     </div> 
     <UserSettings v-if="settings"/>
     <NewPost v-once/>  
-    <div class="recentPosts">
-        <RecentPosts/>   
+    <div class="recentPosts" v-for="postItem in posts" :key="postItem.postId">
+        <RecentPosts :postItem="postItem"/>   
     </div>
 
 </template>
@@ -39,6 +39,15 @@ export default {
             posts: 'posts',
         })
     },
+    mounted:
+        function(){
+            this.$store
+                .dispatch('getPostsByDate')
+                .then(() => {
+                    console.log("getPostsByDate dispatch done !")
+                });
+            
+        },
     methods: {
         openSettings(){
                 this.settings=!this.settings;
@@ -67,7 +76,7 @@ p {
 /************************new post*************************** */
 /************************new post*************************** */
 .recentPosts{
-        height: 130px;
+        height: auto;
     }
 
 

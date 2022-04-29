@@ -1,5 +1,5 @@
 <template>
-    <div class="posts" v-for="postItem in posts" :key="postItem.postId">
+    <div class="posts" >
         
         <div class="posts__header"  >
             <div class="posts__header__name">
@@ -27,6 +27,7 @@
                     {{postItem.comments}}
                 </span>
             </div>
+
             <div class="posts__footer__bottom">
                 <button class="posts__footer__bottom__icon" @click="likePost(postItem.postId)">
                     <font-awesome-icon class="posts__footer__bottom__icon__like" :icon="['far', 'heart']" />
@@ -38,9 +39,9 @@
                 </button>
             </div>            
         </div>
-        
-            <PostComments :postId="postItem.postId" v-if="showComment"/>
-    
+        <div v-if="showComment">
+            <PostComments :item="postItem"/> 
+        </div>
     </div>
     
 </template>
@@ -54,25 +55,20 @@ export default ({
     components: {
             PostComments
     },
+    props: {'postItem': Object},
     data(){
         return {
             showComment: false,
-            hasComment:'',
+            postId:'',
             isLiked: ''
+        //    selectedComment: ''
         }
     },
-    mounted:
-        function(){
-            this.$store
-                .dispatch('getPostsByDate')
-                .then(() => {
-                    console.log("getPostsByDate dispatch done !")
-                });
-            
-        },
+    
     computed: {
         ...mapState({
             posts: 'posts',
+            postComments: 'postComments'
         }),
         ...mapGetters({
             fullname: 'fullname',
@@ -109,9 +105,9 @@ export default ({
         },
         /******************************************************** */
         //toggle visibility of comment section
-        displayComment(postId){
-            console.log(postId);
+        displayComment(postId){          
             this.showComment= !this.showComment;
+            
             if(this.showComment==true){
                 this.$store 
                     .dispatch('getCommentsByPostId', postId)
@@ -121,6 +117,7 @@ export default ({
             }else{
                 return;
             }
+            
         }
     }
 })
