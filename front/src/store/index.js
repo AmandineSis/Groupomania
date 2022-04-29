@@ -61,6 +61,10 @@ export default createStore({
     posts(state, posts){
       state.posts = posts;
     },
+    deletePost(state, postId ){
+      let index = state.posts.findIndex(posts => posts.postId == postId);
+      state.posts.splice(index, 1);
+    },
     logout(state) {
       state.user = {
         userId: -1,
@@ -72,10 +76,8 @@ export default createStore({
       state.postComments = postComments;
     },
     deleteComments(state, comId ){
-     
       let index = state.postComments.findIndex(postComments => postComments.comId == comId);
       state.postComments.splice(index, 1);
-
     }
   },
 
@@ -148,6 +150,17 @@ export default createStore({
           .catch(function () {
         });
     },
+    deletePost: ({ commit }, postId)=>{
+      instance
+        .delete(`/posts/${postId}`)
+        .then(function (response) {
+          commit('deletePost', postId);
+          console.log(response)
+        })
+        .catch(function () {
+        });
+
+    },
     /*******************likepost function ok**************/
     likePost: ({ commit, state }, postLike) => {
       return new Promise ((resolve, reject) => {
@@ -196,7 +209,6 @@ export default createStore({
       });
     },
     deleteComment: ({ commit }, commentToDelete)=>{
-
       instance
         .delete(`/posts/${commentToDelete.postId}/${commentToDelete.comId}`)
         .then(function (response) {
