@@ -2,7 +2,7 @@
     <div class="posts__review__comments">
         <form class="form__comments" >
             <label for="uploadCommentImage" class="form__comments__btn form__comments__btn__upload"><font-awesome-icon icon="image" /></label>
-            <input class="commentImage" type="file" @change="addImage(postId)" >
+            <input id="uploadCommentImage" type="file" @change="addCommentImage" >
             <textarea 
                 class="form__comments__input"
                 rows ="2" 
@@ -10,10 +10,10 @@
                 name ="newComment"
                 placeholder = "Ajoutez un commentaire...">
             </textarea> 
-            <button class="form__comments__btn form__comments__btn__submit" type="button" @click="addComment(postId)"><font-awesome-icon icon="paper-plane" /></button> 
+            <button class="form__comments__btn form__comments__btn__submit" type="button" @click="addComment(postItem.postId)"><font-awesome-icon icon="paper-plane" /></button> 
         </form> 
         <p>{{this.comment}}</p>
-        
+        <p  v-if="commentImageUrl"> {{ commentImageUrl.name}} </p>
         <div class="recentComments" v-for="item in postComments" :key=item.comId>
                 <img class="form__comments__profile" :src="item.profilePicUrl" alt="">
                 <div class="form__comments__content">
@@ -21,8 +21,12 @@
                     <img class="form__comments__image" v-if="item.imageUrl" :src="item.imageUrl" alt="post photo">
                 </div>
                 <div class="form__comments__settings">    
-                    <button class="form__comments__settings__delete" v-if="item.userId == user.userId " @click="deleteComment(item.comId, item.postId)"><font-awesome-icon icon="xmark" /></button>
-                <!--<font-awesome-icon class="form__comments__settings__update" icon="pen-clip" v-if="item.userId == user.userId "/>-->
+                    <button class="form__comments__settings__delete" v-if="item.userId == user.userId " @click="deleteComment(item.comId, item.postId)">
+                        <font-awesome-icon icon="xmark" />
+                    </button>
+                    <button class="form__comments__settings__update" icon="pen-clip" v-if="item.userId == user.userId ">
+                        <font-awesome-icon icon="pen-clip" />
+                    </button>
                 </div>
         </div> 
         
@@ -34,13 +38,13 @@ import { mapGetters, mapState } from 'vuex';
 export default ({
     name: 'PostComments',
     props: {
-        postId: Number
+        postItem: Object
     },
     data(){
         return {
             //mode: '',
             comment: "",
-            imageUrl: "",
+            commentImageUrl: "",
             selectedIndex: null,
             selectedComId: null,
         }
@@ -55,17 +59,22 @@ export default ({
         })
     },
     methods: {
+        addCommentImage(e){
+            this.commentImageUrl = e.target.files[0];
+            console.log("click ok");
+           
+        },
         addComment(postId) {
             //création de l'objet FormData
             const fdComment = new FormData();
             if (this.comment != "") {
                 fdComment.append('commentContent', this.comment);
             }
-            if (this.imageUrl) {
-                fdComment.append('image', this.imageUrl, this.imageUrl.name);
+            if (this.commentImageUrl) {
+                fdComment.append('image', this.commentImageUrl, this.commentImageUrl.name);
             }
             //Si FormData != null 
-            if (this.comment || this.imageUrl) {
+            if (this.comment || this.commentImageUrl) {
             this.$store //=> on l'envoie au store pour gérer l'envoi des données vers le backend
                 .dispatch('createComment', {postId,fdComment})
                 .then((res => {
@@ -75,9 +84,9 @@ export default ({
                     this.$store
                         .dispatch('getCommentsByPostId', postId)
                         .then(() => {
-                                console.log("getAllComments dispatch done !");
+                                console.log("getCommentsByPostId dispatch done !");
                                 this.comment= "";
-                                this.imageUrl="";
+                                this.commentImageUrl="";
                             });
                 }), (err => {
                     console.log(err)
@@ -165,6 +174,7 @@ export default ({
             display: flex;
             justify-content: center;
             align-items: center;
+           
         }
         &__submit{
             width: 70px;
@@ -183,7 +193,7 @@ export default ({
 display: flex;
 margin: 5px;
 }
-.commentImage {
+#uploadCommentImage {
        opacity: 0;
        position: absolute;
        z-index: -1;

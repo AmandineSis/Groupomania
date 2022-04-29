@@ -40,7 +40,7 @@
             </div>            
         </div>
         <div v-if="showComment">
-            <PostComments :item="postItem"/> 
+            <PostComments :postItem="postItem"/> 
         </div>
     </div>
     
