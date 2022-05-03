@@ -1,7 +1,7 @@
 <template>
     <div class="topBar" v-once>
         <TopBar @show-settings="openSettings"/>
-        <UserProfile/>
+        <router-link :to="`/profile/${user.userId}`"><UserProfile/></router-link>
     </div> 
     <UserSettings v-if="settings"/>
     <NewPost v-once/>  
@@ -37,6 +37,7 @@ export default {
     computed: {
         ...mapState({
             posts: 'posts',
+            user: 'userInfos'
         })
     },
     mounted:

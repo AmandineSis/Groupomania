@@ -194,7 +194,7 @@ exports.deletePost = (req, res, next) => {
             return res.status(401).json({ message: "utilisateur non authorisé !" });
         }
         //récupération et suppression de l'image avant modification sur le serveur s'il y en a une
-        if (postExists.imageUrl !== null) {
+        if (postExists.imageUrl !== undefined) {
             const filename = postExists.imageUrl.split('/post/')[1];
             fs.unlink(`images/post/${filename}`, (error) => {
                 if (error) throw ({ error });
