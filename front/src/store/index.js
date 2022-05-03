@@ -31,20 +31,23 @@ export default createStore({
     user: user,
     userInfos: [],
     currentPost: "",
-    posts: [],
+    postsByDate: [],
+    postsByLike: [],
+    getPostsByUserId: [],
+    postsByUserIdByLike: [],
     postComments: []
   },
   getters: {
     fullName(state){
       return `${state.userInfos.firstName} ${state.userInfos.lastName}`
     },
-    getPostById: (state) => (postId) => {
-      if (state.posts.postId == postId){
-        let userId = state.posts.userId;
+   /* getPostById: (state) => (postId) => {
+      if (state.postsByDate.postId == postId){
+        let userId = state.postsByDate.userId;
         return userId;
       
       }
-    }
+    }*/
   },
   mutations: {
     setStatus(state, status){
@@ -58,12 +61,21 @@ export default createStore({
     userInfos(state, userInfos){
       state.userInfos = userInfos;
     },
-    posts(state, posts){
-      state.posts = posts;
+    postsByDate(state, postsByDate){
+      state.postsByDate = postsByDate;
+    },
+    postsByLike(state, postsByLike){
+      state.postsByLike = postsByLike;
+    },
+    postsByUserId(state, postsByUserId){
+      state.postsByUserId = postsByUserId;
+    },
+    postsByUserIdByLike(state, postsByUserIdByLike){
+      state.postsByUserIdByLike = postsByUserIdByLike;
     },
     deletePost(state, postId ){
-      let index = state.posts.findIndex(posts => posts.postId == postId);
-      state.posts.splice(index, 1);
+      let index = state.postsByDate.findIndex(postsByDate => postsByDate.postId == postId);
+      state.postsByDate.splice(index, 1);
     },
     logout(state) {
       state.user = {
@@ -145,10 +157,37 @@ export default createStore({
         instance
           .get(`/posts`)
           .then( function (response) {
-            commit('posts', response.data.results);
+            commit('postsByDate', response.data.results);
           })
           .catch(function () {
         });
+    },
+    getPopularPosts: ({ commit }) => {
+      instance
+        .get(`/posts/famous`)
+        .then( function (response) {
+          commit('postsByLike', response.data.results);
+        })
+        .catch(function () {
+      });
+    },
+    getPostsByUserId: ({ commit }, userId) => {
+      instance
+        .get(`/posts/${userId}`)
+        .then( function (response) {
+          commit('postsByUserId', response.data.results);
+        })
+        .catch(function () {
+      });
+    },
+    getPopularPostsByUserId: ({ commit }, userId) => {
+      instance
+        .get(`/posts/${userId}/famous`)
+        .then( function (response) {
+          commit('postsByUserIdByLike', response.data.results);
+        })
+        .catch(function () {
+      });
     },
     deletePost: ({ commit }, postId)=>{
       instance

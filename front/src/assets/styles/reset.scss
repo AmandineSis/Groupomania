@@ -17,7 +17,7 @@ html, body, div, span, object, iframe, figure, button,h1, h2, h3, h4, h5, h6, p,
     text-size-adjust: none;
 }
 html {
-    background-color: #efefef;
+    background-color: white;
     height: 100%;
 }
 footer, header, nav, section, main{
@@ -31,6 +31,14 @@ body{
 
 ol, ul{
     list-style: none;
+}
+
+a:visited {
+    color: inherit;
+}
+
+a{
+    text-decoration: none;
 }
 
 blockquote, q{

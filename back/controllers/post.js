@@ -35,7 +35,7 @@ exports.getPostsByDate = (req, res, next) => {
 //Récupération de tous les posts
 //results = tous les posts du plus récent au plus ancien (max 20)
 exports.getPostsByLike = (req, res, next) => {
-    let sql = 'SELECT * FROM posts ORDER BY likes DESC LIMIT 20';
+    let sql = 'SELECT * FROM posts JOIN users WHERE posts.userId=users.userId ORDER BY likes DESC LIMIT 20';
     db.query(sql, (error, results, fields) => {
         if (error) throw ({ error });
         let post = results[0];
@@ -55,7 +55,7 @@ exports.getPostsByLike = (req, res, next) => {
 //results = tous les posts d'un utilisateur du plus récent au plus ancien (max 20)
 exports.getUserPostsByDate = (req, res, next) => {
     const userId = req.params.userId;
-    let sql = 'SELECT * FROM posts WHERE userId= ? ORDER BY created DESC LIMIT 20;'
+    let sql = 'SELECT * FROM posts JOIN users ON posts.userId= users.userId WHERE posts.userId=? ORDER BY created DESC LIMIT 20; '
     db.query(sql, userId, (error, results, fields) => {
         if (error) {
             res.status(500).json({ error })
@@ -73,10 +73,10 @@ exports.getUserPostsByDate = (req, res, next) => {
 };
 
 //req.params.userId
-//results = tous les posts d'un utilisateur du plus récent au plus ancien (max 20)
+//results = tous les posts d'un utilisateur du plus populaire au moins populaire (max 20)
 exports.getUserPostsByLike = (req, res, next) => {
     const userId = req.params.userId;
-    let sql = 'SELECT * FROM posts WHERE userId= ? ORDER BY likes DESC LIMIT 20;'
+    let sql = 'SELECT * FROM posts JOIN users ON posts.userId= users.userId WHERE posts.userId=? ORDER BY likes DESC LIMIT 20;'
     db.query(sql, userId, (error, results, fields) => {
         if (error) {
             res.status(500).json({ error })

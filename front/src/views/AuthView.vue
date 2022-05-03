@@ -1,5 +1,5 @@
 <template>
-    <div class="card">
+    <main class="card">
         <h1 class="home__tile">Bienvenue</h1>
         <h2 class="card__title" v-if="mode == 'login'">Connexion</h2>
         <h2 class="card__title" v-else>Inscription</h2>
@@ -60,7 +60,7 @@
             </div>
 
         </form> 
-    </div>
+    </main>
 </template>
 
 <script>
@@ -194,7 +194,7 @@ export default ({
   background:white;
   border-radius: 16px;
   border: 2px solid #EEEEEE;
-  box-shadow: 10px 10px 6px grey;
+box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
   margin: 32px auto;
   padding:32px;
   &__title {
@@ -267,18 +267,22 @@ p {
     padding: 16px;
     transition: .4s background-color;
         &:hover {
-            background-color: #a71e05;
-            color: #ffffff;
+            background-color: white;
+            color: #EE7575;
+            border: 2px solid #EE7575;
         }
         &:active {
             color: #a71e05;
             background-color: #ffffff;
+            border: none;
         }
         &--disabled{
             background-color: grey;
             &:hover{
                 cursor:not-allowed;
-                background:#cecece;
+                background-color:#cecece;
+                border: 2px solid grey;
+                color: white;
             }
         }
 }

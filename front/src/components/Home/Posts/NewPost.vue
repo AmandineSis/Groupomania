@@ -36,6 +36,7 @@ export default ({
     },
     data(){
         return {
+                mode: 'homePage',
                 post: "",
                 imageUrl:""
         }
@@ -58,7 +59,9 @@ export default ({
                 this.$store
                     .dispatch('createPost', fd)
                     .then((res => {
-                        console.log(res)
+                        console.log(res);
+
+                        if(this.mode=='homePage'){
                         this.$store
                             .dispatch('getPostsByDate')
                             .then(() => {
@@ -66,6 +69,16 @@ export default ({
                                 this.post= "";
                                 this.imageUrl="";
                             });
+                        } else {
+                            const userId = this.$route.params.userId;
+                            this.$store
+                            .dispatch('getPostsByUserId', userId)
+                            .then(() => {
+                                console.log("getPostsByDate dispatch done !");
+                                this.post= "";
+                                this.imageUrl="";
+                            });
+                        }
                     }), (err => {
                         console.log(err)
                     }))
@@ -117,9 +130,9 @@ export default ({
         width: 50%;
         border-radius: 100px;
         height: 40px;
-        background-color: #FFFFFF;
-        border: solid 1.5px #ee7575;
-        color: #ee7575;
+        background-color: #ee7575;
+        border: solid 1.5px #ffffff;
+        color: #ffffff;
         &__submit {
             border-radius: 0 0 20px 0;
         }
@@ -130,12 +143,14 @@ export default ({
             border-radius: 0 0 0 20px;
         }
         &:hover {
-            background-color: #ee7575;
-            color: #ffffff;
+            background-color:  #ffffff;
+            color:#ee7575;
+            border: solid 1.5px #ee7575;
         }
         &:active {
-            color: #ee7575;
-            background-color: #ffffff;
+            color: #ffffff;;
+            background-color:#ee7575;
+             border: solid 1.5px #ee7575;
         }
         
     }

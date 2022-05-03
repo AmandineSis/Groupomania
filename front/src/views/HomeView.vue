@@ -1,23 +1,33 @@
 <template>
-    <div class="topBar" v-once>
-        <TopBar @show-settings="openSettings"/>
+    <nav class="topBar" v-once>
+        <TopBar @show-settings="openSettings" v-once />
         <router-link :to="`/profile/${user.userId}`"><UserProfile/></router-link>
-    </div> 
+    </nav> 
     <UserSettings v-if="settings"/>
     <NewPost v-once/>  
-    <div class="recentPosts" v-for="postItem in posts" :key="postItem.postId">
-        <RecentPosts :postItem="postItem"/>   
+   <div class="toggle">
+        <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : mode=='recentPosts'}" @click="getRecentPosts"> Récents </button>
+        <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : mode=='popularPosts'}" @click="getPopularPosts"> Populaires </button>
     </div>
-
+    <main v-if="mode == 'recentPosts'">  
+        <div class="recentPosts" v-for="postItem in posts" :key="postItem.postId">
+            <RecentPosts :postItem="postItem"/>   
+        </div>
+    </main> 
+    <main v-if="mode == 'popularPosts'">
+        <div class="PopularPosts" v-for="popularPostItem in popularPosts" :key="popularPostItem.postId">
+            <RecentPosts :postItem="popularPostItem"/>   
+        </div>
+    </main>
 </template>
 
 <script>
 import {mapState} from 'vuex';
-import TopBar from '@/components/Home/TopBar.vue'
+import TopBar from '@/components/Home/Nav/TopBar.vue'
+import UserProfile from '@/components/Home/Nav/UserProfile.vue'
 import UserSettings from '@/components/Home/Settings/UserSettings.vue'
-import UserProfile from '@/components/Home/UserProfile.vue'
-import NewPost from '@/components/Home/NewPost.vue'
-import RecentPosts from '@/components/Home/RecentPosts.vue'
+import NewPost from '@/components/Home/Posts/NewPost.vue'
+import RecentPosts from '@/components/Home/Posts/RecentPosts.vue'
 
 export default {
     name: 'HomeView',
@@ -32,28 +42,49 @@ export default {
         return{
             search: false,
             settings: false,
+            mode: 'recentPosts'
         }
     },
     computed: {
         ...mapState({
-            posts: 'posts',
+            posts: 'postsByDate',
+            popularPosts: 'postsByLike',
             user: 'userInfos'
         })
     },
-    mounted:
+    beforeMount: 
         function(){
+
             this.$store
                 .dispatch('getPostsByDate')
                 .then(() => {
                     console.log("getPostsByDate dispatch done !")
                 });
             
-        },
+        }
+    ,  
     methods: {
         openSettings(){
                 this.settings=!this.settings;
-            }
-  }
+            },
+        getPopularPosts(){
+            this.mode = 'popularPosts';
+            console.log(this.mode);
+            this.$store
+                .dispatch('getPopularPosts')
+                .then(() => {
+                    console.log("getPopularPosts dispatch done !")
+                });
+        },
+        getRecentPosts(){
+            this.mode='recentPosts';
+            this.$store
+                .dispatch('getPostsByDate')
+                .then(() => {
+                    console.log("getPostsByDate dispatch done !")
+                });
+        }
+    }
 }
 </script>
 
@@ -74,6 +105,32 @@ p {
         justify-content: space-between;
         align-items: center;
     }
+
+.toggle {
+    width: 500px;
+    display: flex;
+    flex-direction: row;
+    justify-content:  space-between;
+    &__btn{
+        background: white;
+        color:grey;
+        font-weight: 800;
+        font-size: 15px;
+        border-bottom: 1px  solid grey;
+        padding: 0px;
+        width: 50%;
+        height: 40px;
+        transition: .4s background-color;
+        &--isActive{
+            color: #ee7575;
+            border-bottom: 2px  solid #ee7575;
+        }
+        &:hover{
+            color: #ee7575;
+            border-bottom: 2px  solid #ee7575;
+        }
+    }
+}
 /************************new post*************************** */
 /************************new post*************************** */
 .recentPosts{

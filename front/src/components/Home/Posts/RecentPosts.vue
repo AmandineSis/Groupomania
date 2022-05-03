@@ -1,32 +1,24 @@
 <template>
     <div class="posts" >
-        
-        <div class="posts__header"  >
-            <div class="posts__header__name">
+
+        <header class="posts__header"  >
+            <router-link class="posts__header__name" :to="`/profile/${postItem.userId}`">
                 <img class="posts__header__name__picture" :src="postItem.profilePicUrl" alt="">
                 <h2 class="posts__header__name__id">{{postItem.firstName}} {{postItem.lastName}}</h2>
-            </div>
+            </router-link>
             <p class="posts__header__date">{{postItem.created}}</p>
+        </header>
 
-            <!----------------------------------Post settings-------------------------------------------------->
-             <div class="posts__header__settings">    
-                    <button class="posts__header__settings__delete" v-if="postItem.userId == user.userId " @click="deletePost(postItem.postId)">
-                        <font-awesome-icon icon="xmark" />
-                    </button>
-                    <button class="posts__header__settings__update" icon="pen-clip" v-if="postItem.userId == user.userId ">
-                        <font-awesome-icon icon="pen-clip" />
-                    </button>
-            </div>
-            <!----------------------------------Post settings-------------------------------------------------->
-
-        </div>
+        <!----------------------------------Post settings-------------------------------------------------->
+        <PostSettings :postItem="postItem"/>
+        <!----------------------------------Post settings-------------------------------------------------->
 
         <div class="posts__content">
             <p class="posts__content__text" v-if="postItem.content" >{{postItem.content}}</p>
             <img class="posts__content__image" v-if="postItem.imageUrl" :src="postItem.imageUrl" alt="post photo">
         </div>
         
-        <div class="posts__footer">
+        <footer class="posts__footer">
             <div class="posts__footer__top">
                 <span class="posts__footer__top__icon">
                     <font-awesome-icon :icon="['far', 'heart']" v-if="postItem.likes == 0"/>
@@ -50,7 +42,7 @@
                     comment
                 </button>
             </div>            
-        </div>
+        </footer>
         <div v-if="showComment">
             <PostComments :postItem="postItem"/> 
         </div>
@@ -60,18 +52,22 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex';
-import PostComments from '@/components/Home/PostComments.vue'
+import PostSettings from '@/components/Home/Posts/PostSettings.vue'
+import PostComments from '@/components/Home/Comments/PostComments.vue'
 
 export default ({
     name: 'RecentPosts',
     components: {
-            PostComments
+        PostSettings,
+        PostComments
     },
-    props: {'postItem': Object},
+    props: {'postItem': Object
+    },
     data(){
         return {
             showComment: false,
             postId:'',
+            likes: '',
             isLiked: ''
         //    selectedComment: ''
         }
@@ -94,13 +90,13 @@ export default ({
             this.isLiked = !this.isLiked;
             
             if( this.isLiked == true){
-                this.posts.likes= 1;
+                this.likes= 1;
             }else{
-                this.posts.likes = 0;
+                this.likes = 0;
             }
             const postLike = {
                 postId,
-                like: this.posts.likes
+                like: this.likes
             };
             //envoie requête vers store - requête LikePost
             this.$store
@@ -155,12 +151,12 @@ export default ({
 </script>
 
 <style scoped lang="scss">
-.posts {
+    .posts {
         margin: 50px auto;
         width: 500px;
         border-radius: 20px 20px 0 0;
         &__header{
-            background-color: #efefef;      
+            background-color: white;      
             &__name{
                 display: flex;
                 flex-direction: row;
