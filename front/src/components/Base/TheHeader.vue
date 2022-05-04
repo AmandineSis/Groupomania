@@ -15,6 +15,8 @@ export default {
         width: 100%;
         height: 120px;
         background-color: #666666;
+        position: relative;
+        z-index: -10;
         &__logo {
         width: 275px;
         height: 275px;
@@ -22,6 +24,8 @@ export default {
         margin-top: -100px;
         position: absolute;
         margin-left: 20px;
+        position: absolute;
+        z-index: -1;
         }
     
     }

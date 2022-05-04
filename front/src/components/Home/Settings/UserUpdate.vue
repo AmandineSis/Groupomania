@@ -5,7 +5,7 @@
                 class="userUpdate__form__input"
                 v-model="event.firstName"
                 v-on:change="isFirstNameValid"
-                label="firstName"
+                :label="userInfos.firstName"
                 type="text"
             />
             <p v-if="error.firstNameError">Veuillez saisir au moins 3 caratères</p>
@@ -13,7 +13,7 @@
                 class="userUpdate__form__input"
                 v-model="event.lastName"
                 v-on:change="isLastNameValid"
-                label="lastName"
+                :label="userInfos.lastName"
                 type="text"
             />
             <p v-if="error.lastNameError">Veuillez saisir au moins 3 caratères</p>
@@ -21,7 +21,7 @@
                 class="userUpdate__form__input"
                 v-model="event.email"
                 v-on:change="isEmailValid"
-                label="email"
+                :label="userInfos.email"
                 type="email"
             />
             <p v-if="error.emailError">Veuillez saisir un email valide</p>
@@ -81,7 +81,12 @@ export default {
                 return false
                 }
             },
-            ...mapState(['status'])
+            ...mapState({
+                status: 'status',
+                user: 'user',
+                userInfos: 'userInfos',
+                postComments: 'postComments'
+        })
     },
     methods: {  
         isFirstNameValid() {
