@@ -1,10 +1,10 @@
 <template>
              <!----------------------------------Post settings-------------------------------------------------->
              <div class="posts__header__settings">    
-                    <button class="posts__header__settings__delete" v-if="postItem.userId == user.userId " @click="deletePost(postItem.postId)">
+                    <button class="posts__header__settings__delete" @click="deletePost(postItem.postId)">
                         <font-awesome-icon icon="xmark" />
                     </button>
-                    <button class="posts__header__settings__update" icon="pen-clip" v-if="postItem.userId == user.userId ">
+                    <button class="posts__header__settings__update" icon="pen-clip" >
                         <font-awesome-icon icon="pen-clip" />
                     </button>
             </div>

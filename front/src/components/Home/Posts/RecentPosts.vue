@@ -10,7 +10,7 @@
         </header>
 
         <!----------------------------------Post settings-------------------------------------------------->
-        <PostSettings :postItem="postItem"/>
+        <PostSettings :postItem="postItem" v-if="userInfos.moderator == 1||user.userId== postItem.userId"/>
         <!----------------------------------Post settings-------------------------------------------------->
 
         <div class="posts__content">
@@ -68,7 +68,8 @@ export default ({
             showComment: false,
             postId:'',
             likes: '',
-            isLiked: ''
+            isLiked: '',
+            comments: []
         //    selectedComment: ''
         }
     },
@@ -76,6 +77,7 @@ export default ({
     computed: {
         ...mapState({
             user: 'user',
+            userInfos: 'userInfos',
             posts: 'posts',
             postComments: 'postComments'
         }),
@@ -121,7 +123,7 @@ export default ({
                 this.$store 
                     .dispatch('getCommentsByPostId', postId)
                             .then(() => {
-                                    console.log("getAllComments dispatch done !");
+                                    console.log("getCommentsByPostId dispatch done !");
                                 });
             }else{
                 return;

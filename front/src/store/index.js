@@ -30,12 +30,13 @@ export default createStore({
     status: '',
     user: user,
     userInfos: [],
-    currentPost: "",
+    //currentPost: "",
     postsByDate: [],
     postsByLike: [],
     getPostsByUserId: [],
     postsByUserIdByLike: [],
-    postComments: []
+    postComments: [],
+    commentsByPostId: []
   },
   getters: {
     fullName(state){
@@ -85,7 +86,13 @@ export default createStore({
       localStorage.removeItem('user');
     },
     postComments(state, postComments){
+      //state.postComments.push(postComments);
       state.postComments = postComments;
+    },
+    commentsByPostId(state, postId){
+      let index = state.postComments.findIndex(postComments => postComments.postId == postId);
+      //let selectedComment = state.postComments.splice(index, 1);
+      console.log(index);
     },
     deleteComments(state, comId ){
       let index = state.postComments.findIndex(postComments => postComments.comId == comId);
@@ -242,7 +249,8 @@ export default createStore({
         .get(`/posts/${postId}/comment`)
         .then( function (response) {
           console.log(response.data.results)
-          commit('postComments', response.data.results);
+          commit('postComments', response.data.results);          
+         // commit('commentsByPostId', postId);          
         })
         .catch(function () {
       });

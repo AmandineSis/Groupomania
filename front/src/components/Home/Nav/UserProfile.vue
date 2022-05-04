@@ -45,7 +45,12 @@ export default {
                         console.log("getUSer dispatch done !")
                 });
             }else{
-                console.log(this.$route.query)
+                const userId = this.$route.params.userId;
+                this.$store
+                    .dispatch('getUser', userId )
+                    .then(() => {
+                        console.log("getUSer dispatch done !")
+                });
                 //Si userId = -1, retour à la page de connexion
               /*  if(this.$store.state.user.userId == -1){
                     this.$router.push('/');
@@ -64,7 +69,8 @@ export default {
     computed: {
         ...mapState({
             status: 'status',
-            user: 'userInfos'
+            user: 'userInfos',
+            
         }),
         ...mapGetters(['fullName'])
     }

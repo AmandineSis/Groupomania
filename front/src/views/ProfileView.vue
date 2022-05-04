@@ -1,9 +1,11 @@
 <template>
     <nav class="topBar" v-once>
         <TopBar @show-settings="openSettings" v-once />
+        <router-link :to="`/home/`" class="topBar__toHomeIcon"><font-awesome-icon icon="house"/></router-link>
     </nav> 
 
     <UserProfile :profileView="true" :posts="posts"/>
+    <button v-if="user.moderator == 1">Supprimer cet utilisateur</button>
     <UserSettings v-if="settings"/>
     <NewPost v-once/>  
     <div class="toggle">
@@ -49,7 +51,7 @@ export default {
     },
     computed: {
         ...mapState({
-           posts: 'postsByUserId',
+            posts: 'postsByUserId',
             popularPosts: 'postsByUserIdByLike',
             user: 'userInfos'
         })
@@ -108,6 +110,10 @@ p {
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
+        &__toHomeIcon{
+            margin-right: 25px;
+            color: white;
+        }
     }
 .toggle {
     width: 500px;
@@ -115,7 +121,7 @@ p {
     flex-direction: row;
     justify-content:  space-between;
     &__btn{
-        background: #efefef;
+        background: white;
         color:grey;
         font-weight: 800;
         font-size: 15px;

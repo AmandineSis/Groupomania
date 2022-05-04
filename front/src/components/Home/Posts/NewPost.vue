@@ -9,7 +9,7 @@
                 placeholder = "Que souhaitez vous partager ?">
                 
             </textarea>
-
+            <p class=form__valid__image v-if="imageUrl">{{imageUrl.name}}</p>
             <div class="form__valid">
 
                 <label for="uploadImage" class="form__btn form__btn__upload"><font-awesome-icon icon="image" /></label>
@@ -21,9 +21,13 @@
                 <font-awesome-icon icon="paper-plane" />
                 </button> 
             </div>
-            <p class=form__valid__image v-if="imageUrl">{{imageUrl.name}}</p>
+          
+            
+           
         </form>
+        
     </div>
+     
 </template>
 
 
@@ -120,9 +124,7 @@ export default ({
            
             &__image {
                 text-align: left;
-                position: relative;
-                top: -70px;
-                left: 10px;
+                border: 2px solid #999999;
             }
         }
         &__btn {
@@ -131,16 +133,18 @@ export default ({
         border-radius: 100px;
         height: 40px;
         background-color: #ee7575;
-        border: solid 1.5px #ffffff;
+        
         color: #ffffff;
         &__submit {
             border-radius: 0 0 20px 0;
+            border-left: solid 1.5px #ffffff;
         }
         &__upload {
             display: flex;
             justify-content: center;
             align-items: center;
             border-radius: 0 0 0 20px;
+            border-right: solid 1.5px #ffffff;
         }
         &:hover {
             background-color:  #ffffff;
