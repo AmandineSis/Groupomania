@@ -36,7 +36,8 @@ export default createStore({
     getPostsByUserId: [],
     postsByUserIdByLike: [],
     postComments: [],
-    commentsByPostId: []
+    commentsByPostId: [],
+
   },
   getters: {
     fullName(state){
@@ -101,7 +102,6 @@ export default createStore({
   },
 
   actions: {
-
     /**************************** USER ********************** */
     login: ({ commit }, loginInfos ) => {
       commit('setStatus', 'loading');
@@ -141,6 +141,26 @@ export default createStore({
           commit('userInfos', response.data.results[0]);
         })
         .catch(function () {
+        });
+    },
+    updateUser: ({commit}, userUpdate) => {
+      commit('setStatus', 'loading');
+      return new Promise ((resolve, reject) => {
+        instance
+          .put(`/user/${userUpdate.userId}`, {
+            firstName: userUpdate.firstName,
+            lastName: userUpdate.lastName,
+            email: userUpdate.email
+          }
+          )
+          .then(function (response) {
+            commit('setStatus', 'updated')
+            resolve(response)
+          })
+          .catch(function (error) {
+            commit('setStatus', 'error_update')
+            reject(error)
+          });
         });
     },
     /**************************** POSTS ********************** */  
@@ -207,7 +227,7 @@ export default createStore({
         });
 
     },
-    /*******************likepost function ok**************/
+    /*************************LIKE******************************/
     likePost: ({ commit, state }, postLike) => {
       return new Promise ((resolve, reject) => {
         let userId = state.user.userId;
@@ -226,7 +246,7 @@ export default createStore({
         });
     },
 
-
+    /***********************COMMENTS****************************/
     //gestion de l'envoi du nouveau commentaire au backend
     createComment: ({ commit }, newComment ) => {
       commit('setStatus', 'sending');

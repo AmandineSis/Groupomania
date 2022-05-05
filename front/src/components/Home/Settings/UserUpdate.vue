@@ -106,16 +106,19 @@ export default {
             : (this.emailValid= false, this.error.emailError = true);
         },
         updateUser() {
-            const self = this;
+            //const self = this;
+            const userId = this.user.userId
             this.$store
-                .dispatch('createAccount', {
+                .dispatch('updateUser',
+                    {userId,
                     firstName: this.event.firstName,
                     lastName: this.event.lastName,
-                    email: this.event.email,
-                    password: this.event.password})
+                    email: this.event.email})
                 .then((res => {
-                    self.login();
-                    console.log(res)
+                    console.log(res);
+                    console.log('updateUser dispatch done');
+
+                    window.alert('Modifications effectuées !')
                 }), (err => {
                     console.log(err)
                 }))
