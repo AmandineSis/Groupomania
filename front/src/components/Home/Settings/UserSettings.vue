@@ -8,28 +8,25 @@
 
         </div>
         <UserUpdate v-if="mode == 'identification'"/>
-      
-        <div class="userSettings__input" v-if="mode == 'password'">
-                modif password
-
-        </div>
-        <div class="userSettings__input" v-if="mode == 'profilePicture'">
-                modif photo
-        </div>
+        <PasswordUpdate v-if="mode == 'password'"/>
+        <PictureUpdate v-if="mode == 'profilePicture'"/>
         <div class="userSettings__input" v-if="mode == 'deleteAccount'">
                 delete account
-
         </div>
     </div>
 </template>
 
 <script>
 import UserUpdate from '@/components/Home/Settings/UserUpdate.vue';
+import PasswordUpdate from '@/components/Home/Settings/PasswordUpdate.vue';
+import PictureUpdate from '@/components/Home/Settings/PictureUpdate.vue';
 export default {
 
     name: 'UserSettings',
     components: {
         UserUpdate,
+        PasswordUpdate,
+        PictureUpdate
     },
     data() {
         return {

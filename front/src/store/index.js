@@ -163,6 +163,43 @@ export default createStore({
           });
         });
     },
+    updatePassword: ({commit}, password)=> {
+      commit('setStatus', 'loading');
+      return new Promise ((resolve, reject) => {
+        instance
+          .put(`/user/${password.userId}/password`, {
+            oldPswd: password.oldPassword,
+            newPswd: password.newPassword
+          }
+          )
+          .then(function (response) {
+            commit('setStatus', 'updated')
+            resolve(response)
+          })
+          .catch(function (error) {
+            commit('setStatus', 'error_update')
+            reject(error)
+          });
+        });
+    },
+    updateUserPicture: ({commit}, newPicture)=> {
+      commit('setStatus', 'loading');
+      return new Promise ((resolve, reject) => {
+        instance
+          .put(`/user/${newPicture.userId}/profilePic`, 
+            newPicture.fdProfile
+          
+          )
+          .then(function (response) {
+            commit('setStatus', 'updated')
+            resolve(response)
+          })
+          .catch(function (error) {
+            commit('setStatus', 'error_update')
+            reject(error)
+          });
+        });
+    },
     /**************************** POSTS ********************** */  
     
     createPost: ({ commit }, newPost ) => {

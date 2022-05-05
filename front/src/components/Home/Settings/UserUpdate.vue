@@ -1,6 +1,6 @@
 <template>
     <div class="userUpdate" >
-        <div class="userUpdate__form">
+        <form class="userUpdate__form">
             <BaseInput
                 class="userUpdate__form__input"
                 v-model="event.firstName"
@@ -26,7 +26,7 @@
             />
             <p v-if="error.emailError">Veuillez saisir un email valide</p>
             <p v-if="error.emailExists">Cet email existe déjà</p>
-        </div>
+        </form>
 
 
         <div class="userUpdate__form__valid">
@@ -118,7 +118,12 @@ export default {
                     console.log(res);
                     console.log('updateUser dispatch done');
 
-                    window.alert('Modifications effectuées !')
+                    window.alert('Modifications effectuées !');
+                    this.$store
+                    .dispatch('getUser', userId )
+                    .then(() => {
+                        console.log("getUSer dispatch done !")
+                });
                 }), (err => {
                     console.log(err)
                 }))
