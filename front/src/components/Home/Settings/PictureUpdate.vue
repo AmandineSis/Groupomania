@@ -3,7 +3,7 @@
         <form class="pictureUpdate__form">
             <label for="uploadImage" class="form__btn form__btn__upload"></label>
             <input id="uploadImage" type="file" accept="image/jpeg, image/png, image/jpg" @change="updloadProfilePicture">
-
+    
             <div class="pictureUpdate__form__valid">
                 <button class="pictureUpdate__form__valid__button" type= "button" @click="updatePicture" > Valider
                     <!-- <span v-if="status == 'loading'">Modification en cours...</span>
@@ -11,6 +11,7 @@
                 </button>
             </div>
         </form>
+    
     </div>
 </template>
 
@@ -21,7 +22,7 @@ export default {
     name: 'PictureUpdate',
     data(){
         return{
-            profilePic:''      
+            profilePic:""      
             }
     },
     computed: {
@@ -30,20 +31,19 @@ export default {
         })
     },
     methods: {
-        uploadProfilePicture(e){
+        updloadProfilePicture(e){
             this.profilePic = e.target.files[0];
-            console.log(this.profilePic);
+            console.log("click ok!");
         },
-        updatePicture(){
+        updatePicture(e){
            // console.log("test");
-           // e.preventDefault();
+            e.preventDefault();
             const userId = this.user.userId
             const fdProfile = new FormData();
             if (this.profilePic) {
                 fdProfile.append('image', this.profilePic, this.profilePic.name);
             }
-            if(fdProfile){
-                this.$store
+            this.$store
                     .dispatch('updateUserPicture', {userId,fdProfile})
                     .then((res => {
                         console.log(res);
@@ -61,7 +61,7 @@ export default {
                 }))
             }
         }      
-    }
+    
 }
 </script>
 

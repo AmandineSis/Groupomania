@@ -10,13 +10,23 @@
         <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : mode=='popularPosts'}" @click="getPopularPosts"> Populaires </button>
     </div>
     <main v-if="mode == 'recentPosts'">  
-        <div class="recentPosts" v-for="postItem in posts" :key="postItem.postId">
-            <RecentPosts :postItem="postItem"/>   
+        <div v-if="posts.length>0">
+            <div class="recentPosts" v-for="postItem in posts" :key="postItem.postId">
+                <RecentPosts :postItem="postItem"/>   
+            </div>
+        </div>
+        <div v-else>
+            <p>Il n'existe pas encore de publication !</p>
         </div>
     </main> 
     <main v-if="mode == 'popularPosts'">
-        <div class="PopularPosts" v-for="popularPostItem in popularPosts" :key="popularPostItem.postId">
-            <RecentPosts :postItem="popularPostItem"/>   
+        <div v-if="popularPosts.length>0">
+            <div class="PopularPosts" v-for="popularPostItem in popularPosts" :key="popularPostItem.postId">
+                <RecentPosts :postItem="popularPostItem"/>   
+            </div>
+        </div>
+        <div v-else>
+             <p>Il n'existe pas encore de publication !</p>
         </div>
     </main>
 </template>

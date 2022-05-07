@@ -10,9 +10,7 @@
         <UserUpdate v-if="mode == 'identification'"/>
         <PasswordUpdate v-if="mode == 'password'"/>
         <PictureUpdate v-if="mode == 'profilePicture'"/>
-        <div class="userSettings__input" v-if="mode == 'deleteAccount'">
-                delete account
-        </div>
+        <DeleteAccount v-if="mode == 'deleteAccount'"/>
     </div>
 </template>
 
@@ -20,13 +18,15 @@
 import UserUpdate from '@/components/Home/Settings/UserUpdate.vue';
 import PasswordUpdate from '@/components/Home/Settings/PasswordUpdate.vue';
 import PictureUpdate from '@/components/Home/Settings/PictureUpdate.vue';
+import DeleteAccount from '@/components/Home/Settings/DeleteAccount.vue';
 export default {
 
     name: 'UserSettings',
     components: {
         UserUpdate,
         PasswordUpdate,
-        PictureUpdate
+        PictureUpdate,
+        DeleteAccount
     },
     data() {
         return {

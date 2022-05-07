@@ -196,7 +196,7 @@ exports.deletePost = (req, res, next) => {
         //récupération et suppression de l'image avant modification sur le serveur s'il y en a une
         if (postExists.imageUrl !== undefined) {
             const filename = postExists.imageUrl.split('/post/')[1];
-            fs.unlink(`images/post/${filename}`, (error) => {
+            fs.unlink(`/images/post/${filename}`, (error) => {
                 if (error) throw ({ error });
             });
         }

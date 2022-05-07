@@ -200,6 +200,24 @@ export default createStore({
           });
         });
     },
+    deleteUser: ({commit}, password)=>{
+      commit('setStatus', 'loading');
+      return new Promise ((resolve, reject) => {
+        instance
+          .delete(`/user/${password.userId}/`, {
+            password: password.password
+          }
+          )
+          .then(function (response) {
+            commit('setStatus', 'deleted')
+            resolve(response)
+          })
+          .catch(function (error) {
+            commit('setStatus', 'error_delete')
+            reject(error)
+          });
+        });
+    },
     /**************************** POSTS ********************** */  
     
     createPost: ({ commit }, newPost ) => {

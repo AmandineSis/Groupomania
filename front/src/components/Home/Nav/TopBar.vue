@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+
 
 export default {
     name: 'TopBar',
@@ -27,11 +27,7 @@ export default {
         
         }
     },
-   computed: {
-       ...mapState({
-                settings: 'settings'
-        })
-   },
+  
     methods: {
         logoutUser(){
             this.$store.commit('logout');
