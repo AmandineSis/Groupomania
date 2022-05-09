@@ -12,7 +12,7 @@ const fs = require('fs');
 require('dotenv').config();
 
 /***********************************************************/
-/**Implémentation de la logique métier                     */
+/*         Implémentation de la logique métier             */
 /***********************************************************/
 
 //Récupération de tous les commentaires d'un post
@@ -28,7 +28,7 @@ exports.getAllComments = (req, res, next) => {
             if (!comExists) {
                 res.json({ message: "aucun commentaire" });
             }
-            res.status(201).json({ results })
+            return res.status(201).json({ results })
         }
     });
 

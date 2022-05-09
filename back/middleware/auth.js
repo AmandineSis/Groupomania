@@ -18,6 +18,6 @@ module.exports = (req, res, next) => {
       next();
     }
   } catch {
-    res.status(401).json({ error:'mauvaise authentification!!'});
+    return res.status(401).json({ error:'mauvaise authentification!!'});
   }
 };

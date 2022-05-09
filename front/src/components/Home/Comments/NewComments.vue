@@ -61,7 +61,7 @@ export default ({
                 })
         },
         updateComment(comId,postId) {
-            this.isEditable = !this.isEditable;
+           
             console.log('click ok!')
            console.log(comId);
            postId;

@@ -276,7 +276,7 @@ exports.updateUserPicture = (req, res) => {
 
 //suppression du compte utilisateur
 //req.token
-//req.body={password: string}
+//req.data={password: string}
 //result = "utilisateur supprimé !"
 exports.deleteUser = (req, res) => {
   console.log('req.data----->'+req.data);
