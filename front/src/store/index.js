@@ -98,6 +98,10 @@ export default createStore({
     deleteComments(state, comId ){
       let index = state.postComments.findIndex(postComments => postComments.comId == comId);
       state.postComments.splice(index, 1);
+    },
+    updateComments(state, comId, commentContent ){
+      let index = state.postComments.findIndex(postComments => postComments.comId == comId);
+      state.postComments.splice(index, 1, commentContent);
     }
   },
 
@@ -341,7 +345,19 @@ export default createStore({
         .catch(function () {
         });
 
-    }
+    },
+    updateComment: ({ commit }, commentToUpdate)=>{
+      instance
+        .put(`/posts/${commentToUpdate.postId}/${commentToUpdate.comId}`, 
+        commentToUpdate.fdUpdatedComment)
+        .then(function (response) {
+          commit('updateComments', commentToUpdate.comId, commentToUpdate.updatedComment);
+          console.log(response)
+        })
+        .catch(function () {
+        });
+
+    },
   },
   modules: {
   }

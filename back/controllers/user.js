@@ -324,11 +324,11 @@ exports.deleteUser = (req, res) => {
               });
             })
           } else {
-            console.log('if---> log2');
             //mise à jour de la BDD
             let sqlDelete = 'DELETE FROM users WHERE userId =' + db.escape(userId);
             db.query(sqlDelete, (error, results, fields) => {
               if (error) throw ({ error });
+              //add BDD update cascade delete comments and likes on POSTS related to userId
               res.status(200).json({ message: "utilisateur supprimé !" })
             });
           }

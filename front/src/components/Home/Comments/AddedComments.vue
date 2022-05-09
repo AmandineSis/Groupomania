@@ -1,7 +1,8 @@
 <template>
     <img class="form__comments__profile" :src="comItem.profilePicUrl" alt="">
     <div class="form__comments__content">
-        <p class="form__comments__input form__comments__input__sent" v-if="comItem.commentContent" contenteditable="isEditable">{{ comItem.commentContent }}</p>
+        <p class="form__comments__input form__comments__input__sent" v-if="comItem.commentContent" :contenteditable="isEditable" @blur="onChange"
+      @keydown.enter="updateComment(comItem.comId, comItem.postId)">{{ comItem.commentContent }}</p>
         <img class="form__comments__image" v-if="comItem.imageUrl" :src="comItem.imageUrl" alt="post photo">
     </div>
     <div class="form__comments__settings">    
@@ -17,7 +18,7 @@
 <script>
 import { mapGetters, mapState } from 'vuex';
 export default ({
-    name: 'NewComments',
+    name: 'AddedComments',
     props: {
         comItem: Object
     },
@@ -26,7 +27,9 @@ export default ({
             //mode: '',
             comment: "",
             commentImageUrl: "",
-            isEditable: false
+            isEditable: true,
+            updatedComment:'',
+            updatedImageUrl:''
         }
     },
     computed: {
@@ -39,11 +42,8 @@ export default ({
         })
     },
     methods: {
-       
         deleteComment(comId,postId) {
-      
             console.log(comId);
-
             console.log(postId);
             this.$store //=> on l'envoie au store pour gérer l'envoi des données vers le backend
                 .dispatch('deleteComment', {comId,postId})
@@ -60,16 +60,26 @@ export default ({
                     console.log(err)
                 })
         },
+        onChange(e){
+             var src = e.target.innerText;
+             this.updatedComment = src;
+         },
         updateComment(comId,postId) {
-           
             console.log('click ok!')
-           console.log(comId);
-           postId;
-
-           /*console.log(comId);
+            console.log(comId);
             console.log(postId);
+            console.log(this.updatedComment);
+            const fdUpdatedComment = new FormData();
+            if (this.updateComment != "") {
+                fdUpdatedComment.append('updatedComment', this.comment);
+            }
+            if (this.commentImageUrl) {
+                fdUpdatedComment.append('image', this.commentImageUrl, this.commentImageUrl.name);
+            }
+            //Si FormData != null 
+            if (this.updatedComment || this.commentImageUrl) {
             this.$store //=> on l'envoie au store pour gérer l'envoi des données vers le backend
-                .dispatch('updateComment', {comId,postId})
+                .dispatch('updateComment', {comId,postId, fdUpdatedComment})
                 .then((res) => {
                     console.log("deleteComment dispatch done !");
                     console.log(res);
@@ -81,8 +91,8 @@ export default ({
                             });
                 }), (err => {
                     console.log(err)
-                })*/
-        }
+                })
+        }}
     }  
 })
 </script>

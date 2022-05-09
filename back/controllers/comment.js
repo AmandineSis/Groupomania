@@ -19,14 +19,14 @@ require('dotenv').config();
 exports.getAllComments = (req, res, next) => {
     let postId = req.params.postId; 
     //let sql = 'SELECT * FROM comments ORDER BY comId ASC LIMIT 20';
-    let sql = 'SELECT * FROM `comments` JOIn users WHERE comments.postId =' + db.escape(postId) + ' AND comments.userId = users.userId ORDER BY comId ASC LIMIT 20; ';
+    let sql = 'SELECT * FROM `comments` JOIN users WHERE comments.postId =' + db.escape(postId) + ' AND comments.userId = users.userId ORDER BY comId ASC LIMIT 20; ';
     db.query(sql, postId, (error, results, fields) => {
         if (error) {
-            res.status(500).json({ error })
+            return res.status(500).json({ error })
         } else {
             let comExists = results[0];
             if (!comExists) {
-                res.json({ message: "aucun commentaire" });
+                return res.json({ message: "aucun commentaire" });
             }
             return res.status(201).json({ results })
         }
@@ -71,7 +71,7 @@ exports.createComment = (req, res, next) => {
 };
 
 //modification d'un commentaire
-//Either Post as JSON OR { post:String,image: File }
+//Either Comment as JSON OR { updatedComment:String,image: File }
 //req.token.userId
 //req.params.postId
 //req.params.comId
@@ -94,11 +94,11 @@ exports.updateComment = (req, res, next) => {
             return res.status(401).json({ message: "utilisateur non authorisé !" });
         }
 
-        let commentContent = (req.body.commentContent) ? req.body.commentContent : " ";
+        let updatedComment = (req.body.updatedComment) ? req.body.updatedComment : " ";
         let imageUrl = (req.file) ? `${req.protocol}://${req.get('host')}/images/comment/${req.file.filename}` : " ";
         
         //S'il n'y a pas de contenu ET pas d'image => erreur
-        if (commentContent == " " && imageUrl == " ") {
+        if (updatedComment == " " && imageUrl == " ") {
             return res.status(400).json({ message: "Veuillez ajouter un contenu !" })
         }
         ////récupération et suppression de l'image avant modification sur le serveur
@@ -112,7 +112,7 @@ exports.updateComment = (req, res, next) => {
         const comment = new Comment(
             req.token.userId,
             postId,
-            commentContent,
+            updatedComment,
             imageUrl
         );
         let sqlUpdate = 'UPDATE comments SET ? WHERE comId =' + db.escape(comId);

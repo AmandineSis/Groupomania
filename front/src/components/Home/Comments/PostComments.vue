@@ -17,7 +17,7 @@
     </div> 
     <div>   
         <div class="recentComments" v-for="comItem in postComments" :key=comItem.comId>
-            <NewComments :comItem ="comItem"/>
+            <AddedComments :comItem ="comItem"/>
         </div> 
         
     </div>    
@@ -25,12 +25,12 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex';
-import NewComments from '@/components/Home/Comments/NewComments.vue'
+import AddedComments from '@/components/Home/Comments/AddedComments.vue'
 export default ({
     name: 'PostComments',
     components: {
 
-        NewComments
+        AddedComments
     },
     props: {
         postItem: Object
@@ -40,7 +40,7 @@ export default ({
             //mode: '',
             comment: "",
             commentImageUrl: "",
-            contenteditable: false
+            
         }
     },
     computed: {
