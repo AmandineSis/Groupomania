@@ -228,39 +228,47 @@ exports.updatePassword = (req, res) => {
 exports.updateUserPicture = (req, res) => {
   //trouver le user dans la base de données
   const userId = parseInt(req.params.userId);
+  console.log(userId);
   let sql = 'SELECT * FROM users WHERE userId='+ db.escape(userId);
   db.query(sql, (error, results, fields) => {
     if (error) throw ({ error });
     const userExists = results[0];
-
+    console.log(userExists);
     //si user n'existe pas => erreur
     if (!userExists) {
       res.status(404).json({ message: "désolé ! l'utilisateur n'existe pas" });
     } else {
-      //si userId !== req.token.userId => utilisateur non authorisé
-      if (userId !== req.token.userId) {
-        return res.status(401).json({ message: "utilisateur non authorisé !" });
-      }
+        //si userId !== req.token.userId => utilisateur non authorisé
+        if (userId !== req.token.userId) {
+          return res.status(401).json({ message: "utilisateur non authorisé !" });
+        }
 
-      //récupération et suppression de l'image avant modification sur le serveur
-      const defaultPic = `${req.protocol}://${req.get('host')}/images/user/profilePicDefault.jpg`;
-      if (userExists.profilePicUrl !== defaultPic) {
-     
+        //récupération et suppression de l'image enregistée avant modification sur le serveur
+        const defaultPic = `${req.protocol}://${req.get('host')}/images/user/profilePicDefault.jpg`;
+        if (userExists.profilePicUrl !== defaultPic) {
+
         const filename = userExists.profilePicUrl.split('/user/')[1];
-      
-        fs.unlink(`/images/user/${filename}`, (error) => {
-          if (error) throw ({ error });
-        });
-      }
-
-      //mise à jour de la BDD
-      profilePicUrl = `${req.protocol}://${req.get('host')}/images/user/${req.file.filename}`;
-      let sqlUpdate = 'UPDATE users SET profilePicUrl = ? WHERE userId =' + db.escape(userId);
-      db.query(sqlUpdate, [profilePicUrl], (error, results, fields) => {
-        if (error) throw ({ error });
-        console.log(results);
-        res.status(200).json({ message: "Photo de profil modifiée !" })
-      })
+        
+          fs.unlink(`images/user/${filename}`, () => {
+              //mise à jour de la BDD
+              profilePicUrl = `${req.protocol}://${req.get('host')}/images/user/${req.file.filename}`;
+              let sqlUpdate = 'UPDATE users SET profilePicUrl = ? WHERE userId =' + db.escape(userId);
+              db.query(sqlUpdate, [profilePicUrl], (error, results, fields) => {
+                if (error) throw ({ error });
+                console.log(results);
+                res.status(200).json({ message: "Photo de profil modifiée !" })
+              })
+          });
+        }else{
+            //mise à jour de la BDD
+            profilePicUrl = `${req.protocol}://${req.get('host')}/images/user/${req.file.filename}`;
+            let sqlUpdate = 'UPDATE users SET profilePicUrl = ? WHERE userId =' + db.escape(userId);
+            db.query(sqlUpdate, [profilePicUrl], (error, results, fields) => {
+              if (error) throw ({ error });
+              console.log(results);
+              res.status(200).json({ message: "Photo de profil modifiée !" })
+            })
+        }
     }
   });
 };
@@ -301,22 +309,20 @@ exports.deleteUser = (req, res) => {
 
         const filename = userExists.profilePicUrl.split('/user/')[1];
         console.log(filename);
-        fs.unlink(`images/user/${filename}`, (error) => {
-          if (error) {
-            return res.json({ message: "erreur fichier" });
-          }
+        fs.unlink(`images/user/${filename}`, () => {
+          //mise à jour de la BDD
+          let sqlDelete = 'DELETE FROM users WHERE userId =' + db.escape(userId);
+          db.query(sqlDelete, (error, results, fields) => {
+            if (error) throw ({ error });
+            res.status(200).json({ message: "utilisateur supprimé !" })
+          });
         })
       };
     })
     .catch(error => res.status(500).json({ error }))
         
         
-        //mise à jour de la BDD
-        let sqlDelete = 'DELETE FROM users WHERE userId =' + db.escape(userId);
-        db.query(sqlDelete, (error, results, fields) => {
-          if (error) throw ({ error });
-          res.status(200).json({ message: "utilisateur supprimé !" })
-        });
+        
       }
   });
 };

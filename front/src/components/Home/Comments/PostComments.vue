@@ -40,8 +40,6 @@ export default ({
             //mode: '',
             comment: "",
             commentImageUrl: "",
-            selectedIndex: null,
-            selectedComId: null,
             contenteditable: false
         }
     },

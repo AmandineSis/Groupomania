@@ -196,16 +196,16 @@ exports.deletePost = (req, res, next) => {
         //récupération et suppression de l'image avant modification sur le serveur s'il y en a une
         if (postExists.imageUrl !== undefined) {
             const filename = postExists.imageUrl.split('/post/')[1];
-            fs.unlink(`/images/post/${filename}`, (error) => {
-                if (error) throw ({ error });
+            fs.unlink(`images/post/${filename}`, () => {
+                //mise à jour de la BDD
+                let sqlDelete = 'DELETE FROM posts WHERE postId =' + db.escape(postId);
+                db.query(sqlDelete, (error, results, fields) => {
+                    if (error) throw ({ error });
+                    res.status(200).json({ message: "post supprimé !" })
+                });
             });
         }
-        //mise à jour de la BDD
-        let sqlDelete = 'DELETE FROM posts WHERE postId =' + db.escape(postId);
-        db.query(sqlDelete, (error, results, fields) => {
-            if (error) throw ({ error });
-            res.status(200).json({ message: "post supprimé !" })
-        });
+        
     });
 };
 

@@ -1,7 +1,7 @@
 <template>
     <img class="form__comments__profile" :src="comItem.profilePicUrl" alt="">
     <div class="form__comments__content">
-        <p class="form__comments__input form__comments__input__sent" v-if="comItem.commentContent">{{ comItem.commentContent }}</p>
+        <p class="form__comments__input form__comments__input__sent" v-if="comItem.commentContent" contenteditable="isEditable">{{ comItem.commentContent }}</p>
         <img class="form__comments__image" v-if="comItem.imageUrl" :src="comItem.imageUrl" alt="post photo">
     </div>
     <div class="form__comments__settings">    
@@ -26,9 +26,7 @@ export default ({
             //mode: '',
             comment: "",
             commentImageUrl: "",
-            selectedIndex: null,
-            selectedComId: null,
-            contenteditable: false
+            isEditable: false
         }
     },
     computed: {
@@ -63,7 +61,9 @@ export default ({
                 })
         },
         updateComment(comId,postId) {
-           comId;
+            this.isEditable = !this.isEditable;
+            console.log('click ok!')
+           console.log(comId);
            postId;
 
            /*console.log(comId);
