@@ -181,7 +181,8 @@ exports.updateUser = (req, res) => {
 //req.token
 //result = "Mot de passe modifié !"
 exports.updatePassword = (req, res) => {
-
+  console.log(req.body);
+  console.log(req.body.password);
   //trouver le user dans la base de données
   const userId = parseInt(req.params.userId);
   let sql = 'SELECT * FROM users WHERE userId= ?';
@@ -275,9 +276,10 @@ exports.updateUserPicture = (req, res) => {
 
 //suppression du compte utilisateur
 //req.token
+//req.body={password: string}
 //result = "utilisateur supprimé !"
 exports.deleteUser = (req, res) => {
-
+  console.log('req.data----->'+req.data);
   //trouver le user dans la base de données
   const userId = parseInt(req.params.userId);
   let sql = 'SELECT * FROM users WHERE userId= ?';
@@ -286,43 +288,52 @@ exports.deleteUser = (req, res) => {
     if (error) throw ({ error });
     const userExists = results[0];
     //si user n'existe pas => erreur
+    console.log('userExists-->'+userExists);
     if (!userExists) {
       res.status(404).json({ message: "désolé ! l'utilisateur n'existe pas" });
+    //sinon si user existe...
     } else {
-      //si userId !== req.token.userId => utilisateur non authorisé
+
+      //si user existe && userId !== req.token.userId => utilisateur non authorisé
       if (userId !== req.token.userId && req.token.moderator == 0) {
         return res.status(401).json({ message: "utilisateur non authorisé !" });
-      }
+      } 
+
+
+
       //Vérification de l'ancien mot de passe
       bcrypt.compare(req.body.password, userExists.password)
         .then(valid => {
           if (!valid) {
             return res.status(401).json({ error: 'Mot de passe incorrect !' });
           }
-
-
-      //si mot de passe autorisé, récupération et suppression de l'image 
-      //avant suppression si image !== image par défaut
-      const defaultPic = `${req.protocol}://${req.get('host')}/images/user/profilePicDefault.jpg`;
-
-      if (userExists.profilePicUrl !== defaultPic) {
-
-        const filename = userExists.profilePicUrl.split('/user/')[1];
-        console.log(filename);
-        fs.unlink(`images/user/${filename}`, () => {
-          //mise à jour de la BDD
-          let sqlDelete = 'DELETE FROM users WHERE userId =' + db.escape(userId);
-          db.query(sqlDelete, (error, results, fields) => {
-            if (error) throw ({ error });
-            res.status(200).json({ message: "utilisateur supprimé !" })
-          });
+          //si mot de passe autorisé, récupération et suppression de l'image 
+          //avant suppression si image !== image par défaut
+          const defaultPic = `${req.protocol}://${req.get('host')}/images/user/profilePicDefault.jpg`;
+          console.log('defaultPic---->'+defaultPic)
+          if (userExists.profilePicUrl !== defaultPic) {
+            console.log('if---> log1');
+            const filename = userExists.profilePicUrl.split('/user/')[1];
+            console.log(filename);
+            fs.unlink(`images/user/${filename}`, () => {
+              //mise à jour de la BDD
+              let sqlDelete = 'DELETE FROM users WHERE userId =' + db.escape(userId);
+              db.query(sqlDelete, (error, results, fields) => {
+                if (error) throw ({ error });
+                res.status(200).json({ message: "utilisateur supprimé !" })
+              });
+            })
+          } else {
+            console.log('if---> log2');
+            //mise à jour de la BDD
+            let sqlDelete = 'DELETE FROM users WHERE userId =' + db.escape(userId);
+            db.query(sqlDelete, (error, results, fields) => {
+              if (error) throw ({ error });
+              res.status(200).json({ message: "utilisateur supprimé !" })
+            });
+          }
         })
-      };
-    })
-    .catch(error => res.status(500).json({ error }))
-        
-        
-        
-      }
-  });
+        .catch(error => res.status(500).json({ error }))
+      }}
+  );
 };

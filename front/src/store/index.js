@@ -200,13 +200,14 @@ export default createStore({
           });
         });
     },
-    deleteUser: ({commit}, password)=>{
+    deleteUser: ({commit}, loginDetails)=>{
+      console.log(loginDetails.password);
       commit('setStatus', 'loading');
       return new Promise ((resolve, reject) => {
         instance
-          .delete(`/user/${password.userId}/`, {
-            password: password.password
-          }
+          .delete(`/user/${loginDetails.userId}`, 
+          { data: { password: loginDetails.password}}
+        
           )
           .then(function (response) {
             commit('setStatus', 'deleted')

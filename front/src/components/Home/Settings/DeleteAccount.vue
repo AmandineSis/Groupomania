@@ -56,6 +56,7 @@ export default {
                 .then((res => {
                     console.log(res);
                     console.log('deleteUser dispatch done');
+                    this.$store.commit('logout');
                     this.$router.push('/');
                 }), (err => {
                     console.log(err)
