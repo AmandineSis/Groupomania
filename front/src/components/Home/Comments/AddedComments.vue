@@ -1,8 +1,12 @@
 <template>
     <img class="form__comments__profile" :src="comItem.profilePicUrl" alt="">
     <div class="form__comments__content">
-        <p class="form__comments__input form__comments__input__sent" v-if="comItem.commentContent" :contenteditable="isEditable" @blur="onChange"
-      @keydown.enter="updateComment(comItem.comId, comItem.postId)">{{ comItem.commentContent }}</p>
+        <div contenteditable
+            class="form__comments__input form__comments__input__sent"
+            v-text="comItem.commentContent"
+            @blur="onEdit"></div>
+        <!-- <p class="form__comments__input form__comments__input__sent" v-if="comItem.commentContent" :contenteditable="isEditable" @blur="onChange"
+      @keydown.enter="updateComment(comItem.comId, comItem.postId)">{{ comItem.commentContent }}</p> -->
         <img class="form__comments__image" v-if="comItem.imageUrl" :src="comItem.imageUrl" alt="post photo">
     </div>
     <div class="form__comments__settings">    
@@ -60,7 +64,7 @@ export default ({
                     console.log(err)
                 })
         },
-        onChange(e){
+        onEdit(e){
              var src = e.target.innerText;
              this.updatedComment = src;
          },
@@ -69,9 +73,9 @@ export default ({
             console.log(comId);
             console.log(postId);
             console.log(this.updatedComment);
-            const fdUpdatedComment = new FormData();
-            if (this.updateComment != "") {
-                fdUpdatedComment.append('updatedComment', this.comment);
+           const fdUpdatedComment = new FormData();
+            if (this.updatedComment != "") {
+                fdUpdatedComment.append('updatedComment', this.updatedComment);
             }
             if (this.commentImageUrl) {
                 fdUpdatedComment.append('image', this.commentImageUrl, this.commentImageUrl.name);

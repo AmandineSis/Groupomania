@@ -102,12 +102,12 @@ exports.updateComment = (req, res, next) => {
             return res.status(400).json({ message: "Veuillez ajouter un contenu !" })
         }
         ////récupération et suppression de l'image avant modification sur le serveur
-        if (comExists.imageUrl !== " ") {
+        if (comExists.imageUrl !== '') {
             const filename = comExists.imageUrl.split('/comment/')[1];
             fs.unlink(`images/comment/${filename}`, (error) => {
                 if (error) throw ({ error });
             });
-        }
+        }else{
         //mise à jour de la BDD
         const comment = new Comment(
             req.token.userId,
@@ -120,7 +120,7 @@ exports.updateComment = (req, res, next) => {
             if (error) throw ({ error });
             console.log(results);
             res.status(200).json({ message: "commentaire modifié !" })
-        })
+        })}
     });
 };
 
