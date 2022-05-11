@@ -9,7 +9,10 @@
                 placeholder = "Que souhaitez vous partager ?">
                 
             </textarea>
-            <p class=form__valid__image v-if="imageUrl">{{imageUrl.name}}</p>
+            <div class="form__addedImage" v-if="imageUrl">
+                <p class="form__addedImage__image" >{{imageUrl.name}}</p>
+                <font-awesome-icon class="form__addedImage__icon" icon="xmark" @click="deleteUpload" />
+            </div>
             <div class="form__valid">
 
                 <label for="uploadImage" class="form__btn form__btn__upload"><font-awesome-icon icon="image" /></label>
@@ -21,9 +24,6 @@
                 <font-awesome-icon icon="paper-plane" />
                 </button> 
             </div>
-          
-            
-           
         </form>
         
     </div>
@@ -49,6 +49,9 @@ export default ({
         onFileSelected(e){
             this.imageUrl = e.target.files[0];
             console.log(this.imageUrl);
+        },
+        deleteUpload(){
+            this.imageUrl = ''
         },
         createPost(e) {
             e.preventDefault();
@@ -115,6 +118,21 @@ export default ({
             color: grey;
       
         }
+        &__addedImage{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            width: 100%;
+            border: 2px solid #999999;
+            &__image {
+                text-align: left;
+                margin: 0;
+            }
+            &__icon{
+                width: 10px;
+                padding: 0 4px;
+            }
+        }
         &__valid{
             display: flex;
             flex-direction: row;
@@ -122,10 +140,7 @@ export default ({
             
             width: 100%;
            
-            &__image {
-                text-align: left;
-                border: 2px solid #999999;
-            }
+            
         }
         &__btn {
         padding: 0px;

@@ -2,20 +2,27 @@
     <div class="posts" >
 
         <header class="posts__header"  >
-            <router-link class="posts__header__name" :to="`/profile/${postItem.userId}`">
-                <img class="posts__header__name__picture" :src="postItem.profilePicUrl" alt="">
-                <h2 class="posts__header__name__id">{{postItem.firstName}} {{postItem.lastName}}</h2>
-            </router-link>
-            <p class="posts__header__date">{{postItem.created}}</p>
+                <router-link class="posts__header__name" :to="`/profile/${postItem.userId}`">
+                    <img class="posts__header__name__picture" :src="postItem.profilePicUrl" alt="profile picture">
+                    <h2 class="posts__header__name__id">{{postItem.firstName}} {{postItem.lastName}}</h2>
+                </router-link>
+                
+                <div class="posts__header__settings">
+                    <p class="posts__header__settings__date" >{{postItem.created}}</p>
+                    <span class="posts__header__settings__nav" @click="openSettings" @blur="closeSettings">
+                        <font-awesome-icon icon="ellipsis" v-if="userInfos.moderator == 1||user.userId== postItem.userId" />
+                    </span>
+                </div>
+                    <!----------------------------------Post settings-------------------------------------------------->
+                <div class="posts__header__settings__popup">    
+                    <PostSettings :postItem="postItem" v-if="showSettings" />
+                </div>
         </header>
 
-        <!----------------------------------Post settings-------------------------------------------------->
-        <PostSettings :postItem="postItem" v-if="userInfos.moderator == 1||user.userId== postItem.userId"/>
-        <!----------------------------------Post settings-------------------------------------------------->
 
         <div class="posts__content">
             <p class="posts__content__text" v-if="postItem.content" >{{postItem.content}}</p>
-            <img class="posts__content__image" v-if="postItem.imageUrl" :src="postItem.imageUrl" alt="post photo">
+            <img class="posts__content__image" v-if="postItem.imageUrl != ' '" :src="postItem.imageUrl" alt="post photo">
         </div>
         
         <footer class="posts__footer">
@@ -65,6 +72,7 @@ export default ({
     },
     data(){
         return {
+            showSettings: false,
             showComment: false,
             postId:'',
             likes: '',
@@ -86,6 +94,12 @@ export default ({
         })
     },
     methods: {
+        openSettings(){
+            this.showSettings = !this.showSettings
+        },
+        closeSettings(){
+            this.showSettings = false;
+        },
         /**************Like post function OK ***************** */
         likePost(postId){
             //toggle like value between 0 and 1
@@ -158,7 +172,7 @@ export default ({
         width: 500px;
         border-radius: 20px 20px 0 0;
         &__header{
-            background-color: white;      
+            background-color: white; 
             &__name{
                 display: flex;
                 flex-direction: row;
@@ -179,15 +193,30 @@ export default ({
                 margin: 0;
                 }
             }
-            &__date{
+            &__settings{
                 background-color: grey;
                 height: 35px;
                 font-size: 0.7rem;
                 text-align: left;
-                padding: 5px 80px;
+                padding-top: 5px;
                 border-radius: 20px 20px 0 0 ;
                 margin: 0;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                &__date{
+                    margin: 0 80px;
+                }
+                &__nav{
+                color: #ffffff;
+                font-size: 25px;
+                margin-right: 15px;
+                }
+                &__popup{
+                    position: absolute;
+                }
             }
+            
         }
         &__content{
             &__text{
@@ -239,7 +268,7 @@ export default ({
                         background-color: #ee7575;
                         color: white;
                         cursor: pointer;
-;                        }
+                        }
                         &__full{
                             color: #ee7575;
                         }
@@ -247,50 +276,6 @@ export default ({
             }
         }
 
-
-
-
-
-
-
-
-      /*  &__review {
-            display: flex;
-            flex-direction: column;
-            padding: 5px 0;
-            &__block {
-                display: flex;
-                flex-direction: row;
-                justify-content: space-between;
-                margin: 0;
-                &__left {
-                    margin: 0;
-                    &__icon{
-                    margin: 0 5px;
-                    color: grey;
-                    font-size: 1.2rem;
-                        &__full{
-                            color: #ee7575;
-                        }
-                    }
-                }
-                &__right {
-                    margin: 0;
-                    &__icon {
-                        margin: 0 5px;
-                    }
-                }
-            }
-            &__comments {
-                    padding: 10px 0;
-                    background-color: #D9D9D9;
-                    margin: 0px auto;
-                    width: 500px;
-                    //height: 100px;
-                    align-items: center;
-                    border-radius: 0 0 20px 20px;
-            }    
-        }*/
     }
 
 </style>

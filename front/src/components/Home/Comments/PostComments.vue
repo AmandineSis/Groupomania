@@ -11,8 +11,7 @@
                 placeholder = "Ajoutez un commentaire...">
             </textarea> 
             <button class="form__comments__btn form__comments__btn__submit" type="button" @click="addComment(postItem.postId)"><font-awesome-icon icon="paper-plane" /></button> 
-        </form> 
-        <p>{{this.comment}}</p>
+        </form>
         <p  v-if="commentImageUrl"> {{ commentImageUrl.name}} </p>
     </div> 
     <div>   

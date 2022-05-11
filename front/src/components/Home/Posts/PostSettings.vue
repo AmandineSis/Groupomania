@@ -1,89 +1,95 @@
 <template>
-             <!----------------------------------Post settings-------------------------------------------------->
-             <div class="posts__header__settings">    
-                    <button class="posts__header__settings__delete" @click="deletePost(postItem.postId)">
-                        <font-awesome-icon icon="xmark" />
-                    </button>
-                    <button class="posts__header__settings__update" icon="pen-clip" >
-                        <font-awesome-icon icon="pen-clip" />
-                    </button>
+    <!----------------------------------Post settings-------------------------------------------------->
+    <div class="settings">    
+            <button class="settings__update" @click="openUpdate"  >
+                modifier
+            </button>
+            <button class="settings__delete" @click="deletePost(postItem.postId)" >
+                supprimer
+            </button>
+    </div>
+    <!----------------------------------Post settings-------------------------------------------------->
+    <div class="updatePost" v-if="showUpdateBlock" >
+        <form class="updatePost__form"  >
+            <textarea 
+                class="updatePost__form__input"
+                rows ="5" 
+                v-model="postUpdated"
+                name ="newPost"
+                :placeholder="postItem.content"
+            ></textarea>
+            <div class="updatePost__form__addedImage" v-if="postItem.imageUrl != ' ' && !imageUpdated && displayImageName" >
+                <p class="updatePost__form__addedImage__image" >{{postItem.imageUrl}}</p>
+                <font-awesome-icon class="updatePost__form__addedImage__icon" icon="xmark" @click="hideUploadedFile" />
             </div>
-            <!----------------------------------Post settings-------------------------------------------------->
+            <div class="updatePost__form__addedImage" v-if="postItem.imageUrl && imageUpdated" >
+                <p class="updatePost__form__addedImage__image" >{{imageUpdated.name}}</p>
+                <font-awesome-icon class="updatePost__form__addedImage__icon" icon="xmark" @click="deleteUpdatedFile" />
+            </div>
+           
             
+
+
+
+            <div class="updatePost__form__valid">
+                <label for="uploadUpdatedImage" class="updatePost__form__btn updatePost__form__btn__upload"><font-awesome-icon icon="image" /></label>
+                <input id="uploadUpdatedImage" type="file" @change="updateImage">
+                <button
+                    class="updatePost__form__btn updatePost__form__btn__submit"
+                    type="submit"
+                    @click.prevent="updatePost(postItem.postId, postItem.content)">
+                <font-awesome-icon icon="paper-plane" />
+                </button> 
+            </div>
+        </form>
+    </div>
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex';
+import { mapState } from 'vuex';
 
 
 export default ({
-    name: 'RecentPosts',
+    name: 'PostSettings',
     props: {'postItem': Object},
     data(){
         return {
-            showComment: false,
-            postId:'',
-            isLiked: ''
-        //    selectedComment: ''
+            postUpdated:'',
+            imageUpdated:'',
+            displayImageName: true,
+            showUpdateBlock: false,
+            mode: 'homePage',
         }
     },
-    
     computed: {
         ...mapState({
             user: 'user',
             posts: 'posts',
             postComments: 'postComments'
-        }),
-        ...mapGetters({
-            fullname: 'fullname',
         })
+        
     },
     methods: {
-        /**************Like post function OK ***************** */
-        likePost(postId){
-            //toggle like value between 0 and 1
-            this.isLiked = !this.isLiked;
-            
-            if( this.isLiked == true){
-                this.posts.likes= 1;
-            }else{
-                this.posts.likes = 0;
-            }
-            const postLike = {
-                postId,
-                like: this.posts.likes
-            };
-            //envoie requête vers store - requête LikePost
-            this.$store
-                .dispatch('likePost', postLike)
-                .then((res) => {
-                    console.log(res)
-                    console.log("likePost dispatch done !")
-                    //recentPosts refreshed
-                    this.$store
-                            .dispatch('getPostsByDate')
-                            .then(() => {
-                                console.log("getPostsByDate dispatch done !")
-                            });
-                })
+    /*    handleBlur(e) {
+            console.log('blur', e.target.index)
+            this.showUpdateBlock = false;
+        },*/
+        openUpdate(){
+            this.showUpdateBlock = !this.showUpdateBlock;
         },
-        /******************************************************** */
-        //toggle visibility of comment section
-        displayComment(postId){          
-            this.showComment= !this.showComment;
-            
-            if(this.showComment==true){
-                this.$store 
-                    .dispatch('getCommentsByPostId', postId)
-                            .then(() => {
-                                    console.log("getAllComments dispatch done !");
-                                });
-            }else{
-                return;
-            }
-            
+        updateImage(e){
+            this.imageUpdated = e.target.files[0];
+            console.log(this.imageUpdated);
+            this.displayImageName = !this.displayImageName;
+          
         },
-         deletePost(postId) {
+        hideUploadedFile(){
+            this.displayImageName = !this.displayImageName;
+        },
+        deleteUpdatedFile(){
+            this.imageUpdated = ''
+        },
+        deletePost(postId) {
             console.log(postId);
             this.$store //=> on l'envoie au store pour gérer l'envoi des données vers le backend
                 .dispatch('deletePost', postId)
@@ -99,151 +105,173 @@ export default ({
                 }), (err => {
                     console.log(err)
                 })
-            }  
+        },
+        updatePost(postId,content) {
+     
+            console.log(postId);
+            console.log(this.postUpdated);
+            console.log(content);
+            console.log(this.imageUpdated.name);
+            
+            
+            const fdUpdatedPost = new FormData();
+            if (this.postUpdated != "") {
+                fdUpdatedPost.append('content', this.postUpdated);
+            }
+            /*else{
+                fdUpdatePost.append('updatedContent', this.postUpdated);
+            }*/
+            if (this.imageUpdated != "") {
+                fdUpdatedPost.append('image', this.imageUpdated, this.imageUpdated.name);
+            }
+            if (this.postUpdated || this.imageUpdated) {
+                this.$store
+                    .dispatch('updatePost', {postId, fdUpdatedPost})
+                    .then((res => {
+                        console.log(res);
+                       
+                        if(this.mode=='homePage'){
+                        this.$store
+                            .dispatch('getPostsByDate')
+                            .then(() => {
+                                console.log("getPostsByDate dispatch done !");
+                                this.showUpdateBlock = false;
+                            });
+                        } else {
+                            const userId = this.$route.params.userId;
+                            this.$store
+                            .dispatch('getPostsByUserId', userId)
+                            .then(() => {
+                                console.log("getPostsByDate dispatch done !");
+                                this.showUpdateBlock = false;
+                            });
+                        }
+                    }), (err => {
+                        console.log(err)
+                    }))
+            }
+        }   
+
     }
-    
 })
 </script>
 
 <style scoped lang="scss">
-    .posts {
-        margin: 50px auto;
-        width: 500px;
-        border-radius: 20px 20px 0 0;
-        &__header{
-            background-color: #efefef;      
-            &__name{
-                display: flex;
-                flex-direction: row;
-                justify-content: flex-start;
-                align-items: center;
-                margin: 0;
-                text-align: left;
-                height: 25px;;
-                &__picture{
-                width: 70px;
-                height: 70px;
-                margin: 5px;
-                border-radius: 50px;
-                border: 0.5px solid #999999;
-                }
-                &__id {
-                text-align: left; 
-                margin: 0;
-                }
-            }
-            &__date{
-                background-color: grey;
-                height: 35px;
-                font-size: 0.7rem;
-                text-align: left;
-                padding: 5px 80px;
-                border-radius: 20px 20px 0 0 ;
-                margin: 0;
-            }
+    .settings{
+        position: relative;
+        left: 400px;
+        top: 0;
+        z-index: 99;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;;
+        width: 100px;
+        height: 80px;
+        margin: 0;
+        //background-color: pink;
+        display: flex;
+        flex-direction: column ;
+        justify-content: center;
+        &__delete, &__update {
+            padding: 10px 0;
+            width: 100%;
         }
-        &__content{
-            &__text{
-                background-color: white;
-                border: 1px 1px 1px 0 solid grey;
-                padding: 10px;
-                text-align: left;
-                margin: 0;
-            }
-            &__image{
-                width: 100%;
-                margin: 0 auto;
-            }
-        }    
-        &__footer{
-
-            &__top{
-                display: flex;
-                flex-direction: row;
-               // justify-content: start;
-                background-color: white;
-                padding: 5px 0;
-                &__icon{
-                    margin: 0 5px;
-                    color: grey;
-                    font-size: 1.2rem;
-                        &__full{
-                            color: #ee7575;
-                        }
-                    }
-            }
-            &__bottom  {
-                display: flex;
-                flex-direction: row;
-                justify-content: space-around;
-                background-color: white;
-                padding:  0;
-                border-top: 1px solid grey;
-                &__icon{
-                    padding: 5px;
-                    color: grey;
-                    font-size: 1.2rem;
-                    width: 50%;
-                    height: 30px;
-                    &__like, &__comment {
-                        padding-right: 5px;
-                    }
-                    &:hover {
-                        background-color: #ee7575;
-                        color: white;
-                        cursor: pointer;
-;                        }
-                        &__full{
-                            color: #ee7575;
-                        }
-                    }
-            }
-        }
-
-
-
-
-
-
-
-
-      /*  &__review {
-            display: flex;
-            flex-direction: column;
-            padding: 5px 0;
-            &__block {
-                display: flex;
-                flex-direction: row;
-                justify-content: space-between;
-                margin: 0;
-                &__left {
-                    margin: 0;
-                    &__icon{
-                    margin: 0 5px;
-                    color: grey;
-                    font-size: 1.2rem;
-                        &__full{
-                            color: #ee7575;
-                        }
-                    }
-                }
-                &__right {
-                    margin: 0;
-                    &__icon {
-                        margin: 0 5px;
-                    }
-                }
-            }
-            &__comments {
-                    padding: 10px 0;
-                    background-color: #D9D9D9;
-                    margin: 0px auto;
-                    width: 500px;
-                    //height: 100px;
-                    align-items: center;
-                    border-radius: 0 0 20px 20px;
-            }    
-        }*/
     }
+    
 
+    .updatePost{
+        position: relative;
+        
+        top: 0;
+        z-index: 99;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;;
+        width:500px;
+        height: 150px;
+        margin: 0;
+    
+        display: flex;
+        flex-direction: column ;
+        justify-content: center;
+  
+        &__form {
+            width:500px;
+            height: 150px;
+            &__input {
+                    width:100%;
+                    height: 91%;
+                    background-color: white;
+                    border: 2px solid #999999;
+                    resize: none;
+                    border-radius: 20px 20px 0 0;
+                    padding: 5px 15px;
+                    background-color: white;
+                    display: inline-block;
+                    white-space: normal;
+                    color: grey;    
+            }
+            &__addedImage{
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-between;
+                    width: 100%;
+                    border: 2px solid #999999;
+                    background-color: #ffffff;
+                &__image {
+                    text-align: left;
+                    margin: 0;
+                }
+                &__icon{
+                    width: 10px;
+                    padding: 0 4px;
+                }
+        }
+        &__valid{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            
+            width: 100%;
+           
+            &__image {
+                text-align: left;
+                border: 2px solid #999999;
+                background-color: #ffffff;
+            }
+        }
+        &__btn {
+        padding: 0px;
+        width: 50%;
+        border-radius: 100px;
+        height: 40px;
+        background-color: #ee7575;
+        
+        color: #ffffff;
+        &__submit {
+            border-radius: 0 0 20px 0;
+            border-left: solid 1.5px #ffffff;
+        }
+        &__upload {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 0 0 0 20px;
+            border-right: solid 1.5px #ffffff;
+        }
+        &:hover {
+            background-color:  #ffffff;
+            color:#ee7575;
+            border: solid 1.5px #ee7575;
+        }
+        &:active {
+            color: #ffffff;;
+            background-color:#ee7575;
+             border: solid 1.5px #ee7575;
+        }
+        
+    }
+    }
+    }
+    #uploadUpdatedImage {
+       opacity: 0;
+       position: absolute;
+       z-index: -1;
+    }
 </style>

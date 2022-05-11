@@ -75,6 +75,11 @@ export default createStore({
     postsByUserIdByLike(state, postsByUserIdByLike){
       state.postsByUserIdByLike = postsByUserIdByLike;
     },
+    updatePost(state, postId, postContent, postImage){
+      let index = state.postsByDate.findIndex(postsByDate => postsByDate.postId == postId);
+      state.postsByDate.splice(index, 1, postContent);
+      state.postsByDate.splice(index, 1, postImage);
+    },
     deletePost(state, postId ){
       let index = state.postsByDate.findIndex(postsByDate => postsByDate.postId == postId);
       state.postsByDate.splice(index, 1);
@@ -99,9 +104,10 @@ export default createStore({
       let index = state.postComments.findIndex(postComments => postComments.comId == comId);
       state.postComments.splice(index, 1);
     },
-    updateComments(state, comId, commentContent ){
+    updateComments(state, comId, commentContent, commentImage ){
       let index = state.postComments.findIndex(postComments => postComments.comId == comId);
       state.postComments.splice(index, 1, commentContent);
+      state.postsByDate.splice(index, 1, commentImage);
     }
   },
 
@@ -276,6 +282,20 @@ export default createStore({
         .catch(function () {
       });
     },
+    updatePost: ({ commit }, postToUpdate)=>{
+      return new Promise ((resolve, reject) => {
+      instance
+        .put(`/posts/${postToUpdate.postId}`, postToUpdate.fdUpdatedPost) //envoi de FORMDATA
+        .then(function (response) {
+          commit('updatePost', postToUpdate.postId, postToUpdate.fdUpdatedPost.content, postToUpdate.fdUpdatedPost.image);
+          resolve(response) //retourne "commentaire modifié"
+        })
+        .catch(function (error) {
+          commit('setStatus', 'error_updateComment')
+          reject(error)
+        });
+      });
+    },
     deletePost: ({ commit }, postId)=>{
       instance
         .delete(`/posts/${postId}`)
@@ -325,6 +345,7 @@ export default createStore({
         });
     },
     getCommentsByPostId: ({ commit }, postId) => {
+      
       instance
         .get(`/posts/${postId}/comment`)
         .then( function (response) {
@@ -333,6 +354,20 @@ export default createStore({
          // commit('commentsByPostId', postId);          
         })
         .catch(function () {
+      });
+    },
+    updateComment: ({ commit }, commentToUpdate)=>{
+      return new Promise ((resolve, reject) => {
+      instance
+        .put(`/posts/${commentToUpdate.postId}/${commentToUpdate.comId}`, commentToUpdate.fdUpdatedCom) //envoi de FORMDATA
+        .then(function (response) {
+          commit('updateComments', commentToUpdate.comId, commentToUpdate.fdUpdatedCom.commentContent, commentToUpdate.fdUpdatedCom.image);
+          resolve(response) //retourne "commentaire modifié"
+        })
+        .catch(function (error) {
+          commit('setStatus', 'error_updateComment')
+          reject(error)
+        });
       });
     },
     deleteComment: ({ commit }, commentToDelete)=>{
@@ -346,18 +381,8 @@ export default createStore({
         });
 
     },
-    updateComment: ({ commit }, commentToUpdate)=>{
-      instance
-        .put(`/posts/${commentToUpdate.postId}/${commentToUpdate.comId}`, 
-        commentToUpdate.fdUpdatedComment)
-        .then(function (response) {
-          commit('updateComments', commentToUpdate.comId, commentToUpdate.updatedComment);
-          console.log(response)
-        })
-        .catch(function () {
-        });
-
-    },
+  
+    
   },
   modules: {
   }

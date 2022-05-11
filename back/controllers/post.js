@@ -150,26 +150,38 @@ exports.updatePost = (req, res, next) => {
         if (content == " " && imageUrl == " ") {
             return res.status(400).json({ message: "Veuillez ajouter un contenu !" })
         }
+        console.log(postExists.imageUrl);
         ////récupération et suppression de l'image avant modification sur le serveur
-        if (postExists.imageUrl !== " ") {
+        if (postExists.imageUrl !== undefined) {
             const filename = postExists.imageUrl.split('/post/')[1];
             fs.unlink(`images/post/${filename}`, (error) => {
-                if (error) throw ({ error });
+                //mise à jour de la BDD
+                const post = new Post(
+                    req.token.userId,
+                    content,
+                    imageUrl
+                );
+                let sqlUpdate = 'UPDATE posts SET content = ?, imageUrl = ?, comments = 0, likes =0 WHERE postId =' + db.escape(postId);
+                db.query(sqlUpdate, [post.content, post.imageUrl], (error, results, fields) => {
+                    if (error) throw ({ error });
+                    console.log(results);
+                    res.status(200).json({ message: "post modifié !" })
+                })
             });
-        }
-        //mise à jour de la BDD
-        const post = new Post(
-            req.token.userId,
-            content,
-            imageUrl
-        );
-        let sqlUpdate = 'UPDATE posts SET content = ?, imageUrl = ? WHERE postId =' + db.escape(postId);
-        db.query(sqlUpdate, [post.content, post.imageUrl], (error, results, fields) => {
-            if (error) throw ({ error });
-            console.log(results);
-            res.status(200).json({ message: "post modifié !" })
-        })
-    });
+        }else{
+            //mise à jour de la BDD
+            const post = new Post(
+                req.token.userId,
+                content,
+                imageUrl
+            );
+            let sqlUpdate = 'UPDATE posts SET content = ?, imageUrl = ? WHERE postId =' + db.escape(postId);
+            db.query(sqlUpdate, [post.content, post.imageUrl], (error, results, fields) => {
+                if (error) throw ({ error });
+                console.log(results);
+                res.status(200).json({ message: "post modifié !" })
+            })
+}});
 };
 
 //suppression d'un post
@@ -203,6 +215,13 @@ exports.deletePost = (req, res, next) => {
                     if (error) throw ({ error });
                     res.status(200).json({ message: "post supprimé !" })
                 });
+            });
+        }else{
+            //mise à jour de la BDD
+            let sqlDelete = 'DELETE FROM posts WHERE postId =' + db.escape(postId);
+            db.query(sqlDelete, (error, results, fields) => {
+                if (error) throw ({ error });
+                res.status(200).json({ message: "post supprimé !" })
             });
         }
         
