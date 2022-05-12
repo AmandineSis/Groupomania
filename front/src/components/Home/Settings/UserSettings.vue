@@ -4,7 +4,7 @@
             <button class="userSettings__selection__btn" @click="switchToIdentification">Modifier mes identifiants</button>
             <button class="userSettings__selection__btn" @click="switchToPassword">Modifier mot de passe</button>
             <button class="userSettings__selection__btn" @click="switchToProfilePicture">Modifier photo de profil</button>
-            <button class="userSettings__selection__btn userSettings__selection__btn__delete " @click="switchToDeleteAccount">Supprimer mon compte</button>
+            <button class="userSettings__selection__btn userSettings__selection__btn__delete " v-if="user.userId != 1" @click="switchToDeleteAccount">Supprimer mon compte</button>
 
         </div>
         <UserUpdate v-if="mode == 'identification'"/>
@@ -19,6 +19,7 @@ import UserUpdate from '@/components/Home/Settings/UserUpdate.vue';
 import PasswordUpdate from '@/components/Home/Settings/PasswordUpdate.vue';
 import PictureUpdate from '@/components/Home/Settings/PictureUpdate.vue';
 import DeleteAccount from '@/components/Home/Settings/DeleteAccount.vue';
+import { mapState } from 'vuex';
 export default {
 
     name: 'UserSettings',
@@ -32,6 +33,11 @@ export default {
         return {
             mode: 'identification'
         }
+    },
+    computed: {
+        ...mapState({
+            user: 'user'
+        })
     },
     methods: {  
         switchToPassword() {

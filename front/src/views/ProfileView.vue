@@ -5,7 +5,7 @@
     </nav> 
 
     <UserProfile :profileView="true" :posts="posts"/>
-    <button v-if="user.moderator == 1">Supprimer cet utilisateur</button>
+    <button v-if="user.userId == 1 && userIdProfile !== 1">Supprimer cet utilisateur</button>
     <UserSettings v-if="settings"/>
     <NewPost v-once/>  
     <div class="toggle">
@@ -47,26 +47,31 @@ export default {
             mode: 'recentPosts',
             search: false,
             settings: false,
+            userIdProfile: ''
         }
     },
     computed: {
         ...mapState({
             posts: 'postsByUserId',
             popularPosts: 'postsByUserIdByLike',
-            user: 'userInfos'
+            user: 'user'
         })
     },
     mounted:
         function(){
-            const userId = this.$route.params.userId;
-            console.log(userId);
+            this.userIdProfile = parseInt(this.$route.params.userId);
+            console.log(this.userIdProfile);
+            console.log(typeof userIdProfile);
+            console.log(this.user.userId);
+            console.log(typeof this.user.userId);
             this.$store
-                .dispatch('getPostsByUserId', userId)
+                .dispatch('getPostsByUserId', this.userIdProfile)
                 .then(() => {
                     console.log("getPostsByUserId dispatch done !")
                 });
             
         },
+        
     methods: {
         openSettings(){
                 this.settings=!this.settings;

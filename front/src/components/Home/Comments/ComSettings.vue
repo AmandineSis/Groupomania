@@ -1,7 +1,7 @@
 <template>
     <!----------------------------------Post settings-------------------------------------------------->
     <div class="settings">    
-            <button class="settings__update" @click.prevent="openUpdate"  >
+            <button class="settings__update" v-if="user.userId != 1" @click.prevent="openUpdate"  >
                 modifier
             </button>
             <button class="settings__delete" @click.prevent="deleteComment(comItem.postId, comItem.comId)" >
@@ -23,7 +23,7 @@
                 <p class="updateCom__form__addedImage__image" >{{comItem.imageUrl}}</p>
                 <font-awesome-icon class="updateCom__form__addedImage__icon" icon="xmark" @click="hideUploadedFile" />
             </div>
-            <div class="updateCom__form__addedImage" v-if="comItem.imageUrl && comImageUpdated" >
+            <div class="updateCom__form__addedImage" v-if="comImageUpdated" >
                 <p class="updateCom__form__addedImage__image" >{{comImageUpdated.name}}</p>
                 <font-awesome-icon class="updateCom__form__addedImage__icon" icon="xmark" @click="deleteUpdatedFile" />
             </div>
@@ -150,7 +150,7 @@ export default ({
         z-index: 99;
         box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;;
         width: 100px;
-        height: 80px;
+       // height: 80px;
         margin: 0;
         //background-color: pink;
         display: flex;

@@ -1,7 +1,7 @@
 <template>
     <!----------------------------------Post settings-------------------------------------------------->
     <div class="settings">    
-            <button class="settings__update" @click="openUpdate"  >
+            <button class="settings__update" v-if="user.userId != 1" @click="openUpdate"  >
                 modifier
             </button>
             <button class="settings__delete" @click="deletePost(postItem.postId)" >
@@ -164,7 +164,7 @@ export default ({
         z-index: 99;
         box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;;
         width: 100px;
-        height: 80px;
+        //height: 80px;
         margin: 0;
         //background-color: pink;
         display: flex;

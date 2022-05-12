@@ -118,12 +118,12 @@ exports.getUser = (req, res) => {
   });
 };
 
-//récupération du compte utilisateur//onclick sur photo de profile
+//récupération du compte utilisateur
 //req.body.indexName
 //req.token
 //results = données de l'utilisateur défini par le userId de la requête
 exports.getSearchResult = (req, res) => {
-
+  console.log(req.body.indexName);
   //trouver le user dans la base de données
   let sql = `SELECT * FROM users WHERE firstName LIKE '%${req.body.indexName}%' OR lastName LIKE '%${req.body.indexName}%' LIMIT 10`;
   db.query(sql, [req.body.indexName], (error, results, fields) => {
@@ -132,7 +132,7 @@ exports.getSearchResult = (req, res) => {
     //si user n'existe pas => erreur
     if (!userExists) {
       res.json({ message: "désolé ! l'utilisateur n'existe pas" });
-      //sinon comparer le mot de passe avec bcrypt et créer un token d'authentification    
+      //sinon envoi des résultats 
     } else {
       res.status(200).json({ results });
     }

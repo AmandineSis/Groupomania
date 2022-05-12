@@ -37,7 +37,7 @@ export default createStore({
     postsByUserIdByLike: [],
     postComments: [],
     commentsByPostId: [],
-
+    searchResults: []
   },
   getters: {
     fullName(state){
@@ -62,6 +62,9 @@ export default createStore({
     },
     userInfos(state, userInfos){
       state.userInfos = userInfos;
+    },
+    searchResult(state, searchResults){
+      state.searchResults = searchResults;
     },
     postsByDate(state, postsByDate){
       state.postsByDate = postsByDate;
@@ -227,6 +230,16 @@ export default createStore({
             commit('setStatus', 'error_delete')
             reject(error)
           });
+        });
+    },
+    searchUser: ({commit}, searchName) => {
+      console.log(typeof searchName);
+      instance
+          .post(`/user`, searchName)
+          .then( function (response) {
+            commit('searchResult', response.data.results);
+          })
+          .catch(function () {
         });
     },
     /**************************** POSTS ********************** */  
