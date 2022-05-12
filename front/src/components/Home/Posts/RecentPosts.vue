@@ -1,5 +1,5 @@
 <template>
-    <div class="posts" >
+    <div class="posts"  :class="{'posts__reported' : postItem.report>=1 && user.userId == 1}">
 
         <header class="posts__header"  >
                 <router-link class="posts__header__name" :to="`/profile/${postItem.userId}`">
@@ -171,8 +171,12 @@ export default ({
         margin: 50px auto;
         width: 500px;
         border-radius: 20px 20px 0 0;
+        &__reported{
+        border: 3px solid #ee7575;
+
+        }
         &__header{
-            background-color: white; 
+            //background-color: white; 
             &__name{
                 display: flex;
                 flex-direction: row;

@@ -276,3 +276,54 @@ exports.likePost = (req, res, next) => {
         }
     });
 };
+
+///*********************REPORT ************************************ */
+
+//report d'un post
+//req.body { userId: string, report: INT(0/1)}
+//req.params.postId
+//req.token.userId
+exports.reportPost = (req, res, next) => {
+    let postId = req.params.postId;
+    let userId = req.token.userId;
+
+    let sql = 'SELECT * FROM report WHERE postId = ? AND userId = ?';
+    db.query(sql, [postId, userId], (error, results, fields) => {
+
+        if (error) throw ({ error });
+        let postReported = results[0];
+        console.log(postReported);
+
+        //si req.body.userId !== req.token.userId => utilisateur non authorisé
+        if (req.body.userId !== userId) {
+            return res.status(401).json({ message: "utilisateur non authorisé !" });
+        }
+
+        if (req.body.report == 1 && !postReported) {
+            let sqlPost = 'UPDATE posts SET report = report + 1 WHERE postId =' + db.escape(postId);
+
+            db.query(sqlPost, postId, (error, results, fields) => {
+                if (error) throw ({ error });
+                let sqlReport = 'INSERT INTO report SET userId = ?, postId = ?';
+                db.query(sqlReport, [userId, postId], (error, results, fields) => {
+                    if (error) throw ({ error });
+                    res.status(200).json({ message: "Vous signalez ce post !" });
+
+                });
+            });
+        } else if (req.body.report == 0 && postReported) {
+
+            let sqlPost = 'UPDATE posts SET report = report - 1 WHERE postId =' + db.escape(postId);
+            db.query(sqlPost, postId, (error, results, fields) => {
+                if (error) throw ({ error });
+                let sqlLike = 'DELETE FROM report WHERE reportId =' + db.escape(postReported.reportId);
+                db.query(sqlLike, (error, results, fields) => {
+                    if (error) throw ({ error });
+                    res.status(200).json({ message: "vous ne signalez plus ce post !" });
+                });
+            });
+        } else {
+            res.status(500).json({ message: "erreur report !" })
+        }
+    });
+};

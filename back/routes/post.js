@@ -18,6 +18,7 @@ router.post('/', auth, multer, postCtrl.createPost);//POST /api/posts
 router.put('/:postId', auth, multer, postCtrl.updatePost);//PUT /api/posts/:postId
 router.delete('/:postId', auth, postCtrl.deletePost);//DELETE /api/posts/:postId
 router.post('/:postId/like', auth, postCtrl.likePost);//POST /api/posts/:postId/like
+router.post('/:postId/report', auth, postCtrl.reportPost);//POST /api/posts/:postId/report
 
 router.get('/:postId/comment', auth, comCtrl.getAllComments); //GET /api/comments
 router.post('/:postId/comment', auth, multerCom, comCtrl.createComment);//POST /api/posts

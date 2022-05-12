@@ -320,6 +320,23 @@ export default createStore({
         });
 
     },
+    reportPost: ({ commit, state }, postReport) => {
+      return new Promise ((resolve, reject) => {
+        let userId = state.user.userId;
+        let report = postReport.report;
+        console.log(report);
+        instance
+          .post(`/posts/${postReport.postId}/report`, {userId, report})
+          .then(function (response) {
+            commit('setStatus', 'post_reported')
+            resolve(response)
+          })
+          .catch(function (error) {
+            commit('setStatus', 'error_report')
+            reject(error)
+          });
+        });
+    },
     /*************************LIKE******************************/
     likePost: ({ commit, state }, postLike) => {
       return new Promise ((resolve, reject) => {

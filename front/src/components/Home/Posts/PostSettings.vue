@@ -7,6 +7,10 @@
             <button class="settings__delete" @click="deletePost(postItem.postId)" >
                 supprimer
             </button>
+            <button class="settings__delete" v-if="user.userId != 1" @click="reportPost(postItem.postId)" >
+                <span v-if="isReported == 1">Déjà signalé</span>
+                <span v-else>Signaler</span>
+            </button>
     </div>
     <!----------------------------------Post settings-------------------------------------------------->
     <div class="updatePost" v-if="showUpdateBlock" >
@@ -59,6 +63,8 @@ export default ({
             displayImageName: true,
             showUpdateBlock: false,
             mode: 'homePage',
+            isReported: '',
+            report:''
         }
     },
     computed: {
@@ -150,7 +156,32 @@ export default ({
                         console.log(err)
                     }))
             }
-        }   
+        },
+        reportPost(postId) {
+            //toggle like value between 0 and 1
+            this.isReported = !this.isReported;
+            if( this.isReported == true){
+                this.report= 1;
+            }else{
+                this.report = 0;
+            }
+            const postReported = {
+                postId,
+                report: this.report
+            };
+            //envoie requête vers store - requête LikePost
+            this.$store
+                .dispatch('reportPost', postReported)
+                .then((res) => {
+                    console.log(res)
+                    console.log("reportPost dispatch done !")
+                    if (this.report==1){
+                    window.confirm('Vous avez signalé cette publication !')
+                    }else{
+                        window.confirm('Vous ne signalez plus cette publication !')
+                    }
+                })
+        }  
 
     }
 })
