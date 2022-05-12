@@ -48,6 +48,21 @@ exports.getPostsByLike = (req, res, next) => {
 };
 
 
+//Récupération de tous les posts
+//results = tous les posts du plus récent au plus ancien (max 20)
+exports.getReportedPosts = (req, res, next) => {
+    let sql = 'SELECT * FROM posts JOIN users WHERE posts.userId=users.userId AND posts.report>=1 ORDER BY created DESC LIMIT 20';
+    db.query(sql, (error, results, fields) => {
+        if (error) throw ({ error });
+        let post = results[0];
+        if (!post) {
+            res.json({ message: "aucun post" });
+        }else{
+        res.status(201).json({ results })
+        }    
+    });
+};
+
 
 //Récupération des posts par utilisateur
 
@@ -86,6 +101,27 @@ exports.getUserPostsByLike = (req, res, next) => {
             // console.log(results);
             console.log(post);
             if (!post) {
+                return res.json({ message: "aucun post n'a été trouvé" });
+            }
+            res.status(201).json({ results })
+        }
+    });
+};
+
+//req.params.userId
+//results = tous les posts d'un utilisateur du plus récent au plus ancien (max 20)
+exports.getReportedPostsByUserId = (req, res, next) => {
+    const userId = req.params.userId;
+    let sql = 'SELECT * FROM report WHERE report.userId=?; '
+    db.query(sql, userId, (error, results, fields) => {
+        if (error) {
+            res.status(500).json({ error })
+        } else {
+
+            let report = results[0];
+            // console.log(results);
+            console.log(report);
+            if (!report) {
                 return res.json({ message: "aucun post n'a été trouvé" });
             }
             res.status(201).json({ results })
@@ -326,4 +362,45 @@ exports.reportPost = (req, res, next) => {
             res.status(500).json({ message: "erreur report !" })
         }
     });
+};
+
+//suppression du signalement
+//req.body { userId: string, report: 0}
+//req.params.postId
+//req.token.userId
+exports.removeReport = (req, res, next) => {
+    let postId = req.params.postId;
+    let userId = req.token.userId;
+
+    let sql = 'SELECT * FROM report WHERE postId = ?';
+    db.query(sql, [postId, userId], (error, results, fields) => {
+
+        if (error) throw ({ error });
+        let postReported = results[0];
+        console.log(postReported);
+
+        //si req.body.userId !== req.token.userId => utilisateur non authorisé
+        if (req.body.userId !== userId) {
+            return res.status(401).json({ message: "utilisateur non authorisé !" });
+        }
+        console.log("-----> step 1");
+
+
+        if (req.body.report == 0 && postReported) {
+            let sqlDeleteReport = 'DELETE FROM report WHERE reportId =' + db.escape(postReported.reportId);
+            db.query(sqlDeleteReport, (error, results, fields) => {
+                    if (error) throw ({ error });
+                    console.log("-----> step 2");
+                    res.status(200).json({ message: "ce post n'est plus signalé!" });
+                    let sqlPost = 'UPDATE posts SET report = 0 WHERE postId =' + db.escape(postId);
+                    db.query(sqlPost, postId, (error, results, fields) => {
+                        //if (error) throw ({ error });
+                        res.status(200).json({ message: "vous ne signalez plus ce post !" });
+                });
+            });
+        } else {
+            res.status(500).json({ message: "erreur report !" })
+        }
+                });
+
 };

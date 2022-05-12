@@ -1,5 +1,5 @@
 <template>
-    <div class="posts"  :class="{'posts__reported' : postItem.report>=1 && user.userId == 1}">
+    <div class="posts"  :class="{'posts__reported' : postItem.report>=1 && user.userId == 1 && selectedMode != 'reportedPosts'} ">
 
         <header class="posts__header"  >
                 <router-link class="posts__header__name" :to="`/profile/${postItem.userId}`">
@@ -10,7 +10,7 @@
                 <div class="posts__header__settings">
                     <p class="posts__header__settings__date" >{{postItem.created}}</p>
                     <span class="posts__header__settings__nav" @click="openSettings" @blur="closeSettings">
-                        <font-awesome-icon icon="ellipsis" v-if="userInfos.moderator == 1||user.userId== postItem.userId" />
+                        <font-awesome-icon icon="ellipsis"  />
                     </span>
                 </div>
                     <!----------------------------------Post settings-------------------------------------------------->
@@ -22,7 +22,7 @@
 
         <div class="posts__content">
             <p class="posts__content__text" v-if="postItem.content" >{{postItem.content}}</p>
-            <img class="posts__content__image" v-if="postItem.imageUrl != ' '" :src="postItem.imageUrl" alt="post photo">
+            <img class="posts__content__image" v-if="postItem.imageUrl != ''" :src="postItem.imageUrl" alt="post photo">
         </div>
         
         <footer class="posts__footer">
@@ -68,7 +68,9 @@ export default ({
         PostSettings,
         PostComments
     },
-    props: {'postItem': Object
+    props: {
+        'postItem': Object,
+        'selectedMode': String
     },
     data(){
         return {

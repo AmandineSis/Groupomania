@@ -33,6 +33,8 @@ export default createStore({
     //currentPost: "",
     postsByDate: [],
     postsByLike: [],
+    reportedPosts: [],
+    reportedPostsByUserId: [],
     getPostsByUserId: [],
     postsByUserIdByLike: [],
     postComments: [],
@@ -72,11 +74,17 @@ export default createStore({
     postsByLike(state, postsByLike){
       state.postsByLike = postsByLike;
     },
+    reportedPosts(state, reportedPosts){
+      state.reportedPosts = reportedPosts;
+    },
     postsByUserId(state, postsByUserId){
       state.postsByUserId = postsByUserId;
     },
     postsByUserIdByLike(state, postsByUserIdByLike){
       state.postsByUserIdByLike = postsByUserIdByLike;
+    },
+    reportedPostsByUserId(state, reportedPostsByUserId){
+      state.reportedPostsByUserId = reportedPostsByUserId;
     },
     updatePost(state, postId, postContent, postImage){
       let index = state.postsByDate.findIndex(postsByDate => postsByDate.postId == postId);
@@ -242,6 +250,7 @@ export default createStore({
           .catch(function () {
         });
     },
+
     /**************************** POSTS ********************** */  
     
     createPost: ({ commit }, newPost ) => {
@@ -273,6 +282,24 @@ export default createStore({
         .get(`/posts/famous`)
         .then( function (response) {
           commit('postsByLike', response.data.results);
+        })
+        .catch(function () {
+      });
+    },
+    getReportedPosts: ({ commit }) => {
+      instance
+        .get(`/posts/reported`)
+        .then( function (response) {
+          commit('reportedPosts', response.data.results);
+        })
+        .catch(function () {
+      });
+    },
+    getReportedPostsByUserId: ({ commit }, userId) => {
+      instance
+        .get(`/posts/${userId}/reported`)
+        .then( function (response) {
+          commit('reportedPostsByUserId', response.data.results);
         })
         .catch(function () {
       });
@@ -327,6 +354,23 @@ export default createStore({
         console.log(report);
         instance
           .post(`/posts/${postReport.postId}/report`, {userId, report})
+          .then(function (response) {
+            commit('setStatus', 'post_reported')
+            resolve(response)
+          })
+          .catch(function (error) {
+            commit('setStatus', 'error_report')
+            reject(error)
+          });
+        });
+    },
+    removeReport: ({ commit, state }, removeReport) => {
+      return new Promise ((resolve, reject) => {
+        let userId = state.user.userId;
+        let report = removeReport.report;
+        console.log(report);
+        instance
+          .post(`/posts/${removeReport.postId}/removeReport`, {userId, report})
           .then(function (response) {
             commit('setStatus', 'post_reported')
             resolve(response)

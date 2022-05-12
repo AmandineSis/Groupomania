@@ -77,7 +77,9 @@ export default {
                 })
         },
         stopSearch(){
-            console.log("search stopped")
+            console.log("search stopped");
+           
+            this.event.userSearch = "";
         },
         deleteSearch(){
             this.event.userSearch = ""

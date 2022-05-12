@@ -12,6 +12,9 @@ const comCtrl = require('../controllers/comment');
 
 router.get('/', auth, postCtrl.getPostsByDate); //GET /api/posts
 router.get('/famous', auth, postCtrl.getPostsByLike); //GET /api/posts/famous
+router.get('/reported', auth, postCtrl.getReportedPosts); //GET /api/posts/famous
+router.get('/:userId/reported', auth, postCtrl.getReportedPostsByUserId); //GET /api/posts/famous
+router.post('/:postId/removeReport', auth, postCtrl.removeReport); //GET /api/posts/famous
 router.get('/:userId', auth, postCtrl.getUserPostsByDate); //GET /api/posts/:userId
 router.get('/:userId/famous', auth, postCtrl.getUserPostsByLike); //GET /api/posts/:userId/famous
 router.post('/', auth, multer, postCtrl.createPost);//POST /api/posts

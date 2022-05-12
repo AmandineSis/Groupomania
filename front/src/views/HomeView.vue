@@ -8,11 +8,12 @@
    <div class="toggle">
         <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : mode=='recentPosts'}" @click="getRecentPosts"> Récents </button>
         <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : mode=='popularPosts'}" @click="getPopularPosts"> Populaires </button>
+        <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : mode=='reportedPosts'}" @click="getReportedPosts" v-if="user.userId==1"> Signalés </button>
     </div>
     <main v-if="mode == 'recentPosts'">  
         <div v-if="posts.length>0">
             <div class="recentPosts" v-for="postItem in posts" :key="postItem.postId">
-                <RecentPosts :postItem="postItem"/>   
+                <RecentPosts :postItem="postItem" :selectedMode="mode"/>   
             </div>
         </div>
         <div v-else>
@@ -22,11 +23,21 @@
     <main v-if="mode == 'popularPosts'">
         <div v-if="popularPosts.length>0">
             <div class="PopularPosts" v-for="popularPostItem in popularPosts" :key="popularPostItem.postId">
-                <RecentPosts :postItem="popularPostItem"/>   
+                <RecentPosts :postItem="popularPostItem" :selectedMode="mode"/>   
             </div>
         </div>
         <div v-else>
              <p>Il n'existe pas encore de publication !</p>
+        </div>
+    </main>
+    <main v-if="mode == 'reportedPosts'">
+        <div v-if="reportedPosts.length>=1">
+            <div class="reportedPosts" v-for="reportedPostsItem in reportedPosts" :key="reportedPostsItem.postId">
+                <RecentPosts :postItem="reportedPostsItem" :selectedMode="mode"/>   
+            </div>
+        </div>
+        <div v-else>
+             <p>Aucune publication n'a été signalée !</p>
         </div>
     </main>
 </template>
@@ -59,7 +70,9 @@ export default {
         ...mapState({
             posts: 'postsByDate',
             popularPosts: 'postsByLike',
-            user: 'userInfos'
+            reportedPosts: 'reportedPosts',
+            user: 'user',
+            
         })
     },
     beforeMount: 
@@ -69,6 +82,11 @@ export default {
                 .dispatch('getPostsByDate')
                 .then(() => {
                     console.log("getPostsByDate dispatch done !")
+                    this.$store
+                        .dispatch('getReportedPosts')
+                        .then(() => {
+                            console.log("getReportedPosts dispatch done !")
+                        });
                 });
             
         }
@@ -92,6 +110,14 @@ export default {
                 .dispatch('getPostsByDate')
                 .then(() => {
                     console.log("getPostsByDate dispatch done !")
+                });
+        },
+        getReportedPosts(){
+            this.mode='reportedPosts';
+            this.$store
+                .dispatch('getReportedPosts')
+                .then(() => {
+                    console.log("getReportedPosts dispatch done !")
                 });
         }
     }

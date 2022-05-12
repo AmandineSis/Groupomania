@@ -1,15 +1,18 @@
 <template>
     <!----------------------------------Post settings-------------------------------------------------->
     <div class="settings">    
-            <button class="settings__update" v-if="user.userId != 1" @click="openUpdate"  >
+            <button class="settings__button" v-if="user.userId != 1 && user.userId== postItem.userId" @click="openUpdate"  >
                 modifier
             </button>
-            <button class="settings__delete" @click="deletePost(postItem.postId)" >
+            <button class="settings__button" v-if=" user.userId == 1 || user.userId== postItem.userId" @click="deletePost(postItem.postId)" >
                 supprimer
             </button>
-            <button class="settings__delete" v-if="user.userId != 1" @click="reportPost(postItem.postId)" >
-                <span v-if="isReported == 1">Déjà signalé</span>
+            <button class="settings__button" v-if="user.userId != 1 && user.userId!= postItem.userId" @click="reportPost(postItem.postId)" >
+                <span v-if="isReported==1 ">Déjà signalé</span>
                 <span v-else>Signaler</span>
+            </button>
+            <button class="settings__button" v-if="user.userId == 1 && postItem.report>=1" @click="unreportPost(postItem.postId)" >
+                Enlever signalement
             </button>
     </div>
     <!----------------------------------Post settings-------------------------------------------------->
@@ -24,7 +27,7 @@
             ></textarea>
             <div class="updatePost__form__addedImage" v-if="postItem.imageUrl != ' ' && !imageUpdated && displayImageName" >
                 <p class="updatePost__form__addedImage__image" >{{postItem.imageUrl}}</p>
-                <font-awesome-icon class="updatePost__form__addedImage__icon" icon="xmark" @click="hideUploadedFile" />
+                <font-awesome-icon class="updatePost__form__addedImage__icon" icon="xmark" @click="deleteUploadedFile" />
             </div>
             <div class="updatePost__form__addedImage" v-if="postItem.imageUrl && imageUpdated" >
                 <p class="updatePost__form__addedImage__image" >{{imageUpdated.name}}</p>
@@ -71,7 +74,9 @@ export default ({
         ...mapState({
             user: 'user',
             posts: 'posts',
-            postComments: 'postComments'
+            postComments: 'postComments',
+            reportedPosts: 'reportedPostsByUserId'
+           
         })
         
     },
@@ -89,7 +94,7 @@ export default ({
             this.displayImageName = !this.displayImageName;
           
         },
-        hideUploadedFile(){
+        deleteUploadedFile(){
             this.displayImageName = !this.displayImageName;
         },
         deleteUpdatedFile(){
@@ -160,7 +165,7 @@ export default ({
         reportPost(postId) {
             //toggle like value between 0 and 1
             this.isReported = !this.isReported;
-            if( this.isReported == true){
+            if( this.isReported == true ){
                 this.report= 1;
             }else{
                 this.report = 0;
@@ -180,6 +185,38 @@ export default ({
                     }else{
                         window.confirm('Vous ne signalez plus cette publication !')
                     }
+                })
+        },
+        unreportPost(postId){
+            const unreportPost = {
+                postId,
+                report: 0
+            };
+            //envoie requête vers store - requête LikePost
+            this.$store
+                .dispatch('removeReport', unreportPost)
+                .then((res) => {
+                    console.log(res)
+                    console.log("removeReport dispatch done !")
+                    if(this.mode=='homePage'){
+                        this.$store
+                            .dispatch('getPostsByDate')
+                            .then(() => {
+                                console.log("getPostsByDate dispatch done !");
+                                this.showUpdateBlock = false;
+                            });
+                        } else {
+                            const userId = this.$route.params.userId;
+                            this.$store
+                            .dispatch('getPostsByUserId', userId)
+                            .then(() => {
+                                console.log("getPostsByDate dispatch done !");
+                                this.showUpdateBlock = false;
+                            });
+                        }
+                    window.confirm('Signalement enlevé !')
+
+                    
                 })
         }  
 
@@ -201,7 +238,7 @@ export default ({
         display: flex;
         flex-direction: column ;
         justify-content: center;
-        &__delete, &__update {
+        &__button {
             padding: 10px 0;
             width: 100%;
         }
