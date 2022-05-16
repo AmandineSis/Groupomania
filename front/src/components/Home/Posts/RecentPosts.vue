@@ -8,7 +8,7 @@
                 </router-link>
                 
                 <div class="posts__header__settings">
-                    <p class="posts__header__settings__date" >{{postItem.created}}</p>
+                    <p class="posts__header__settings__date" > <span>Publié le {{ new Date(postItem.created).toLocaleString() }}</span></p>
                     <span class="posts__header__settings__nav" @click="openSettings" @blur="closeSettings">
                         <font-awesome-icon icon="ellipsis"  />
                     </span>
@@ -22,7 +22,7 @@
 
         <div class="posts__content">
             <p class="posts__content__text" v-if="postItem.content" >{{postItem.content}}</p>
-            <img class="posts__content__image" v-if="postItem.imageUrl != ''" :src="postItem.imageUrl" alt="post photo">
+            <img class="posts__content__image" v-if="postItem.imageUrl != undefined " :src="postItem.imageUrl" alt="post photo">
         </div>
         
         <footer class="posts__footer">

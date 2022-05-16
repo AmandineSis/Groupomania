@@ -30,7 +30,6 @@ export default createStore({
     status: '',
     user: user,
     userInfos: [],
-    //currentPost: "",
     postsByDate: [],
     postsByLike: [],
     reportedPosts: [],
