@@ -1,37 +1,37 @@
 <template>
-        <nav class="topBar__nav">
-            <ul class="topBar__nav__list">
-                <li class="topBar__nav__list__item"><router-link to="/"><font-awesome-icon icon="sign-out-alt"  @click="logoutUser"/></router-link></li>
-                <li class="topBar__nav__list__item"><font-awesome-icon icon="gear" @click="showSettings"/></li>
-                <li class="topBar__nav__list__item"><font-awesome-icon icon="magnifying-glass" @click="showSearchBar" />
-                    <form v-if="search" method="POST"> 
-                        <div class="search">  
-                            <p>
-                                <BaseInput 
-                                    class="search__entryField" 
-                                    v-model="event.userSearch"
-                                    type="search" 
-                                    name="user" 
-                                    label="Rechercher..."
-                                    @keyup="searchUser"
-                                    @blur="stopSearch"
-                                    @click="stopSearch"
-                                    />
-                            </p>
-                            <font-awesome-icon class="search__entryField__delete" icon="xmark" @click="deleteSearch" />
+    <nav class="topBar__nav">
+        <ul class="topBar__nav__list">
+            <li class="topBar__nav__list__item"><router-link to="/"><font-awesome-icon icon="sign-out-alt"  @click="logoutUser"/></router-link></li>
+            <li class="topBar__nav__list__item"><font-awesome-icon icon="gear" @click="showSettings"/></li>
+            <li class="topBar__nav__list__item"><font-awesome-icon icon="magnifying-glass" @click="showSearchBar" />
+                <form v-if="search" method="POST"> 
+                    <div class="search">  
+                        <p>
+                            <BaseInput 
+                                class="search__entryField" 
+                                v-model="event.userSearch"
+                                type="search" 
+                                name="user" 
+                                label="Rechercher..."
+                                @keyup="searchUser"
+                                @blur="stopSearch"
+                                @click="stopSearch"
+                                />
+                        </p>
+                        <font-awesome-icon class="search__entryField__delete" icon="xmark" @click="deleteSearch" />
+                    </div>
+                    <div class="results">
+                        <div v-for="result in searchResults" :key="result.id" class="result">
+                            <router-link :to="`/profile/${result.userId}`">
+                            <img class="imgSearch" :src="result.profilePicUrl" alt="profile picture"/>
+                            <span class="nameSearch">{{ result.firstName }} {{ result.lastName }}</span>
+                            </router-link>
                         </div>
-                        <div class="results">
-                            <div v-for="result in searchResults" :key="result.id" class="result">
-                                <router-link :to="`/profile/${result.userId}`">
-                                <img class="imgSearch" :src="result.profilePicUrl" alt="profile picture"/>
-                                <span class="nameSearch">{{ result.firstName }} {{ result.lastName }}</span>
-                                </router-link>
-                            </div>
-                        </div>
-                    </form>
-                </li>
-            </ul>
-        </nav>
+                    </div>
+                </form>
+            </li>
+        </ul>
+    </nav>
 </template>
 
 <script>
@@ -96,22 +96,22 @@ p {
 }
 
 .topBar__nav {
-            width: 50%;
-            margin-left: 15px;
-            &__list {
-                display: flex;
-                flex-direction: row;
-                justify-content: left;
-                align-items: top;
-                &__item {
-                    display: flex;
-                    flex-direction: row;
-                    justify-content: left;
-                    margin: 0 10px;
-                    height: 18px;
-                }
-            }
+    width: 50%;
+    margin-left: 15px;
+    &__list {
+        display: flex;
+        flex-direction: row;
+        justify-content: left;
+        align-items: top;
+        &__item {
+            display: flex;
+            flex-direction: row;
+            justify-content: left;
+            margin: 0 10px;
+            height: 18px;
         }
+    }
+    }
     
     .svg-inline--fa {
         color: white;
@@ -159,16 +159,5 @@ p {
   border-radius: 100%;
     }
 
-   /* @keyframes slide-right {
-    from { //transform: scaleX(0); 
-            transform: translateX(0);
-           opacity: 0;
-        }
-    to { //transform: scaleX(1);
-    transform: translateX(1);
-         opacity: 1 ;
-        }
-    }
-*/
 
 </style>

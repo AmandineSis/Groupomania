@@ -90,7 +90,7 @@ exports.login = (req, res) => {
           }
           //création du token d'authentification
           let token = jwt.sign({ userId: userExists.userId, moderator: userExists.moderator }, process.env.TOKEN_KEY, { expiresIn: '24h' });
-          res.status(200).json({ userId: userExists.userId, token});
+          res.status(200).json({ userId: userExists.userId, token, moderator: userExists.moderator});
         })
         .catch(error => res.status(500).json({ error }));
     }

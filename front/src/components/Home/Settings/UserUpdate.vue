@@ -3,25 +3,25 @@
         <form class="userUpdate__form">
             <BaseInput
                 class="userUpdate__form__input"
-                v-model="event.firstName"
-                v-on:change="isFirstNameValid"
-                :label="userInfos.firstName"
+                :value="userLoggedIn.firstName"
+                @input="event.firstName = $event.target.value"
+                @change="isFirstNameValid"
                 type="text"
             />
             <p v-if="error.firstNameError">Veuillez saisir au moins 3 caratères</p>
             <BaseInput
                 class="userUpdate__form__input"
-                v-model="event.lastName"
-                v-on:change="isLastNameValid"
-                :label="userInfos.lastName"
+                :value="userLoggedIn.lastName"
+                @input="event.lastName = $event.target.value"
+                @change="isLastNameValid"
                 type="text"
             />
             <p v-if="error.lastNameError">Veuillez saisir au moins 3 caratères</p>
             <BaseInput
                 class="userUpdate__form__input"
-                v-model="event.email"
-                v-on:change="isEmailValid"
-                :label="userInfos.email"
+                :value="userLoggedIn.email"
+                @input="event.email = $event.target.value"
+                @change="isEmailValid"
                 type="email"
             />
             <p v-if="error.emailError">Veuillez saisir un email valide</p>
@@ -84,7 +84,7 @@ export default {
             ...mapState({
                 status: 'status',
                 user: 'user',
-                userInfos: 'userInfos',
+                userLoggedIn: 'userLoggedIn',
                 postComments: 'postComments'
         })
     },
@@ -107,6 +107,8 @@ export default {
         },
         updateUser() {
             //const self = this;
+            console.log(this.event.firstName);
+       
             const userId = this.user.userId
             this.$store
                 .dispatch('updateUser',
@@ -117,7 +119,6 @@ export default {
                 .then((res => {
                     console.log(res);
                     console.log('updateUser dispatch done');
-
                     window.alert('Modifications effectuées !');
                     this.$store
                     .dispatch('getUser', userId )

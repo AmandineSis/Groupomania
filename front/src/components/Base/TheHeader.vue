@@ -1,7 +1,7 @@
 <template>
-    <div class="mainHeader" v-once>
+    <header class="mainHeader" v-once>
          <img class="mainHeader__logo" alt="logo groupomania" src="@/assets/images/logo.png">
-    </div>
+    </header>
 </template>
 
 <script>

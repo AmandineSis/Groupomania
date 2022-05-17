@@ -58,6 +58,9 @@ export default {
 
 <style scoped lang="scss">
 .userSettings {
+    position: relative;
+    z-index: 99;
+    
     display: flex;
     flex-direction: row;
     border: 2px solid #999999;

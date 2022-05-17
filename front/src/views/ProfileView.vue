@@ -5,20 +5,21 @@
     </nav> 
 
     <UserProfile :profileView="true" :posts="posts"/>
-    <button v-if="user.userId == 1 && userIdProfile !== 1">Supprimer cet utilisateur</button>
+    <button class="button" v-if="user.userId == 1 && userIdProfile !== 1" @click="showDeleteBlock">Supprimer cet utilisateur</button>
+    <DeleteBlock v-if="deleteBlock"/>
     <UserSettings v-if="settings"/>
-    <NewPost v-once/>  
+    <NewPost :mode="profilePage" v-once/>  
     <div class="toggle">
         <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : mode=='recentPosts'}" @click="getUserRecentPosts"> Récents </button>
         <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : mode=='popularPosts'}" @click="getUserPopularPosts"> Populaires </button>
     </div>
     <main v-if="mode == 'recentPosts'">  
-        <div class="recentPosts" v-for="postItem in posts" :key="postItem.postId">
-            <RecentPosts :postItem="postItem"/>   
+        <div class="posts__container" v-for="postItem in posts" :key="postItem.postId">
+            <RecentPosts :postItem="postItem" />   
         </div>
     </main> 
     <main v-if="mode == 'popularPosts'">
-        <div class="PopularPosts" v-for="popularPostItem in popularPosts" :key="popularPostItem.postId">
+        <div class="posts__container" v-for="popularPostItem in popularPosts" :key="popularPostItem.postId">
             <RecentPosts :postItem="popularPostItem"/>   
         </div>
     </main>
@@ -30,6 +31,7 @@ import {mapState} from 'vuex';
 import TopBar from '@/components/Home/Nav/TopBar.vue'
 import UserProfile from '@/components/Home/Nav/UserProfile.vue'
 import UserSettings from '@/components/Home/Settings/UserSettings.vue'
+import DeleteBlock from '@/components/Home/Settings/DeleteBlock.vue'
 import NewPost from '@/components/Home/Posts/NewPost.vue'
 import RecentPosts from '@/components/Home/Posts/RecentPosts.vue'
 
@@ -38,6 +40,7 @@ export default {
     components : {
         TopBar,
         UserSettings,
+        DeleteBlock,
         UserProfile,
         NewPost,
         RecentPosts
@@ -47,7 +50,8 @@ export default {
             mode: 'recentPosts',
             search: false,
             settings: false,
-            userIdProfile: ''
+            userIdProfile: '',
+            deleteBlock: false
         }
     },
     computed: {
@@ -60,10 +64,6 @@ export default {
     mounted:
         function(){
             this.userIdProfile = parseInt(this.$route.params.userId);
-            console.log(this.userIdProfile);
-            console.log(typeof userIdProfile);
-            console.log(this.user.userId);
-            console.log(typeof this.user.userId);
             this.$store
                 .dispatch('getPostsByUserId', this.userIdProfile)
                 .then(() => {
@@ -94,6 +94,10 @@ export default {
                 .then(() => {
                     console.log("getPostsByUserId dispatch done !")
                 });
+        },
+        showDeleteBlock(){
+            this.deleteBlock = !this.deleteBlock;
+
         }
   }
 }
@@ -145,11 +149,27 @@ p {
         }
     }
 }
+.button{
+font-size: 1em;
+                color: white;
+                width: 195px;
+                height: 25px;
+                margin: 3px auto;
+                border-radius: 5px;
+                background-color: #ee7575;
+                transition: .4s background-color;
+                &:hover {
+                    background-color: #a71e05;
+                    color: #ffffff;
+                }
+}
 /************************new post*************************** */
 /************************new post*************************** */
-.recentPosts{
+
+
+.posts__container{
+    max-width: 500px;
         height: auto;
-    }
-
-
+        margin:  50px auto;
+}
 </style>

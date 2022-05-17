@@ -20,6 +20,7 @@ if (!user) {
       user = {
         userId: -1,
         token: '',
+        moderator: '',
       };
   }
 }
@@ -29,6 +30,7 @@ export default createStore({
   state: {
     status: '',
     user: user,
+    userLoggedIn: [],
     userInfos: [],
     postsByDate: [],
     postsByLike: [],
@@ -43,14 +45,7 @@ export default createStore({
   getters: {
     fullName(state){
       return `${state.userInfos.firstName} ${state.userInfos.lastName}`
-    },
-   /* getPostById: (state) => (postId) => {
-      if (state.postsByDate.postId == postId){
-        let userId = state.postsByDate.userId;
-        return userId;
-      
-      }
-    }*/
+    }
   },
   mutations: {
     setStatus(state, status){
@@ -60,6 +55,9 @@ export default createStore({
       instance.defaults.headers.common = {'Authorization': `bearer ${user.token}`}
       localStorage.setItem('user', JSON.stringify(user));
       state.user = user;
+    },
+    userLoggedIn(state, userLoggedIn){
+      state.userLoggedIn = userLoggedIn;
     },
     userInfos(state, userInfos){
       state.userInfos = userInfos;
@@ -154,6 +152,16 @@ export default createStore({
           });
         });
     },
+    getUserLoggedIn: ({ commit }, userId) => {
+      instance
+        .get(`/user/${userId}`)
+        .then( function (response) {
+          commit('userLoggedIn', response.data.results[0]);
+          console.log("update loggedin")
+        })
+        .catch(function () {
+        });
+    },
     getUser: ({ commit }, userId) => {
       instance
         .get(`/user/${userId}`)
@@ -195,10 +203,11 @@ export default createStore({
           .then(function (response) {
             commit('setStatus', 'updated')
             resolve(response)
+            console.log(response)
           })
           .catch(function (error) {
             commit('setStatus', 'error_update')
-            reject(error)
+            reject(error.response.message)
           });
         });
     },

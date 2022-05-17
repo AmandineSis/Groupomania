@@ -1,9 +1,10 @@
 <template>
     <div class="pictureUpdate" >
         <form class="pictureUpdate__form">
-            <label for="uploadImage" class="form__btn form__btn__upload"></label>
+           
             <input id="uploadImage" type="file" accept="image/jpeg, image/png, image/jpg" @change="updloadProfilePicture">
-    
+             <label for="uploadImage" class="form__btn form__btn__upload">Parcourir...</label>
+             <p class="pictureUpdate__form__name">{{this.profilePic.name}}</p>
             <div class="pictureUpdate__form__valid">
                 <button class="pictureUpdate__form__valid__button" type= "button" @click="updatePicture" > Valider
                     <!-- <span v-if="status == 'loading'">Modification en cours...</span>
@@ -27,7 +28,7 @@ export default {
     },
     computed: {
         ...mapState({
-                user: 'user'
+                user: 'user',
         })
     },
     methods: {
@@ -55,6 +56,7 @@ export default {
                             .dispatch('getUser', userId )
                             .then(() => {
                                 console.log("getUSer dispatch done !")
+                                
                         });
                     }), (err => {
                         console.log(err)
@@ -74,6 +76,16 @@ export default {
         display: flex;
         flex-direction: column;
         width: 100%;
+        &__name {
+            width: 90%;
+            height: 25px;
+            margin: 3px auto;
+            border: 1px solid #ee7575;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            border-radius: 5px;
+            padding: 4px;
+        }
         &__input {
             /*display: flex;
             flex-direction: column;
@@ -109,9 +121,31 @@ export default {
     }   
 }
 .form__btn{
-    width: 100%;
+    display: block;
+        font-size: 1em;
+                color: white;
+                width: 90%;
+                height: 25px;
+                margin: 3px auto;
+                border-radius: 5px;
+                background-color: #ee7575;
+                transition: .4s background-color;
+                text-align: center;
+                padding: 4px;
+                &:hover {
+                    background-color: #a71e05;
+                    color: #ffffff;
+                }
+        
+            
 }
+
 #uploadImage {
+       opacity: 0;
+       position: absolute;
+       z-index: -1;
+    }
+/*#uploadImage {
     width: 100%;
     &::file-selector-button{
         display: flex;
@@ -133,5 +167,5 @@ export default {
        // opacity: 0;
         //position: absolute;
        // z-index: -1;
-    }
+    }*/
 </style>

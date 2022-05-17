@@ -48,19 +48,31 @@ export default {
     },
     methods: {  
         deleteAccount(){
+            
             const password = this.event.password;
-            const userId = this.user.userId
-            this.$store
-                .dispatch('deleteUser',
-                    {userId, password})
-                .then((res => {
-                    console.log(res);
-                    console.log('deleteUser dispatch done');
-                    this.$store.commit('logout');
-                    this.$router.push('/');
-                }), (err => {
-                    console.log(err)
-                }))
+            const userId = this.user.userId;
+
+            if (password != ""){
+                if (window.confirm(`Attention ! Toutes les données de cet utilisateur seront perdues, êtes-vous sûr de vouloir supprimer ?`)){
+                    this.$store
+                    .dispatch('deleteUser',
+                        {userId, password})
+                    .then((res => {
+                        console.log(res);
+                        console.log('deleteUser dispatch done');
+                        this.$store.commit('logout');
+                        this.$router.push('/');
+                    }), (err => {
+                        console.log(err);
+                        window.alert('Mot de passe invalide !');
+                    }))
+                }else{
+                    this.event.password = "";
+                    }
+            }else{
+                window.alert('Veuillez entrer un mot de passe !');
+            }
+            
         }           
     }
 }

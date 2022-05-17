@@ -1,6 +1,7 @@
 <template>
 	<img class="form__comments__profile" :src="comItem.profilePicUrl" alt="">
 	<div class="form__comments__content">
+		<p class="form__comments__content__user">{{ comItem.firstName }} {{ comItem.lastName }}</p>
 		<div 
 			class="form__comments__input form__comments__input__sent"
 			v-if="comItem.commentContent != ' '"
@@ -12,7 +13,7 @@
 	</div>
 	<div class="form__comments__settings">    
 		<span class="posts__header__settings__nav" @click="openComSettings" @blur="closeSettings">
-            <font-awesome-icon icon="ellipsis" v-if="userInfos.moderator == 1||user.userId== comItem.userId" />
+            <font-awesome-icon icon="ellipsis" v-if="user.moderator == 1||user.userId== comItem.userId" />
         </span>
 	</div>   
 	<div class="form__comments__popup">    
@@ -78,7 +79,13 @@ export default ({
 	&__content {
 		display: flex;
 		flex-direction: column;
+		
 		width:100%;
+		&__user{
+			font-size: 0.9;
+			margin: 2px 10px;
+			text-align: left;
+		}
 	}
 	&__input {
 		width:70%;
@@ -86,7 +93,7 @@ export default ({
 		background-color: white;
 		border: 2px solid #999999;
 		resize: none;
-		border-radius: 20px;
+		border-radius:20px;
 		padding: 5px 15px;
 		background-color: white;
 		display: inline-block;
@@ -103,6 +110,7 @@ export default ({
 		height: 40px;
 		border-radius: 50px;
 		border: 0.5px solid #999999;
+		object-fit: cover;
 	}
 	&__image {
 		width:70%;

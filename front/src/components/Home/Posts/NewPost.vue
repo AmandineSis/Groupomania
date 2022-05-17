@@ -38,9 +38,11 @@ export default ({
     component: {
         BaseInput
     },
+    props: {
+        "mode": String
+    },
     data(){
         return {
-                mode: 'homePage',
                 post: "",
                 imageUrl:""
         }
@@ -68,7 +70,7 @@ export default ({
                     .then((res => {
                         console.log(res);
 
-                        if(this.mode=='homePage'){
+                        if(this.mode!='profilePage'){
                         this.$store
                             .dispatch('getPostsByDate')
                             .then(() => {
@@ -98,7 +100,7 @@ export default ({
 <style scoped lang="scss">
     .newPost {
         margin: 30px auto;
-        width: 500px;
+        max-width: 500px;
         align-items: center;
         border-radius: 20px;
     }

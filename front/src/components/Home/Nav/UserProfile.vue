@@ -70,7 +70,7 @@ export default {
     computed: {
         ...mapState({
             status: 'status',
-            userLoggedIn: 'user',
+            userLoggedIn: 'userLoggedIn',
             user: 'userInfos',
             
         }),
@@ -114,6 +114,7 @@ export default {
         height: 90px;
         border-radius: 50px;
         border: 2px solid #999999;
+        object-fit: cover;
         &--sizeUp{
             width: 150px;
             height: 150px;

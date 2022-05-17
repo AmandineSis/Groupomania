@@ -4,7 +4,6 @@
             <BaseInput
                         class="passwordUpdate__form__input"
                         v-model="event.oldPassword"
-                        v-on:change="isPasswordValid"
                         label="Ancien mot de passe"
                         type="password"
             />
@@ -15,14 +14,14 @@
                         label="Nouveau mot de passe"
                         type="password"
             />
-            <p v-if="error.passwordError">Veuillez saisir au moins 8 caratères, une majuscule, une minuscule, un chiffre et un caractère spécial</p>
+            
         </form>
          <div class="passwordUpdate__form__valid">
-            <button class="passwordUpdate__form__valid__button" type= "button" @click="updatePassword" > Valider
+            <button class="passwordUpdate__form__valid__button" :class="{'passwordUpdate__form__valid__button--disabled' : !passwordValid}" type= "button" @click="updatePassword" > Valider
                 <!-- <span v-if="status == 'loading'">Modification en cours...</span>
                 <span v-else>Modifié</span> -->
             </button>
-    
+            <p v-if="error.passwordError">Veuillez saisir au moins 8 caratères, une majuscule, une minuscule, un chiffre et un caractère spécial</p>
         </div>
     </div>
 </template>
@@ -72,7 +71,9 @@ export default {
             const oldPassword = this.event.oldPassword;
             const newPassword = this.event.newPassword;
             const userId = this.user.userId
-            this.$store
+            
+            if(this.isPasswordValid){
+                this.$store
                 .dispatch('updatePassword',
                     {userId,oldPassword,newPassword})
                 .then((res => {
@@ -85,7 +86,11 @@ export default {
                 }), (err => {
                     console.log(err)
                 }))
-        }           
+            } else {
+                window.alert("Erreur mdp")
+            }         
+            }
+             
     }
 }
 </script>
@@ -123,6 +128,15 @@ export default {
                     background-color: #a71e05;
                     color: #ffffff;
                 }
+                &--disabled{
+            background-color: grey;
+            &:hover{
+                cursor:not-allowed;
+                background-color:#cecece;
+                border: 2px solid grey;
+                color: white;
+            }
+        }
             }
         }
     }   

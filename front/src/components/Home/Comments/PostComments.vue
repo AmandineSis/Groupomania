@@ -1,4 +1,9 @@
 <template>
+    <div>   
+        <div class="recentComments" v-for="comItem in postComments" :key=comItem.comId>
+            <AddedComments :comItem ="comItem"/>
+        </div> 
+    </div> 
     <div class="posts__review__comments">
         <form class="form__comments" >
             <label for="uploadCommentImage" class="form__comments__btn form__comments__btn__upload"><font-awesome-icon icon="image" /></label>
@@ -14,12 +19,6 @@
         </form>
         <p  v-if="commentImageUrl"> {{ commentImageUrl.name}} </p>
     </div> 
-    <div>   
-        <div class="recentComments" v-for="comItem in postComments" :key=comItem.comId>
-            <AddedComments :comItem ="comItem"/>
-        </div> 
-        
-    </div>    
 </template>
 
 <script>
@@ -134,7 +133,7 @@ export default ({
 <style scoped lang="scss">
 
 .posts__review__comments {
-    background-color: white;
+    background-color: #dedede;
     padding: 10px 0;
     border-radius: 0 0 20px 20px;
 }

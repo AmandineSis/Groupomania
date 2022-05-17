@@ -25,10 +25,10 @@ exports.getPostsByDate = (req, res, next) => {
         if (error) throw ({ error });
         let post = results[0];
         if (!post) {
-            res.json({ message: "aucun post" });
+            return res.json({ message: "aucun post" });
+        }else{
+            return res.status(201).json({ results })
         }
-        res.status(201).json({ results })
-
     });
 };
 
@@ -40,10 +40,10 @@ exports.getPostsByLike = (req, res, next) => {
         if (error) throw ({ error });
         let post = results[0];
         if (!post) {
-            res.json({ message: "aucun post" });
+           return  res.json({ message: "aucun post" });
+        }else{
+            return res.status(201).json({ results })
         }
-        res.status(201).json({ results })
-
     });
 };
 

@@ -1,7 +1,7 @@
 <template>
     <!----------------------------------Post settings-------------------------------------------------->
     <div class="settings">    
-            <button class="settings__update" v-if="user.userId != 1" @click.prevent="openUpdate"  >
+            <button class="settings__update" v-if="user.userId == comItem.userId" @click.prevent="openUpdate"  >
                 modifier
             </button>
             <button class="settings__delete" @click.prevent="deleteComment(comItem.postId, comItem.comId)" >

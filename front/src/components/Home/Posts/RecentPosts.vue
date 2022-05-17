@@ -1,5 +1,5 @@
 <template>
-    <div class="posts"  :class="{'posts__reported' : postItem.report>=1 && user.userId == 1 && selectedMode != 'reportedPosts'} ">
+    <div class="posts"  :class="{'posts__reported' : postItem.report>=1 && user.moderator == 1 && selectedMode != 'reportedPosts'} ">
 
         <header class="posts__header"  >
                 <router-link class="posts__header__name" :to="`/profile/${postItem.userId}`">
@@ -50,7 +50,7 @@
                 </button>
             </div>            
         </footer>
-        <div v-if="showComment">
+        <div class="comment__container" v-if="showComment">
             <PostComments :postItem="postItem"/> 
         </div>
     </div>
@@ -170,8 +170,8 @@ export default ({
 
 <style scoped lang="scss">
     .posts {
-        margin: 50px auto;
-        width: 500px;
+       // margin: 50px auto;
+        width: 100%;
         border-radius: 20px 20px 0 0;
         &__reported{
         border: 3px solid #ee7575;
@@ -193,6 +193,7 @@ export default ({
                 margin: 5px;
                 border-radius: 50px;
                 border: 0.5px solid #999999;
+                object-fit: cover;
                 }
                 &__id {
                 text-align: left; 
@@ -283,5 +284,10 @@ export default ({
         }
 
     }
+.comment__container{
+    //border: 1px black solid;
+    border-radius: 0 0 20px 20px;
+}
+
 
 </style>

@@ -1,17 +1,17 @@
 <template>
     <!----------------------------------Post settings-------------------------------------------------->
     <div class="settings">    
-            <button class="settings__button" v-if="user.userId != 1 && user.userId== postItem.userId" @click="openUpdate"  >
+            <button class="settings__button" v-if=" user.userId== postItem.userId" @click="openUpdate"  >
                 modifier
             </button>
-            <button class="settings__button" v-if=" user.userId == 1 || user.userId== postItem.userId" @click="deletePost(postItem.postId)" >
+            <button class="settings__button" v-if=" user.moderator == 1 || user.userId== postItem.userId" @click="deletePost(postItem.postId)" >
                 supprimer
             </button>
-            <button class="settings__button" v-if="user.userId != 1 && user.userId!= postItem.userId" @click="reportPost(postItem.postId)" >
+            <button class="settings__button" v-if="user.moderator == 0 && user.userId!= postItem.userId" @click="reportPost(postItem.postId)" >
                 <span v-if="isReported==1 ">Déjà signalé</span>
                 <span v-else>Signaler</span>
             </button>
-            <button class="settings__button" v-if="user.userId == 1 && postItem.report>=1" @click="unreportPost(postItem.postId)" >
+            <button class="settings__button" v-if="user.moderator == 1 && postItem.report>=1" @click="unreportPost(postItem.postId)" >
                 Enlever signalement
             </button>
     </div>

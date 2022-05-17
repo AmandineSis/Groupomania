@@ -14,7 +14,7 @@
                     class="form__input"
                     v-model="event.firstName"
                     v-on:change="isFirstNameValid"
-                    label="firstName"
+                    label="Prénom"
                     type="text"
                 />
                 <p v-if="mode == 'signup' && error.firstNameError">Veuillez saisir au moins 3 caratères</p>
@@ -23,7 +23,7 @@
                     class="form__input"
                     v-model="event.lastName"
                     v-on:change="isLastNameValid"
-                    label="lastName"
+                    label="Nom"
                     type="text"
                 />
                 <p v-if="mode == 'signup' && error.lastNameError">Veuillez saisir au moins 3 caratères</p>
@@ -31,7 +31,7 @@
                     class="form__input"
                     v-model="event.email"
                     v-on:change="isEmailValid"
-                    label="email"
+                    label="Email"
                     type="email"
                 />
                 <p v-if="mode == 'signup' && error.emailError">Veuillez saisir un email valide</p>
@@ -40,7 +40,7 @@
                     class="form__input"
                     v-model="event.password"
                     v-on:change="isPasswordValid"
-                    label="password"
+                    label="Mot de passe"
                     type="password"
                 />
                 <p v-if="mode == 'signup' && error.passwordError">Veuillez saisir au moins 8 caratères, une majuscule, une minuscule, un chiffre et un caractère spécial</p>
@@ -115,7 +115,10 @@ export default ({
                 return false
                 }
             },
-            ...mapState(['status'])
+            ...mapState({
+                status:'status',
+                user: 'user'
+                })
     },
     methods: {  
         switchToSignup() {
@@ -146,18 +149,27 @@ export default ({
             : (this.passwordValid= false, this.error.passwordError = true);
         },   
         login(){
-            const self = this;
             this.$store
                 .dispatch('login', {
                     email: this.event.email,
                     password: this.event.password})
                 .then((res => {
-                    self.$router.push('Home')
-                    console.log(res)
+                    console.log(res.userId)
+                    console.log('login dispatch done');
+                    this.$store
+                        .dispatch('getUserLoggedIn', this.user.userId)
+                        .then((res=> {
+                            console.log(res)
+                            console.log('getUserLoggedIn dispatch done');
+                            this.$router.push('Home')    
+                            }), (err => {
+                                console.log(err)
+                                this.error.loginError = true;
+                            }))
                 }), (err => {
                     console.log(err)
                     this.error.loginError = true;
-                }))
+                    }))       
         },
         createAccount() {
             const self = this;
@@ -168,6 +180,7 @@ export default ({
                     email: this.event.email,
                     password: this.event.password})
                 .then((res => {
+                    console.log('createAccount dispatch done');
                     self.login();
                     console.log(res)
                 }), (err => {

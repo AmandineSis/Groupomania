@@ -8,36 +8,36 @@
    <div class="toggle">
         <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : mode=='recentPosts'}" @click="getRecentPosts"> Récents </button>
         <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : mode=='popularPosts'}" @click="getPopularPosts"> Populaires </button>
-        <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : mode=='reportedPosts'}" @click="getReportedPosts" v-if="user.userId==1"> Signalés </button>
+        <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : mode=='reportedPosts'}" @click="getReportedPosts" v-if="user.moderator==1"> Signalés </button>
     </div>
     <main v-if="mode == 'recentPosts'">  
-        <div v-if="posts.length>0">
-            <div class="recentPosts" v-for="postItem in posts" :key="postItem.postId">
+        <div v-if="posts.length>= 1">
+            <div class="posts__container" v-for="postItem in posts" :key="postItem.postId">
                 <RecentPosts :postItem="postItem" :selectedMode="mode"/>   
             </div>
         </div>
-        <div v-else>
-            <p>Il n'existe pas encore de publication !</p>
+        <div class="noPost" v-else>
+            <p class="noPost__text">Il n'existe pas encore de publication !</p>
         </div>
     </main> 
     <main v-if="mode == 'popularPosts'">
-        <div v-if="popularPosts.length>0">
-            <div class="PopularPosts" v-for="popularPostItem in popularPosts" :key="popularPostItem.postId">
+        <div v-if="popularPosts.length>=1">
+            <div class="posts__container" v-for="popularPostItem in popularPosts" :key="popularPostItem.postId">
                 <RecentPosts :postItem="popularPostItem" :selectedMode="mode"/>   
             </div>
         </div>
-        <div v-else>
-             <p>Il n'existe pas encore de publication !</p>
+        <div class="noPost" v-else>
+            <p class="noPost__text">Il n'existe pas encore de publication !</p>
         </div>
     </main>
     <main v-if="mode == 'reportedPosts'">
         <div v-if="reportedPosts.length>=1">
-            <div class="reportedPosts" v-for="reportedPostsItem in reportedPosts" :key="reportedPostsItem.postId">
+            <div class="posts__container" v-for="reportedPostsItem in reportedPosts" :key="reportedPostsItem.postId">
                 <RecentPosts :postItem="reportedPostsItem" :selectedMode="mode"/>   
             </div>
-        </div>
-        <div v-else>
-             <p>Aucune publication n'a été signalée !</p>
+        </div >
+        <div class="noPost" v-else>
+            <p class="noPost__text">Aucune publication n'a été signalée !</p>
         </div>
     </main>
 </template>
@@ -82,13 +82,17 @@ export default {
                 .dispatch('getPostsByDate')
                 .then(() => {
                     console.log("getPostsByDate dispatch done !")
-                    this.$store
+                   /* this.$store     ////////WARNING ADD IF MODE = "reported" dans une fct séparée
                         .dispatch('getReportedPosts')
                         .then(() => {
                             console.log("getReportedPosts dispatch done !")
-                        });
-                });
+                        });*/
+                })
+                .catch((err) => {
+                        console.log(err);
+                        window.alert('Aucune publication !');
             
+        })
         }
     ,  
     methods: {
@@ -169,9 +173,20 @@ p {
 }
 /************************new post*************************** */
 /************************new post*************************** */
-.recentPosts{
+.posts__container{
+        max-width: 500px;
         height: auto;
+        margin:  50px auto;
     }
-
+.noPost {
+    border: 2px solid #ee7575;
+    border-radius: 5px;
+    max-width: 500px;
+    height: 50px;
+    margin: 50px auto;
+    &__text{
+        margin: 15px;
+    }
+}
 
 </style>
