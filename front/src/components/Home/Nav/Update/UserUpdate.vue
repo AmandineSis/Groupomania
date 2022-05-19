@@ -30,11 +30,7 @@
 
 
         <div class="userUpdate__form__valid">
-            <button class="userUpdate__form__valid__button" type= "button" @click="updateUser" > Valider
-                <!-- <span v-if="status == 'loading'">Modification en cours...</span>
-                <span v-else>Modifié</span> -->
-            </button>
-    
+            <button class="userUpdate__form__valid__button" type= "button" @click="updateUser" >Valider</button>
         </div>
     </div>
 </template>
@@ -73,7 +69,6 @@ export default {
         }
     },
     computed: {
-        
         updateValidation(){
             if ( this.firstNameValid && this.lastNameValid && this.emailValid) {
                 return true;

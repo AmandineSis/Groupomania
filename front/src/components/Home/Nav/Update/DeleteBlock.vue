@@ -1,12 +1,12 @@
 <template>
-    <div class="userSettings"  >
+    <div class="userUpdate"  >
         <p>Entrer le mot de passe administrateur pour supprimer ce compte</p>
         <DeleteAccount/>
     </div>
 </template>
 
 <script>
-import DeleteAccount from '@/components/Home/Nav/Settings/DeleteAccount.vue';
+import DeleteAccount from '@/components/Home/Nav/Update/DeleteAccount.vue';
 import { mapState } from 'vuex';
 export default {
 
@@ -32,7 +32,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.userSettings {
+.userUpdate {
     display: flex;
     flex-direction: column;
     border: 2px solid #999999;

@@ -1,10 +1,10 @@
 <template>
-    <div class="userSettings" >
-        <div class="userSettings__selection">
-            <button class="userSettings__selection__btn" @click="switchToIdentification">Modifier mes identifiants</button>
-            <button class="userSettings__selection__btn" @click="switchToPassword">Modifier mot de passe</button>
-            <button class="userSettings__selection__btn" @click="switchToProfilePicture">Modifier photo de profil</button>
-            <button class="userSettings__selection__btn userSettings__selection__btn__delete " v-if="user.userId != 1" @click="switchToDeleteAccount">Supprimer mon compte</button>
+    <div class="userUpdate" >
+        <div class="userUpdate__selection">
+            <button class="userUpdate__selection__btn" @click="switchToIdentification">Modifier mes identifiants</button>
+            <button class="userUpdate__selection__btn" @click="switchToPassword">Modifier mot de passe</button>
+            <button class="userUpdate__selection__btn" @click="switchToProfilePicture">Modifier photo de profil</button>
+            <button class="userUpdate__selection__btn userUpdate__selection__btn__delete " v-if="user.userId != 1" @click="switchToDeleteAccount">Supprimer mon compte</button>
 
         </div>
         <UserUpdate v-if="mode == 'identification'"/>
@@ -15,14 +15,14 @@
 </template>
 
 <script>
-import UserUpdate from '@/components/Home/Nav/Settings/UserUpdate.vue';
-import PasswordUpdate from '@/components/Home/Nav/Settings/PasswordUpdate.vue';
-import PictureUpdate from '@/components/Home/Nav/Settings/PictureUpdate.vue';
-import DeleteAccount from '@/components/Home/Nav/Settings/DeleteAccount.vue';
+import UserUpdate from '@/components/Home/Nav/Update/UserUpdate.vue';
+import PasswordUpdate from '@/components/Home/Nav/Update/PasswordUpdate.vue';
+import PictureUpdate from '@/components/Home/Nav/Update/PictureUpdate.vue';
+import DeleteAccount from '@/components/Home/Nav/Update/DeleteAccount.vue';
 import { mapState } from 'vuex';
 export default {
 
-    name: 'SettingsCard',
+    name: 'UpdateMenu',
     components: {
         UserUpdate,
         PasswordUpdate,
@@ -57,7 +57,8 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.userSettings {
+
+.userUpdate {
     width: 500px;
     height: 130px;
     margin: 30px auto;
