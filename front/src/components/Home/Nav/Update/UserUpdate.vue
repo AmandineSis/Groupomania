@@ -30,7 +30,7 @@
 
 
         <div class="userUpdate__form__valid">
-            <button class="userUpdate__form__valid__button" type= "button" @click="updateUser" >Valider</button>
+            <button class="userUpdate__form__valid__button" :class="{'userUpdate__form__valid__button--disabled' : !updateValidation}" type="button" @click="updateUser" >Valider</button>
         </div>
     </div>
 </template>
@@ -156,6 +156,9 @@ export default {
                 border-radius: 5px;
                 background-color: #ee7575;
                 transition: .4s background-color;
+                --disabled{
+                    background-color: grey;
+                }
                 &:hover {
                     background-color: #a71e05;
                     color: #ffffff;

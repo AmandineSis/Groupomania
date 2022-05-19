@@ -1,10 +1,10 @@
 <template>
-    <div class="userUpdate" >
-        <div class="userUpdate__selection">
-            <button class="userUpdate__selection__btn" @click="switchToIdentification">Modifier mes identifiants</button>
-            <button class="userUpdate__selection__btn" @click="switchToPassword">Modifier mot de passe</button>
-            <button class="userUpdate__selection__btn" @click="switchToProfilePicture">Modifier photo de profil</button>
-            <button class="userUpdate__selection__btn userUpdate__selection__btn__delete " v-if="user.userId != 1" @click="switchToDeleteAccount">Supprimer mon compte</button>
+    <div class="updateMenu" >
+        <div class="updateMenu__selection">
+            <button class="updateMenu__selection__btn" @click="switchToIdentification">Modifier mes identifiants</button>
+            <button class="updateMenu__selection__btn" @click="switchToPassword">Modifier mot de passe</button>
+            <button class="updateMenu__selection__btn" @click="switchToProfilePicture">Modifier photo de profil</button>
+            <button class="updateMenu__selection__btn updateMenu__selection__btn__delete " v-if="user.userId != 1" @click="switchToDeleteAccount">Supprimer mon compte</button>
 
         </div>
         <UserUpdate v-if="mode == 'identification'"/>
@@ -58,7 +58,7 @@ export default {
 
 <style scoped lang="scss">
 
-.userUpdate {
+.updateMenu {
     width: 500px;
     height: 130px;
     margin: 30px auto;
