@@ -65,6 +65,7 @@ export default {
                     }), (err => {
                         console.log(err);
                         window.alert('Mot de passe invalide !');
+                        this.event.password ="";
                     }))
                 }else{
                     this.event.password = "";

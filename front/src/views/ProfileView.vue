@@ -5,7 +5,7 @@
     </nav> 
 
     <UserProfile :profileView="true" :posts="posts"/>
-    <button class="button" v-if="user.userId == 1 && userIdProfile !== 1" @click="showDeleteBlock">Supprimer cet utilisateur</button>
+    <button class="button" v-if="user.userId == 1 && userIdProfile !== 1" @click="showDeleteBlock" >Supprimer cet utilisateur</button>
     <DeleteBlock v-if="deleteBlock"/>
     <UserSettings v-if="settings"/>
     <NewPost :mode="profilePage" v-once/>  
@@ -97,8 +97,8 @@ export default {
         },
         showDeleteBlock(){
             this.deleteBlock = !this.deleteBlock;
-
         }
+        
   }
 }
 </script>

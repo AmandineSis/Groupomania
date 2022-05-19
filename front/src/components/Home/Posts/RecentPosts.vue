@@ -186,7 +186,8 @@ export default ({
                 align-items: center;
                 margin: 0;
                 text-align: left;
-                height: 25px;;
+                height: 25px;
+                
                 &__picture{
                 width: 70px;
                 height: 70px;

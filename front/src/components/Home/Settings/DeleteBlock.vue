@@ -1,5 +1,5 @@
 <template>
-    <div class="userSettings" >
+    <div class="userSettings"  >
         <p>Entrer le mot de passe administrateur pour supprimer ce compte</p>
         <DeleteAccount/>
     </div>

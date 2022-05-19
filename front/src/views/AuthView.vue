@@ -1,59 +1,56 @@
 <template>
-    <main class="card">
-        <h1 class="home__tile">Bienvenue</h1>
-        <h2 class="card__title" v-if="mode == 'login'">Connexion</h2>
-        <h2 class="card__title" v-else>Inscription</h2>
-            <p  class="card__subtitle" v-if="mode == 'login'">Pas encore de compte ? <span class="card__action" @click="switchToSignup">Créer un compte</span></p>
-            <p  class="card__subtitle" v-else>Tu as déjà un compte ? <span class="card__action" @click="switchToLogin">Se connecter</span></p>
+    <main class="auth">
+        <h1 class="auth__main-title">Bienvenue</h1>
+        <h2 class="auth__title" v-if="mode == 'login'">Connexion</h2>
+        <h2 class="auth__title" v-else>Inscription</h2>
+            <p  class="auth__subtitle" v-if="mode == 'login'">Pas encore de compte ? <span class="auth__action" @click="switchToSignup">Créer un compte</span></p>
+            <p  class="auth__subtitle" v-else>Tu as déjà un compte ? <span class="auth__action" @click="switchToLogin">Se connecter</span></p>
         
         
         <form class="form" >
-            <div class="inputContainer">
-                <BaseInput
-                    v-if=" mode == 'signup'"
-                    class="form__input"
-                    v-model="event.firstName"
-                    v-on:change="isFirstNameValid"
-                    label="Prénom"
-                    type="text"
-                />
-                <p v-if="mode == 'signup' && error.firstNameError">Veuillez saisir au moins 3 caratères</p>
-                <BaseInput
-                    v-if=" mode == 'signup'"
-                    class="form__input"
-                    v-model="event.lastName"
-                    v-on:change="isLastNameValid"
-                    label="Nom"
-                    type="text"
-                />
-                <p v-if="mode == 'signup' && error.lastNameError">Veuillez saisir au moins 3 caratères</p>
-                <BaseInput
-                    class="form__input"
-                    v-model="event.email"
-                    v-on:change="isEmailValid"
-                    label="Email"
-                    type="email"
-                />
-                <p v-if="mode == 'signup' && error.emailError">Veuillez saisir un email valide</p>
-                <p v-if="mode == 'signup' && error.emailExists">Cet email existe déjà</p>
-                <BaseInput
-                    class="form__input"
-                    v-model="event.password"
-                    v-on:change="isPasswordValid"
-                    label="Mot de passe"
-                    type="password"
-                />
-                <p v-if="mode == 'signup' && error.passwordError">Veuillez saisir au moins 8 caratères, une majuscule, une minuscule, un chiffre et un caractère spécial</p>
-                <p v-if="status == 'error_login'">identifiants de connexion incorrects</p>
-            </div>
-
-
+            <BaseInput
+                v-if=" mode == 'signup'"
+                class="form__input"
+                v-model="event.firstName"
+                v-on:change="isFirstNameValid"
+                label="Prénom"
+                type="text"
+            />
+            <p class="form__input__error" v-if="mode == 'signup' && error.firstNameError">Veuillez saisir au moins 3 caratères</p>
+            <BaseInput
+                v-if=" mode == 'signup'"
+                class="form__input"
+                v-model="event.lastName"
+                v-on:change="isLastNameValid"
+                label="Nom"
+                type="text"
+            />
+            <p class="form__input__error" v-if="mode == 'signup' && error.lastNameError">Veuillez saisir au moins 3 caratères</p>
+            <BaseInput
+                class="form__input"
+                v-model="event.email"
+                v-on:change="isEmailValid"
+                label="Email"
+                type="email"
+            />
+            <p class="form__input__error" v-if="mode == 'signup' && error.emailError">Veuillez saisir un email valide</p>
+            <p class="form__input__error" v-if="mode == 'signup' && error.emailExists">Cet email existe déjà</p>
+            <BaseInput
+                class="form__input"
+                v-model="event.password"
+                v-on:change="isPasswordValid"
+                label="Mot de passe"
+                type="password"
+            />
+            <p class="form__input__error" v-if="mode == 'signup' && error.passwordError">Veuillez saisir au moins 8 caratères, une majuscule, une minuscule, un chiffre et un caractère spécial</p>
+            <p class="form__input__error" v-if="mode == 'login' && status == 'error_login'">identifiants de connexion incorrects</p>
+        
             <div class="form__valid">
-                <button class="button" type= "button" :class="{'button--disabled' : !loginValidation}" @click="login" v-if=" mode == 'login'">
+                <button class="form__valid__button" type= "button" :class="{'form__valid__button--disabled' : !loginValidation}" @click="login" v-if=" mode == 'login'">
                     <span v-if="status == 'loading'">Connexion en cours...</span>
                     <span v-else>Connexion</span>
                 </button>
-                <button  class="button" type="button" :class="{'button--disabled' : !signupValidation}" @click="createAccount" v-else>
+                <button  class="form__valid__button" type="button" :class="{'form__valid__button--disabled' : !signupValidation}" @click="createAccount" v-else>
                     <span v-if="status == 'loading'">Connexion en cours...</span>
                     <span v-else>Créer mon compte</span>
                 </button>
@@ -194,39 +191,34 @@ export default ({
 
 <style scoped lang="scss">
 
-.home__tile {
-    text-align:center;
-    font-weight: 900;
+.auth {
+    max-width: 540px;
+    margin: 32px auto;
+    padding:32px;
+    background:white;
+    border-radius: 16px;
+    border: 2px solid #EEEEEE;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+    &__main-title {
     font-size: 50px;
+    font-weight: 900;
     margin: 20px;
-}
-
-.card {
-  max-width: 100%;
-  width: 540px;
-  background:white;
-  border-radius: 16px;
-  border: 2px solid #EEEEEE;
-box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
-  margin: 32px auto;
-  padding:32px;
-  &__title {
-  text-align:center;
-  font-weight: 800;
-  }
-  &__subtitle {
-  text-align: center;
-  color:#666;
-  font-weight: 500;
-  margin-top: 10px;
-  }
-  &__action {
-    color:#2196F3;
-    text-decoration: underline;
-    &:hover {
-        cursor:pointer;
+    } 
+    &__title {
+    font-weight: 800;
     }
-  }
+    &__subtitle {
+    color:#666;
+    font-weight: 500;
+    margin-top: 10px;
+    }
+    &__action {
+        color:#2196F3;
+        text-decoration: underline;
+        &:hover {
+            cursor:pointer;
+        }
+    }
 }
 
 .form {
@@ -239,8 +231,14 @@ box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px
     &__input{
         border:none;
         border-bottom: 1px solid #999999;
-        width: 100%;
         height: 40px;
+        &__error{
+            width: 100%;
+            font-family: "Roboto";
+            color: #a71e05;
+            font-size: 0.8rem;
+            text-align: left;
+        }
     }
     &__valid {
         width: 100%;
@@ -248,58 +246,33 @@ box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px
         flex-direction: row;
         justify-content: space-around;
         margin: 30px auto;
-    }
-}
-
-.inputContainer {
-    width: 100%;
-    height: 275px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    padding: 20px 0 10px;
-}
-
-p {
-    width: 100%;
-    font-family: "Roboto";
-    color: #a71e05;
-    font-size: 0.8rem;
-    text-align: left;
-    
-}
-
-.button {
-    background: #EE7575;
-    color:white;
-    border-radius: 8px;
-    font-weight: 800;
-    font-size: 15px;
-    border: none;
-    width: 100%;
-    padding: 16px;
-    transition: .4s background-color;
-        &:hover {
-            background-color: white;
-            color: #EE7575;
-            border: 2px solid #EE7575;
-        }
-        &:active {
-            color: #a71e05;
-            background-color: #ffffff;
+        &__button {
+            width: 100%;
+            padding: 16px;
+            font-size: 15px;
+            font-weight: 800;
+            background: #EE7575;
+            color:white;
+            border-radius: 8px;
             border: none;
-        }
-        &--disabled{
-            background-color: grey;
-            &:hover{
-                cursor:not-allowed;
-                background-color:#cecece;
-                border: 2px solid grey;
-                color: white;
+            transition: .4s background-color;
+            &:hover {
+                background-color: white;
+                color: #EE7575;
+                border: 2px solid #EE7575;
+            }
+            &--disabled{
+                background-color: grey;
+                &:hover{
+                    cursor:not-allowed;
+                    background-color:#cecece;
+                    border: 2px solid grey;
+                    color: white;
+                }
             }
         }
+    }
 }
-
 </style>
 
 

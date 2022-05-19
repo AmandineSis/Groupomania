@@ -152,7 +152,8 @@ export default createStore({
           });
         });
     },
-    getUserLoggedIn: ({ commit }, userId) => {
+    getUserLoggedIn: ({ commit, state }) => {
+      const userId = state.user.userId;
       instance
         .get(`/user/${userId}`)
         .then( function (response) {

@@ -77,7 +77,12 @@ export default {
     },
     beforeMount: 
         function(){
-
+            if (this.$store.state.user.userId == -1) {
+            this.$router.push('/');
+            return ;
+            }
+            this.$store
+                .dispatch('getUserInfos');
             this.$store
                 .dispatch('getPostsByDate')
                 .then(() => {

@@ -103,6 +103,8 @@ export default ({
 			width: 95%;
 			height: auto;
 			text-align: left;
+			overflow-wrap: break-word;
+			
 		}
 	}
 	&__profile {
