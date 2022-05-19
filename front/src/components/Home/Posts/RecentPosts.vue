@@ -169,9 +169,9 @@ export default ({
 </script>
 
 <style scoped lang="scss">
+
     .posts {
-       // margin: 50px auto;
-        width: 100%;
+        margin:  50px auto;
         border-radius: 20px 20px 0 0;
         &__reported{
         border: 3px solid #ee7575;

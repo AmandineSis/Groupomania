@@ -32,19 +32,45 @@ export default createStore({
     user: user,
     userLoggedIn: [],
     userInfos: [],
+
     postsByDate: [],
     postsByLike: [],
     reportedPosts: [],
-    reportedPostsByUserId: [],
+
     getPostsByUserId: [],
     postsByUserIdByLike: [],
+
     postComments: [],
     commentsByPostId: [],
+
     searchResults: []
   },
   getters: {
     fullName(state){
       return `${state.userInfos.firstName} ${state.userInfos.lastName}`
+    },
+
+
+    postsByDateLength(state){
+      if(state.postsByDate){
+        return state.postsByDate.length
+      }else{
+      return 0
+      }
+    },
+    postsByLikeLength(state){
+      if(state.postsByLike){
+        return state.postsByLike.length
+      }else{
+      return 0
+      }
+    },
+    reportedPostsLength(state){
+      if(state.reportedPosts){
+        return state.reportedPosts.length
+      }else{
+      return 0
+      }
     }
   },
   mutations: {
@@ -64,6 +90,9 @@ export default createStore({
     },
     searchResult(state, searchResults){
       state.searchResults = searchResults;
+    },
+    clearSearch(state){
+      state.searchResults = [];
     },
     postsByDate(state, postsByDate){
       state.postsByDate = postsByDate;
@@ -158,7 +187,6 @@ export default createStore({
         .get(`/user/${userId}`)
         .then( function (response) {
           commit('userLoggedIn', response.data.results[0]);
-          console.log("update loggedin")
         })
         .catch(function () {
         });
@@ -259,6 +287,10 @@ export default createStore({
           .catch(function () {
         });
     },
+    clearSearch: ({commit}) => {
+      commit('clearSearch');
+          }
+    ,
 
     /**************************** POSTS ********************** */  
     
@@ -304,7 +336,7 @@ export default createStore({
         .catch(function () {
       });
     },
-    getReportedPostsByUserId: ({ commit }, userId) => {
+  /*  getReportedPostsByUserId: ({ commit }, userId) => {
       instance
         .get(`/posts/${userId}/reported`)
         .then( function (response) {
@@ -312,7 +344,7 @@ export default createStore({
         })
         .catch(function () {
       });
-    },
+    },*/
     getPostsByUserId: ({ commit }, userId) => {
       instance
         .get(`/posts/${userId}`)
@@ -468,6 +500,6 @@ export default createStore({
     
   },
   modules: {
-  }
+  },
 
 })

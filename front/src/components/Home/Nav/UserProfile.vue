@@ -2,14 +2,14 @@
         <div class="userProfile" v-if="!profileView" >
             <router-link class="userProfile__link" :to="`/profile/${userLoggedIn.userId}`">
                 <p class="userProfile__fullname">{{ fullName }}</p> 
-                <img class="userProfile__picture" :src="user.profilePicUrl" alt="photo de profil">
+                <img class="userProfile__picture" :src="userInfos.profilePicUrl" alt="photo de profil">
             </router-link>
         </div>
         
         <div class="userProfile" :class="{'userProfile--inBlock' : profileView}" v-else >
             <!-- <router-link class="link" :to="{ name: 'Profile', params: { userId: status.user.userId } }"> -->
                 <p class="userProfile__fullname" :class="{'userProfile__fullname--black' : profileView}">{{ fullName }}</p> 
-                <img class="userProfile__picture" :class="{'userProfile__picture--sizeUp' : profileView}" :src="user.profilePicUrl" alt="photo de profil">
+                <img class="userProfile__picture" :class="{'userProfile__picture--sizeUp' : profileView}" :src="userInfos.profilePicUrl" alt="photo de profil">
             <!-- </router-link> -->
         </div>
 
@@ -29,7 +29,7 @@ export default {
         
         }
     },
-    beforeCreate:
+    beforeMount:
         function(){
             if(!this.profileView){
                 console.log(this.$store.state.user)
@@ -71,7 +71,7 @@ export default {
         ...mapState({
             status: 'status',
             userLoggedIn: 'userLoggedIn',
-            user: 'userInfos',
+            userInfos: 'userInfos',
             
         }),
         ...mapGetters(['fullName'])

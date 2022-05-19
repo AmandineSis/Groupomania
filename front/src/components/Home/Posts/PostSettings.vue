@@ -25,11 +25,11 @@
                 name ="newPost"
                 :placeholder="postItem.content"
             ></textarea>
-            <div class="updatePost__form__addedImage" v-if="postItem.imageUrl != ' ' && !imageUpdated && displayImageName" >
-                <p class="updatePost__form__addedImage__image" >{{postItem.imageUrl}}</p>
+            <div class="updatePost__form__addedImage" v-if="postItem.imageUrl != null && !imageUpdated && displayImageName" >
+                <p class="updatePost__form__addedImage__image" >{{postItem.imageUrl.name}}</p>
                 <font-awesome-icon class="updatePost__form__addedImage__icon" icon="xmark" @click="deleteUploadedFile" />
             </div>
-            <div class="updatePost__form__addedImage" v-if="postItem.imageUrl && imageUpdated" >
+            <div class="updatePost__form__addedImage" v-if="postItem.imageUrl == null && imageUpdated" >
                 <p class="updatePost__form__addedImage__image" >{{imageUpdated.name}}</p>
                 <font-awesome-icon class="updatePost__form__addedImage__icon" icon="xmark" @click="deleteUpdatedFile" />
             </div>

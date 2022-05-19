@@ -135,11 +135,12 @@ exports.getReportedPostsByUserId = (req, res, next) => {
 //result = "nouveau post créé !"
 exports.createPost = (req, res, next) => {
     //Vérification des données de la requête
+    console.log(req.body.imageUrl)
     const content = (req.body.content) ? req.body.content : " ";
-    const imageUrl = (req.file) ? `${req.protocol}://${req.get('host')}/images/post/${req.file.filename}` : "";
+    const imageUrl = (req.file) ? `${req.protocol}://${req.get('host')}/images/post/${req.file.filename}` : undefined;
 
     //S'il n'y a pas de contenu ET pas d'image => erreur
-    if (content == "" && imageUrl == "") {
+    if (content == "" && imageUrl == undefined) {
         return res.status(400).json({ message: "Ce post est vide, impossible d'accéder à la requête !" })
     }
 
@@ -181,14 +182,14 @@ exports.updatePost = (req, res, next) => {
             return res.status(401).json({ message: "utilisateur non authorisé !" });
         }
         let content = (req.body.content) ? req.body.content : " ";
-        let imageUrl = (req.file) ? `${req.protocol}://${req.get('host')}/images/post/${req.file.filename}` : " ";
+        let imageUrl = (req.file) ? `${req.protocol}://${req.get('host')}/images/post/${req.file.filename}` : null;
         //S'il n'y a pas de contenu ET pas d'image => erreur
-        if (content == " " && imageUrl == " ") {
+        if (content == " " && imageUrl == null) {
             return res.status(400).json({ message: "Veuillez ajouter un contenu !" })
         }
         console.log(postExists.imageUrl);
         ////récupération et suppression de l'image avant modification sur le serveur
-        if (postExists.imageUrl !== undefined) {
+        if (postExists.imageUrl !== null) {
             const filename = postExists.imageUrl.split('/post/')[1];
             fs.unlink(`images/post/${filename}`, (error) => {
                 //mise à jour de la BDD
@@ -242,7 +243,7 @@ exports.deletePost = (req, res, next) => {
             return res.status(401).json({ message: "utilisateur non authorisé !" });
         }
         //récupération et suppression de l'image avant modification sur le serveur s'il y en a une
-        if (postExists.imageUrl !== undefined) {
+        if (postExists.imageUrl !== null) {
             const filename = postExists.imageUrl.split('/post/')[1];
             fs.unlink(`images/post/${filename}`, () => {
                 //mise à jour de la BDD

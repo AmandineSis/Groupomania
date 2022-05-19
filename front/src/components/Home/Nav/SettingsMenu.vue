@@ -1,0 +1,164 @@
+<template>
+    <ul class="settings__list">
+        <li class="settings__list__item">
+            <router-link to="/">
+                <font-awesome-icon class="settings__icon" icon="sign-out-alt"  @click="logoutUser"/>
+            </router-link>
+        </li>
+        <li class="settings__list__item">
+            <font-awesome-icon class="settings__icon" icon="gear" @click="showSettings"/>
+        </li>
+        <li class="settings__list__item">
+            <font-awesome-icon class="settings__icon" icon="magnifying-glass" @click="showSearchBar" />
+            <form  v-if="search" method="POST"> 
+                <div class="settings__searchForm" >  
+                        <BaseInput 
+                            class="settings__searchForm__input" 
+                            v-model="event.userSearch"
+                            type="search" 
+                            name="user" 
+                            label="Rechercher..."
+                            @keyup="getSearchResults"
+                            @blur="stopSearch"
+                            @click="stopSearch"
+                            />
+                    <font-awesome-icon class="settings__searchForm__input__delete" icon="xmark" @click="deleteSearch" />
+                </div>
+                <div class="settings__searchForm__results">
+                    <div class="result" v-for="result in searchResults" :key="result.id" >
+                        <router-link class="result__link" :to="`/profile/${result.userId}`">
+                        <img class="result__image" :src="result.profilePicUrl" alt="profile picture"/>
+                        <p class="result__name">{{ result.firstName }} {{ result.lastName }}</p>
+                        </router-link>
+                    </div>
+                </div>
+            </form>
+        </li>
+    </ul>
+</template>
+
+<script>
+import BaseInput from '@/components/Base/BaseInput.vue'
+import { mapActions, mapState } from 'vuex';
+export default {
+    name: 'SettingsMenuu',
+    components: {
+        BaseInput
+    },
+    data(){
+        return{
+            search: false,
+            settings: false,
+            event:{
+                userSearch:''
+            }
+        }
+    },
+    computed: {
+        ...mapState({
+            searchResults: 'searchResults'
+        })
+    },
+    methods: {
+        ...mapActions(['searchUser','clearSearch']),
+        logoutUser(){
+            this.$store.commit('logout');
+            this.$router.push('/');
+        },
+        showSearchBar(){
+                this.search=!this.search;
+                },
+        showSettings(){
+                this.$emit('show-settings');
+            },
+        getSearchResults(){
+            let nameSearched = this.event.userSearch;
+            this.searchUser({indexName: nameSearched})
+                .then((res) => {
+                    console.log(res);
+                    console.log('searchUser dispatch done !')
+                })
+        },
+        stopSearch(){
+            console.log("search stopped");
+            this.event.userSearch = "";
+        },
+        deleteSearch(){
+            this.clearSearch()
+                .then((res) => {
+                    console.log(res);
+                    console.log('clearSearch dispatch done !')
+                })
+        }
+  }
+}
+</script>
+
+<style scoped lang="scss">
+
+.settings{
+    &__list {
+        display: flex;
+        flex-direction: row;
+        justify-content: left;
+        align-items: top;
+        margin-left: 15px;
+        &__item {
+            display: flex;
+            flex-direction: row;
+            margin: 0 10px;
+            height: 18px;
+        }   
+    }
+    &__icon{
+        color: white;
+        font-size: 1.2rem;
+    }
+    &__searchForm{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-left: 7px;
+        &__input {
+            width: 140px;
+            margin: 0 ;
+            padding-left: 7px;
+            border: 2px #F2F2F2 solid;
+            border-radius: 20px;
+            &__delete{
+                margin: 0 5px;
+            }
+        }
+        &__results{
+                position: absolute;
+                width: 190px;
+                height: 100px;
+                top: 30px;
+                left: 100px;
+            }
+    }
+}
+
+.result{
+    border: 1px solid #dbdbdb;
+    background-color: white;
+    &:hover {
+        background-color: #90b3d6;
+    }
+    &__link{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+    &__image{
+        object-fit: cover;
+        height: 45px;
+        width: 45px;
+        margin: 10px;
+        border-radius: 100%;
+    }
+    &__name{
+        margin: 0;
+    }
+}
+</style>

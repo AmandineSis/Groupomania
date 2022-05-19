@@ -1,7 +1,7 @@
 <template>
-    <nav class="topBar" v-once>
-        <TopBar @show-settings="openSettings" v-once />
-        <router-link :to="`/home/`" class="topBar__toHomeIcon"><font-awesome-icon icon="house"/></router-link>
+    <nav class="topMenu" v-once>
+        <SettingsMenu class="topMenu__settings" @show-settings="openSettings" v-once />
+        <router-link class="topMenu__home" :to="`/home/`" ><font-awesome-icon icon="house"/></router-link>
     </nav> 
 
     <UserProfile :profileView="true" :posts="posts"/>
@@ -28,7 +28,7 @@
 
 <script>
 import {mapState} from 'vuex';
-import TopBar from '@/components/Home/Nav/TopBar.vue'
+import SettingsMenu from '@/components/Home/Nav/SettingsMenu.vue'
 import UserProfile from '@/components/Home/Nav/UserProfile.vue'
 import UserSettings from '@/components/Home/Settings/UserSettings.vue'
 import DeleteBlock from '@/components/Home/Settings/DeleteBlock.vue'
@@ -38,7 +38,7 @@ import RecentPosts from '@/components/Home/Posts/RecentPosts.vue'
 export default {
     name: 'HomeView',
     components : {
-        TopBar,
+        SettingsMenu,
         UserSettings,
         DeleteBlock,
         UserProfile,
@@ -110,8 +110,8 @@ p {
   color: black;
 }
 
-.topBar {
-         position: absolute;
+.topMenu {
+        position: absolute;
         top: 90px;
         width: 100%;
         height: 25px;
@@ -119,9 +119,13 @@ p {
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        &__toHomeIcon{
-            margin-right: 25px;
+        &__settings{
+            width: 50%;
+            margin-left: 15px;
+        }
+        &__home{
             color: white;
+            margin-right: 15px;
         }
     }
 .toggle {

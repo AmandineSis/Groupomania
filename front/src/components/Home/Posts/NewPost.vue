@@ -61,7 +61,7 @@ export default ({
             if (this.post != "") {
                 fd.append('content', this.post);
             }
-            if (this.imageUrl) {
+            if (this.imageUrl != "") {
                 fd.append('image', this.imageUrl, this.imageUrl.name);
             }
             if (this.post || this.imageUrl) {
