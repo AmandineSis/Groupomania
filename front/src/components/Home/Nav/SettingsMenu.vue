@@ -74,8 +74,7 @@ export default {
         getSearchResults(){
             let nameSearched = this.event.userSearch;
             this.searchUser({indexName: nameSearched})
-                .then((res) => {
-                    console.log(res);
+                .then(() => {
                     console.log('searchUser dispatch done !')
                 })
         },
@@ -85,8 +84,7 @@ export default {
         },
         deleteSearch(){
             this.clearSearch()
-                .then((res) => {
-                    console.log(res);
+                .then(() => {
                     console.log('clearSearch dispatch done !')
                 })
         }
@@ -126,16 +124,18 @@ export default {
             border: 2px #F2F2F2 solid;
             border-radius: 20px;
             &__delete{
-                margin: 0 5px;
+                position: relative;
+                left: -15px;
+                color: grey;
             }
         }
         &__results{
-                position: absolute;
-                width: 190px;
-                height: 100px;
-                top: 30px;
-                left: 100px;
-            }
+            position: absolute;
+            width: 190px;
+            height: 100px;
+            top: 30px;
+            left: 100px;
+        }
     }
 }
 

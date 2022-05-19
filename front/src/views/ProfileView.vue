@@ -7,7 +7,7 @@
     <UserProfile :profileView="true" :posts="posts"/>
     <button class="button" v-if="user.userId == 1 && userIdProfile !== 1" @click="showDeleteBlock" >Supprimer cet utilisateur</button>
     <DeleteBlock v-if="deleteBlock"/>
-    <UserSettings v-if="settings"/>
+    <SettingsCard v-if="settings"/>
     <NewPost :mode="profilePage" v-once/>  
     <div class="toggle">
         <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : mode=='recentPosts'}" @click="getUserRecentPosts"> Récents </button>
@@ -30,8 +30,8 @@
 import {mapState} from 'vuex';
 import SettingsMenu from '@/components/Home/Nav/SettingsMenu.vue'
 import UserProfile from '@/components/Home/Nav/UserProfile.vue'
-import UserSettings from '@/components/Home/Settings/UserSettings.vue'
-import DeleteBlock from '@/components/Home/Settings/DeleteBlock.vue'
+import SettingsCard from '@/components/Home/Nav/Settings/SettingsCard.vue'
+import DeleteBlock from '@/components/Home/Nav/Settings/DeleteBlock.vue'
 import NewPost from '@/components/Home/Posts/NewPost.vue'
 import RecentPosts from '@/components/Home/Posts/RecentPosts.vue'
 
@@ -39,7 +39,7 @@ export default {
     name: 'HomeView',
     components : {
         SettingsMenu,
-        UserSettings,
+        SettingsCard,
         DeleteBlock,
         UserProfile,
         NewPost,

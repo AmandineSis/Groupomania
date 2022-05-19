@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import DeleteAccount from '@/components/Home/Settings/DeleteAccount.vue';
+import DeleteAccount from '@/components/Home/Nav/Settings/DeleteAccount.vue';
 import { mapState } from 'vuex';
 export default {
 

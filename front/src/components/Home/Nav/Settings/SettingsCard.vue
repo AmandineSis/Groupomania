@@ -15,14 +15,14 @@
 </template>
 
 <script>
-import UserUpdate from '@/components/Home/Settings/UserUpdate.vue';
-import PasswordUpdate from '@/components/Home/Settings/PasswordUpdate.vue';
-import PictureUpdate from '@/components/Home/Settings/PictureUpdate.vue';
-import DeleteAccount from '@/components/Home/Settings/DeleteAccount.vue';
+import UserUpdate from '@/components/Home/Nav/Settings/UserUpdate.vue';
+import PasswordUpdate from '@/components/Home/Nav/Settings/PasswordUpdate.vue';
+import PictureUpdate from '@/components/Home/Nav/Settings/PictureUpdate.vue';
+import DeleteAccount from '@/components/Home/Nav/Settings/DeleteAccount.vue';
 import { mapState } from 'vuex';
 export default {
 
-    name: 'UserSettings',
+    name: 'SettingsCard',
     components: {
         UserUpdate,
         PasswordUpdate,
@@ -58,18 +58,17 @@ export default {
 
 <style scoped lang="scss">
 .userSettings {
+    width: 500px;
+    height: 130px;
+    margin: 30px auto;
     position: relative;
     z-index: 99;
-    
     display: flex;
     flex-direction: row;
+    background-color: white;
     border: 2px solid #999999;
-        background-color: white;
-        margin: 30px auto;
-        width: 500px;
-        height: 130px;
-        align-items: center;
-        border-radius: 20px;
+    align-items: center;
+    border-radius: 20px;
     &__selection {
         display: flex;
         flex-direction: column;

@@ -3,7 +3,7 @@
         <SettingsMenu class="topMenu__settings" @show-settings="openSettings" v-once />
         <router-link :to="`/profile/${userLoggedIn.userId}`"><UserProfile/></router-link>
     </nav> 
-    <UserSettings v-if="settings"/>
+    <SettingsCard v-if="settings"/>
     <NewPost v-once/>
 
    <div class="toggle">
@@ -40,7 +40,7 @@
 import {mapState, mapActions, mapGetters} from 'vuex';
 import SettingsMenu from '@/components/Home/Nav/SettingsMenu.vue'
 import UserProfile from '@/components/Home/Nav/UserProfile.vue'
-import UserSettings from '@/components/Home/Settings/UserSettings.vue'
+import SettingsCard from '@/components/Home/Nav/Settings/SettingsCard.vue'
 import NewPost from '@/components/Home/Posts/NewPost.vue'
 import RecentPosts from '@/components/Home/Posts/RecentPosts.vue'
 
@@ -48,7 +48,7 @@ export default {
     name: 'HomeView',
     components : {
         SettingsMenu,
-        UserSettings,
+        SettingsCard,
         UserProfile,
         NewPost,
         RecentPosts
