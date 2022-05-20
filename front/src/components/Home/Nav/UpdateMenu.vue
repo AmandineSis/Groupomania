@@ -1,16 +1,18 @@
 <template>
-    <div class="updateMenu" >
-        <div class="updateMenu__selection">
-            <button class="updateMenu__selection__btn" @click="switchToIdentification">Modifier mes identifiants</button>
-            <button class="updateMenu__selection__btn" @click="switchToPassword">Modifier mot de passe</button>
-            <button class="updateMenu__selection__btn" @click="switchToProfilePicture">Modifier photo de profil</button>
-            <button class="updateMenu__selection__btn updateMenu__selection__btn__delete " v-if="user.userId != 1" @click="switchToDeleteAccount">Supprimer mon compte</button>
+    <div class="popupContainer">
+        <div class="updateMenu" >
+            <div class="updateMenu__selection">
+                <button class="updateMenu__selection__btn" @click="switchToIdentification">Modifier mes identifiants</button>
+                <button class="updateMenu__selection__btn" @click="switchToPassword">Modifier mot de passe</button>
+                <button class="updateMenu__selection__btn" @click="switchToProfilePicture">Modifier photo de profil</button>
+                <button class="updateMenu__selection__btn updateMenu__selection__btn__delete " v-if="user.userId != 1" @click="switchToDeleteAccount">Supprimer mon compte</button>
 
+            </div>
+            <UserUpdate v-if="mode == 'identification'"/>
+            <PasswordUpdate v-if="mode == 'password'"/>
+            <PictureUpdate v-if="mode == 'profilePicture'"/>
+            <DeleteAccount v-if="mode == 'deleteAccount'"/>
         </div>
-        <UserUpdate v-if="mode == 'identification'"/>
-        <PasswordUpdate v-if="mode == 'password'"/>
-        <PictureUpdate v-if="mode == 'profilePicture'"/>
-        <DeleteAccount v-if="mode == 'deleteAccount'"/>
     </div>
 </template>
 
@@ -57,19 +59,31 @@ export default {
 </script>
 
 <style scoped lang="scss">
+/*.popupContainer{
+    width: 100%;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+  //  background: rgb(255, 255, 255,0.8);
+}*/
 
 .updateMenu {
-    width: 500px;
-    height: 130px;
+    width: 550px;
+    height: 150px;
     margin: 30px auto;
-    position: relative;
-    z-index: 99;
+    position: fixed;
+    top: 120px;
+    left: 139px;
+    z-index: 1000;
     display: flex;
     flex-direction: row;
     background-color: white;
     border: 2px solid #999999;
     align-items: center;
     border-radius: 20px;
+    box-shadow: rgba(0, 0, 0, 0.6) 0px 5px 15px;
     &__selection {
         display: flex;
         flex-direction: column;
@@ -79,13 +93,20 @@ export default {
         &__btn {
             font-size: 1em;
             color: white;
-            width: 90%;
+            width: 80%;
             height: 25px;
             margin: 3px auto;
             border-radius: 5px;
             background-color: #ee7575;
             transition: .4s background-color;
+            cursor: pointer;
+    
+            transform: scale(1);
+            transition-property: transform;
+            transition-duration: 400ms;
+    
             &:hover {
+                transform: scale(1.1);
                 background-color: #a71e05;
                 color: #ffffff;
             }

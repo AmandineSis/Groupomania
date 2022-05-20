@@ -30,14 +30,14 @@
 
 
         <div class="userUpdate__form__valid">
-            <button class="userUpdate__form__valid__button" :class="{'userUpdate__form__valid__button--disabled' : !updateValidation}" type="button" @click="updateUser" >Valider</button>
+            <button class="userUpdate__form__valid__button" :class="{'userUpdate__form__valid__button--disabled' : !updateValidation}" type="button" @click="updateUserInfos" >Valider</button>
         </div>
     </div>
 </template>
 
 <script>
 import BaseInput from '@/components/Base/BaseInput.vue';
-import { mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 
 export default {
     
@@ -83,7 +83,8 @@ export default {
                 postComments: 'postComments'
         })
     },
-    methods: {  
+    methods: {
+        ...mapActions(['updateUser','getUserLoggedIn']),
         isFirstNameValid() {
             this.nameReg.test(this.event.firstName) 
             ? (this.firstNameValid= true, this.error.firstNameError = false) 
@@ -100,29 +101,28 @@ export default {
             ? (this.emailValid= true, this.error.emailError = false) 
             : (this.emailValid= false, this.error.emailError = true);
         },
-        updateUser() {
-            //const self = this;
-            console.log(this.event.firstName);
-       
+        
+        updateUserInfos() {
             const userId = this.user.userId
-            this.$store
-                .dispatch('updateUser',
-                    {userId,
-                    firstName: this.event.firstName,
-                    lastName: this.event.lastName,
-                    email: this.event.email})
+            const firstNameUpdate = (this.event.firstName ? this.event.firstName : this.userLoggedIn.firstName)
+            const lastNameUpdate = (this.event.lastName ? this.event.lastName : this.userLoggedIn.lastName)
+            const emailUpdate = (this.event.email ? this.event.email : this.userLoggedIn.email)
+
+            this.updateUser({userId,
+                    firstName: firstNameUpdate,
+                    lastName: lastNameUpdate,
+                    email: emailUpdate})
                 .then((res => {
                     console.log(res);
                     console.log('updateUser dispatch done');
                     window.alert('Modifications effectuées !');
-                    this.$store
-                    .dispatch('getUser', userId )
-                    .then(() => {
-                        console.log("getUSer dispatch done !")
-                });
-                }), (err => {
-                    console.log(err)
-                }))
+                    this.getUserLoggedIn({ userId })
+                        .then(() => {
+                            console.log("getUserLoggedIn dispatch done !")
+                        });
+                    }), (err => {
+                        console.log(err)
+                    }))
         }    
     }
 }

@@ -1,14 +1,14 @@
 <template>
         <div class="userProfile" v-if="!profileView" >
             <router-link class="userProfile__link" :to="`/profile/${userLoggedIn.userId}`">
-                <p class="userProfile__fullname">{{ fullName }}</p> 
+                <p class="userProfile__fullname">{{ fullNameUserLoggedIn }}</p> 
                 <img class="userProfile__picture" :src="userInfos.profilePicUrl" alt="photo de profil">
             </router-link>
         </div>
         
         <div class="userProfile" :class="{'userProfile--inBlock' : profileView}" v-else >
             <!-- <router-link class="link" :to="{ name: 'Profile', params: { userId: status.user.userId } }"> -->
-                <p class="userProfile__fullname" :class="{'userProfile__fullname--black' : profileView}">{{ fullName }}</p> 
+                <p class="userProfile__fullname" :class="{'userProfile__fullname--black' : profileView}">{{ fullNameUser }}</p> 
                 <img class="userProfile__picture" :class="{'userProfile__picture--sizeUp' : profileView}" :src="userInfos.profilePicUrl" alt="photo de profil">
             <!-- </router-link> -->
         </div>
@@ -52,18 +52,6 @@ export default {
                     .then(() => {
                         console.log("getUSer dispatch done !")
                 });
-                //Si userId = -1, retour à la page de connexion
-              /*  if(this.$store.state.user.userId == -1){
-                    this.$router.push('/');
-                    return;
-                }
-                const userId = this.$store.state.user.userId;
-                console.log(userId);
-                this.$store
-                    .dispatch('getUser', userId )
-                    .then(() => {
-                        console.log("getUSer dispatch done !")
-                });*/
             }
         },
     
@@ -74,7 +62,7 @@ export default {
             userInfos: 'userInfos',
             
         }),
-        ...mapGetters(['fullName'])
+        ...mapGetters(['fullNameUserLoggedIn','fullNameUser'])
     }
 }
 </script>

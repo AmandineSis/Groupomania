@@ -46,7 +46,10 @@ export default createStore({
     searchResults: []
   },
   getters: {
-    fullName(state){
+    fullNameUserLoggedIn(state){
+      return `${state.userLoggedIn.firstName} ${state.userLoggedIn.lastName}`
+    },
+    fullNameUser(state){
       return `${state.userInfos.firstName} ${state.userInfos.lastName}`
     },
 
@@ -289,9 +292,7 @@ export default createStore({
     },
     clearSearch: ({commit}) => {
       commit('clearSearch');
-          }
-    ,
-
+    }, 
     /**************************** POSTS ********************** */  
     
     createPost: ({ commit }, newPost ) => {
