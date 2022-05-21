@@ -3,7 +3,9 @@
         <SettingsMenu class="topMenu__settings" @show-settings="openSettings" v-once />
         <router-link :to="`/profile/${userLoggedIn.userId}`"><UserProfile/></router-link>
     </nav> 
-    <UpdateMenu v-if="settings"/>
+    <transition name="bounce">
+        <UpdateMenu v-if="settings" @blur="!settings"/>
+    </transition>
     <NewPost v-once/>
 
    <div class="toggle">
@@ -138,6 +140,26 @@ export default {
             margin-left: 15px;
         }
     }
+.bounce-enter-active {
+  animation: bounce-in .8s;
+}
+.bounce-leave-active {
+  animation: bounce-in .8s reverse;
+}
+@keyframes bounce-in {
+  0% {
+    transform: scale(0);
+  }
+  70% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+
+
 
 .toggle {
     width: 500px;

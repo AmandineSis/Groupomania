@@ -7,7 +7,9 @@
     <UserProfile :profileView="true" :posts="posts"/>
     <button class="button" v-if="user.userId == 1 && userIdProfile !== 1" @click="showDeleteBlock" >Supprimer cet utilisateur</button>
     <DeleteBlock v-if="deleteBlock"/>
-    <UpdateMenu v-if="settings"/>
+    <transition name="bounce">
+        <UpdateMenu v-if="settings"/>
+    </transition>
     <NewPost :mode="profilePage" v-once/>  
     <div class="toggle">
         <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : mode=='recentPosts'}" @click="getUserRecentPosts"> Récents </button>
@@ -128,6 +130,28 @@ p {
             margin-right: 15px;
         }
     }
+
+.bounce-enter-active {
+  animation: bounce-in .8s;
+}
+.bounce-leave-active {
+  animation: bounce-in .8s reverse;
+}
+@keyframes bounce-in {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+
+
+
 .toggle {
     width: 500px;
     display: flex;

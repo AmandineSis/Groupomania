@@ -219,6 +219,12 @@ export default ({
                 color: #ffffff;
                 font-size: 25px;
                 margin-right: 15px;
+                transform: scale(1);
+                transition: transform 200ms;
+                &:hover {
+                    transform: scale(1.2);
+                    cursor: pointer;
+                    }
                 }
                 &__popup{
                     position: absolute;

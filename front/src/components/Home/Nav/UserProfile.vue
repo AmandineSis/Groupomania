@@ -75,22 +75,36 @@ export default {
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin-right: 20px;
+    position: absolute;
+    top: -29px;
+    right: 20px;
+    z-index: 1000;
     &__link{
         display: flex;
         flex-direction: row;
         align-items: center;
+        transform: scale(1);
+        transition: transform 200ms;
+        &:hover {
+            transform: scale(1.1);
+            cursor: pointer;
+        }
     }
     &--inBlock{
         flex-direction: column-reverse;
-        margin-top: 20px;
+        margin: 20px 0;
         padding-bottom: 0;
+        position: static;
+        z-index: 0;
+        top: 0;
+        right: 0;
         
     }
     &__fullname {
         margin: 0 10px;
         font-family: 'RobotoBold';
         color: white;
+        
         &--black{
             margin: 20px 10px;
             font-size: 1.5em;
@@ -104,8 +118,8 @@ export default {
         border: 2px solid #999999;
         object-fit: cover;
         &--sizeUp{
-            width: 150px;
-            height: 150px;
+            width: 145px;
+            height: 145px;
             border-radius: 90px;
         }
     }

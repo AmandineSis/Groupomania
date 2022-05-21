@@ -8,31 +8,34 @@
         <li class="settings__list__item">
             <font-awesome-icon class="settings__icon" icon="gear" @click="showSettings"/>
         </li>
+        
         <li class="settings__list__item">
             <font-awesome-icon class="settings__icon" icon="magnifying-glass" @click="showSearchBar" />
-            <form  v-if="search" method="POST"> 
-                <div class="settings__searchForm" >  
-                        <BaseInput 
-                            class="settings__searchForm__input" 
-                            v-model="event.userSearch"
-                            type="search" 
-                            name="user" 
-                            label="Rechercher..."
-                            @keyup="getSearchResults"
-                            @blur="stopSearch"
-                            @click="stopSearch"
-                            />
-                    <font-awesome-icon class="settings__searchForm__input__delete" icon="xmark" @click="deleteSearch" />
-                </div>
-                <div class="settings__searchForm__results">
-                    <div class="result" v-for="result in searchResults" :key="result.id" >
-                        <router-link class="result__link" :to="`/profile/${result.userId}`">
-                        <img class="result__image" :src="result.profilePicUrl" alt="profile picture"/>
-                        <p class="result__name">{{ result.firstName }} {{ result.lastName }}</p>
-                        </router-link>
+            <transition name="grow">
+                <form  v-if="search" method="POST"> 
+                    <div class="settings__searchForm" >  
+                            <BaseInput 
+                                class="settings__searchForm__input" 
+                                v-model="event.userSearch"
+                                type="search" 
+                                name="user" 
+                                label="Rechercher..."
+                                @keyup="getSearchResults"
+                                @blur="stopSearch"
+                                @click="stopSearch"
+                                />
+                        <font-awesome-icon class="settings__searchForm__input__delete" icon="xmark" @click="deleteSearch" />
                     </div>
-                </div>
-            </form>
+                    <div class="settings__searchForm__results">
+                        <div class="result" v-for="result in searchResults" :key="result.id" >
+                            <router-link class="result__link" :to="`/profile/${result.userId}`">
+                            <img class="result__image" :src="result.profilePicUrl" alt="profile picture"/>
+                            <p class="result__name">{{ result.firstName }} {{ result.lastName }}</p>
+                            </router-link>
+                        </div>
+                    </div>
+                </form>
+            </transition>    
         </li>
     </ul>
 </template>
@@ -71,6 +74,7 @@ export default {
         showSettings(){
                 this.$emit('show-settings');
             },
+        
         getSearchResults(){
             let nameSearched = this.event.userSearch;
             this.searchUser({indexName: nameSearched})
@@ -111,6 +115,12 @@ export default {
     &__icon{
         color: white;
         font-size: 1.2rem;
+        transform: scale(1);
+        transition: transform 200ms;
+        &:hover {
+            transform: scale(1.2);
+            cursor: pointer;
+        }
     }
     &__searchForm{
         display: flex;
@@ -139,11 +149,33 @@ export default {
     }
 }
 
+.grow-enter-active {
+  animation: bounce-in .8s ease;
+}
+.grow-leave-active {
+  animation: bounce-in .8s ease reverse;
+}
+
+@keyframes bounce-in {
+  0% {
+    transform: scale(0);
+    width: 0;
+  }
+  70% {
+    transform: scale(1.05);
+    width: 50px;
+  }
+  100% {
+    transform: scale(1);
+    width: 140px;
+  }
+}
+
 .result{
     border: 1px solid #dbdbdb;
     background-color: white;
     &:hover {
-        background-color: #90b3d6;
+        background-color: #dbdbdb;
     }
     &__link{
         display: flex;

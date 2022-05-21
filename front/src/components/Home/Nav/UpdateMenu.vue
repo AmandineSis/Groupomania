@@ -1,5 +1,5 @@
 <template>
-    <div class="popupContainer">
+ 
         <div class="updateMenu" >
             <div class="updateMenu__selection">
                 <button class="updateMenu__selection__btn" @click="switchToIdentification">Modifier mes identifiants</button>
@@ -13,7 +13,7 @@
             <PictureUpdate v-if="mode == 'profilePicture'"/>
             <DeleteAccount v-if="mode == 'deleteAccount'"/>
         </div>
-    </div>
+
 </template>
 
 <script>
@@ -59,23 +59,22 @@ export default {
 </script>
 
 <style scoped lang="scss">
-/*.popupContainer{
-    width: 100%;
-    height: 100vh;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1000;
-  //  background: rgb(255, 255, 255,0.8);
-}*/
 
-.updateMenu {
-    width: 550px;
-    height: 150px;
-    margin: 30px auto;
+.popupContainer{
+    width: 100%;
+    height: 210px;
     position: fixed;
     top: 120px;
-    left: 139px;
+    left: 0;
+    z-index: 100;
+    background: #ee7575;
+}
+
+.updateMenu {
+    max-width: 550px;
+    height: 150px;
+    margin: 30px auto;
+    
     z-index: 1000;
     display: flex;
     flex-direction: row;

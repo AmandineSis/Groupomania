@@ -12,13 +12,18 @@
 		<img class="form__comments__image" v-if="comItem.imageUrl != ' '" :src="comItem.imageUrl" :alt="comItem.imageUrl">
 	</div>
 	<div class="form__comments__settings">    
-		<span class="posts__header__settings__nav" @click="openComSettings" @blur="closeSettings">
-            <font-awesome-icon icon="ellipsis" v-if="user.moderator == 1||user.userId== comItem.userId" />
+		<span class="form__comments__settings__nav" @click="openComSettings" @blur="closeSettings">
+            <font-awesome-icon class="form__comments__settings__navIcon" icon="ellipsis" v-if="user.moderator == 1||user.userId== comItem.userId" />
         </span>
 	</div>   
-	<div class="form__comments__popup">    
+	
+	<div class="form__comments__popup">   
+		
         <ComSettings :comItem="comItem" v-if="showComSettings" />
+			
     </div>
+	
+
 
 
 </template>
@@ -73,6 +78,14 @@ export default ({
 .form__comments {
 	display: flex;
 	flex-direction: row;
+	&__settings__navIcon{
+		transform: scale(1);
+        transition: transform 200ms;
+        &:hover {
+            transform: scale(1.5);
+            cursor: pointer;
+        }
+	}
 	&__popup{
 		position: absolute;
 	}
@@ -155,5 +168,5 @@ margin: 5px;
     z-index: -1;
 	}
 
-	
+
 </style>
