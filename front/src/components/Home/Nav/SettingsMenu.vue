@@ -6,11 +6,11 @@
             </router-link>
         </li>
         <li class="settings__list__item">
-            <font-awesome-icon class="settings__icon" icon="gear" @click="showSettings"/>
+            <font-awesome-icon class="settings__icon" icon="gear" @click="showSettings" @blur="closeSettings"/>
         </li>
         
         <li class="settings__list__item">
-            <font-awesome-icon class="settings__icon" icon="magnifying-glass" @click="showSearchBar" />
+            <font-awesome-icon class="settings__icon" icon="magnifying-glass" @click="showSearchBar"/>
             <transition name="grow">
                 <form  v-if="search" method="POST"> 
                     <div class="settings__searchForm" >  
@@ -21,14 +21,13 @@
                                 name="user" 
                                 label="Rechercher..."
                                 @keyup="getSearchResults"
-                                @blur="stopSearch"
-                                @click="stopSearch"
+                                
                                 />
                         <font-awesome-icon class="settings__searchForm__input__delete" icon="xmark" @click="deleteSearch" />
                     </div>
-                    <div class="settings__searchForm__results">
-                        <div class="result" v-for="result in searchResults" :key="result.id" >
-                            <router-link class="result__link" :to="`/profile/${result.userId}`">
+                    <div class="settings__searchForm__results" v-if="searchResults && event.userSearch != ''">
+                        <div class="result" v-for="result in searchResults" :key="result.userId" >
+                            <router-link  class="result__link" :to="`/profile/${result.userId}`">
                             <img class="result__image" :src="result.profilePicUrl" alt="profile picture"/>
                             <p class="result__name">{{ result.firstName }} {{ result.lastName }}</p>
                             </router-link>
@@ -42,7 +41,7 @@
 
 <script>
 import BaseInput from '@/components/Base/BaseInput.vue'
-import { mapActions, mapState } from 'vuex';
+import { mapState, mapActions, mapMutations  } from 'vuex';
 export default {
     name: 'SettingsMenuu',
     components: {
@@ -63,9 +62,10 @@ export default {
         })
     },
     methods: {
-        ...mapActions(['searchUser','clearSearch']),
+        ...mapActions(['searchUser']),
+        ...mapMutations(['logout', 'clearSearch']),
         logoutUser(){
-            this.$store.commit('logout');
+            this.logout();
             this.$router.push('/');
         },
         showSearchBar(){
@@ -74,7 +74,9 @@ export default {
         showSettings(){
                 this.$emit('show-settings');
             },
-        
+        closeSettings(){
+            this.$emit('close-settings');
+        },
         getSearchResults(){
             let nameSearched = this.event.userSearch;
             this.searchUser({indexName: nameSearched})
@@ -82,16 +84,24 @@ export default {
                     console.log('searchUser dispatch done !')
                 })
         },
-        stopSearch(){
-            console.log("search stopped");
-            this.event.userSearch = "";
-        },
-        deleteSearch(){
-            this.clearSearch()
+        /*stopSearch(){
+                
+                     this.event.userSearch = "";
+                     this.clearSearch()
                 .then(() => {
                     console.log('clearSearch dispatch done !')
+                    
                 })
+                
+                console.log("search stopped");
+               
+        },*/
+        deleteSearch(){
+            this.clearSearch()
+            console.log('clearSearch dispatch done !')
+            this.event.userSearch = "";
         }
+        
   }
 }
 </script>

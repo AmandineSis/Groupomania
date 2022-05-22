@@ -32,12 +32,10 @@
 
 
 <script>
-import BaseInput from '@/components/Base/BaseInput.vue'
+
 export default ({
     name: 'NewPost',
-    component: {
-        BaseInput
-    },
+    
     props: {
         "mode": String
     },

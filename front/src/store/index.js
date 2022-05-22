@@ -85,6 +85,13 @@ export default createStore({
       localStorage.setItem('user', JSON.stringify(user));
       state.user = user;
     },
+    logout(state) {
+      state.user = {
+        userId: -1,
+        token: '',
+      }
+      localStorage.removeItem('user');
+    },
     userLoggedIn(state, userLoggedIn){
       state.userLoggedIn = userLoggedIn;
     },
@@ -123,13 +130,6 @@ export default createStore({
     deletePost(state, postId ){
       let index = state.postsByDate.findIndex(postsByDate => postsByDate.postId == postId);
       state.postsByDate.splice(index, 1);
-    },
-    logout(state) {
-      state.user = {
-        userId: -1,
-        token: '',
-      }
-      localStorage.removeItem('user');
     },
     postComments(state, postComments){
       //state.postComments.push(postComments);
@@ -290,9 +290,6 @@ export default createStore({
           .catch(function () {
         });
     },
-    clearSearch: ({commit}) => {
-      commit('clearSearch');
-    }, 
     /**************************** POSTS ********************** */  
     
     createPost: ({ commit }, newPost ) => {

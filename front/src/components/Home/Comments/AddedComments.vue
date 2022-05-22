@@ -1,5 +1,5 @@
 <template>
-	<img class="form__comments__profile" :src="comItem.profilePicUrl" alt="">
+	<router-link :to="`/profile/${comItem.userId}`"><img class="form__comments__profile" :src="comItem.profilePicUrl" alt=""></router-link>
 	<div class="form__comments__content">
 		<p class="form__comments__content__user">{{ comItem.firstName }} {{ comItem.lastName }}</p>
 		<div 

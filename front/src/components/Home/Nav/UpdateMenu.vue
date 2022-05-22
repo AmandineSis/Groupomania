@@ -12,8 +12,11 @@
             <PasswordUpdate v-if="mode == 'password'"/>
             <PictureUpdate v-if="mode == 'profilePicture'"/>
             <DeleteAccount v-if="mode == 'deleteAccount'"/>
+           <div class="updateMenu__close" @click="closeSettings" >
+                <font-awesome-icon class="updateMenu__close__icon" icon="xmark"/>Fermer
+            </div>
         </div>
-
+        
 </template>
 
 <script>
@@ -53,6 +56,10 @@ export default {
         },
         switchToIdentification() {
             this.mode = 'identification';
+        },
+        closeSettings(){
+            console.log('close')
+            this.$emit('close-settings');
         },
     }
 }
@@ -114,6 +121,19 @@ export default {
                 background-color: #ffffff;
                 border: 1px solid #ee7575;
             }
+        }
+    }
+    &__close{
+        writing-mode: vertical-rl;
+        text-orientation: mixed;    
+        &:hover{
+                cursor: pointer;
+            }
+        &__icon{
+            font-size: 15px;
+            margin: 5px 10px 0 0;
+            
+        
         }
     }
 }

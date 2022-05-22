@@ -7,9 +7,12 @@
         </div>
         
         <div class="userProfile" :class="{'userProfile--inBlock' : profileView}" v-else >
-            <!-- <router-link class="link" :to="{ name: 'Profile', params: { userId: status.user.userId } }"> -->
-                <p class="userProfile__fullname" :class="{'userProfile__fullname--black' : profileView}">{{ fullNameUser }}</p> 
-                <img class="userProfile__picture" :class="{'userProfile__picture--sizeUp' : profileView}" :src="userInfos.profilePicUrl" alt="photo de profil">
+            <!-- <router-link class="link" :to="{ name: 'Profile', params: { userId: status.user.userId } }"> -->    
+                <p class="userProfile__fullname" :class="{'userProfile__fullname--black' : profileView}" v-if="profileView && $route.params.userId == userLoggedIn.userId">{{ fullNameUserLoggedIn }}</p> 
+                <p class="userProfile__fullname" :class="{'userProfile__fullname--black' : profileView}" v-if="profileView && $route.params.userId != userLoggedIn.userId">{{ fullNameUser }}</p> 
+                
+                <img class="userProfile__picture" :class="{'userProfile__picture--sizeUp' : profileView}" :src="userLoggedIn.profilePicUrl" alt="photo de profil" v-if="profileView && $route.params.userId == userLoggedIn.userId">
+                <img class="userProfile__picture" :class="{'userProfile__picture--sizeUp' : profileView}" :src="userInfos.profilePicUrl" alt="photo de profil" v-if="profileView && $route.params.userId != userLoggedIn.userId">
             <!-- </router-link> -->
         </div>
 

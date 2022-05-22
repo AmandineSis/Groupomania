@@ -1,11 +1,12 @@
 <template>
     <nav class="topMenu" v-once>
-        <SettingsMenu class="topMenu__settings" @show-settings="openSettings" v-once />
+        <SettingsMenu class="topMenu__settings" @show-settings="openSettings"  v-once />
         <router-link :to="`/profile/${userLoggedIn.userId}`"><UserProfile/></router-link>
     </nav> 
     <transition name="bounce">
-        <UpdateMenu v-if="settings" @blur="!settings"/>
+        <UpdateMenu v-if="settings" @close-settings="closeSettings" @blur="closeSettings" tabindex="0"/>
     </transition>
+    
     <NewPost v-once/>
 
    <div class="toggle">
@@ -99,6 +100,9 @@ export default {
         openSettings(){
                 this.settings=!this.settings;
             },
+        closeSettings(){
+            this.settings = false;
+        },
         showRecentPosts(){
             this.mode='recentPosts';
             this.getPostsByDate()

@@ -74,14 +74,14 @@ export default {
                 return true;
             }else{
                 return false
-                }
-            },
-            ...mapState({
-                status: 'status',
-                user: 'user',
-                userLoggedIn: 'userLoggedIn',
-                postComments: 'postComments'
-        })
+            }
+        },
+        ...mapState({
+            status: 'status',
+            user: 'user',
+            userLoggedIn: 'userLoggedIn',
+            postComments: 'postComments'
+        }),
     },
     methods: {
         ...mapActions(['updateUser','getUserLoggedIn']),
