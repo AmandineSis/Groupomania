@@ -156,12 +156,11 @@ export default ({
                     email: this.event.email,
                     password: this.event.password})
                 .then((res => {
-                    console.log(res.userId)
-                    const userId = res.userId;
+                    console.log(res.data.userId)
+                    const userId = res.data.userId;
                     console.log('login dispatch done');
                     this.getUserLoggedIn({userId})
-                        .then((res=> {
-                            console.log(res)
+                        .then((() => {
                             console.log('getUserLoggedIn dispatch done');
                             this.$router.push('Home')    
                             }), (err => {

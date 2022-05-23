@@ -67,17 +67,20 @@ export default {
         ...mapState({
             user: 'user',
             userLoggedIn: 'userLoggedIn',
+        }),
+        ...mapState('posts',{
             posts: 'postsByDate',
             popularPosts: 'postsByLike',
             reportedPosts: 'reportedPosts',
         }),
-        ...mapGetters({
+        ...mapGetters('posts',{
             postLength: 'postsByDateLength',
             popularPostsLength: 'postsByLikeLength',
             reportedPostsLength: 'reportedPostsLength' 
-        })
+    })
     },
     beforeMount: 
+        //Récupération des données utilisateur et des posts à afficher
         function(){
             if (this.user.userId == -1) {
             this.$router.push('/');
@@ -87,22 +90,25 @@ export default {
                 .then(() => {
                     console.log("getUserLoggedIn dispatch done !")
                     this.getPostsByDate()
-                        .then(() => {
+                        .then((res) => {
+                            console.log(res)
                             console.log("getPostsByDate dispatch done !")
                             })
                         .catch((err) => {
                             console.log(err);
-                            window.alert('Aucune publication !');
                         })
         })},  
     methods: {
-        ...mapActions(['getUserLoggedIn','getUserInfos','getPostsByDate','getPopularPosts','getReportedPosts']),
+        ...mapActions(['getUserLoggedIn','getUserInfos']),
+        ...mapActions('posts',['getPostsByDate','getPopularPosts','getReportedPosts']),
+        //toggle du menu settings
         openSettings(){
                 this.settings=!this.settings;
             },
         closeSettings(){
             this.settings = false;
         },
+        //toggle entre les différentes listes de publication
         showRecentPosts(){
             this.mode='recentPosts';
             this.getPostsByDate()
@@ -145,25 +151,22 @@ export default {
         }
     }
 .bounce-enter-active {
-  animation: bounce-in .8s;
+    animation: bounce-in .8s;
 }
 .bounce-leave-active {
-  animation: bounce-in .8s reverse;
+    animation: bounce-in .8s reverse;
 }
 @keyframes bounce-in {
-  0% {
-    transform: scale(0);
-  }
-  70% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
-  }
+    0% {
+        transform: scale(0);
+    }
+    70% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
 }
-
-
-
 
 .toggle {
     width: 500px;

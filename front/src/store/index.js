@@ -1,5 +1,6 @@
-import { createStore } from 'vuex'
+import { createStore, createLogger } from 'vuex'
 import auth from './modules/auth'
+import posts from './modules/posts'
 
 const axios = require('axios'); 
 
@@ -29,10 +30,14 @@ if (!user) {
   }
 }
 
-export default createStore({
+const debug = process.env.NODE_ENV !== 'production'
 
+export default createStore({
+  strict: debug,
+  plugins: debug ? [createLogger()] : [],
   modules: {
-    auth
+    auth,
+    posts
   },
 
   state: {
@@ -41,12 +46,7 @@ export default createStore({
     userLoggedIn: [],
     userInfos: [],
 
-    postsByDate: [],
-    postsByLike: [],
-    reportedPosts: [],
-
-    getPostsByUserId: [],
-    postsByUserIdByLike: [],
+   
 
     postComments: [],
     commentsByPostId: [],
@@ -60,29 +60,6 @@ export default createStore({
     fullNameUser(state){
       return `${state.userInfos.firstName} ${state.userInfos.lastName}`
     },
-
-//POSTS//////////////////////////////////////
-    postsByDateLength(state){
-      if(state.postsByDate){
-        return state.postsByDate.length
-      }else{
-      return 0
-      }
-    },
-    postsByLikeLength(state){
-      if(state.postsByLike){
-        return state.postsByLike.length
-      }else{
-      return 0
-      }
-    },
-    reportedPostsLength(state){
-      if(state.reportedPosts){
-        return state.reportedPosts.length
-      }else{
-      return 0
-      }
-    }
   },
   mutations: {
     SET_STATUS(state, status){
@@ -116,31 +93,7 @@ export default createStore({
     //POST/////////////////////////////////
     postsByDate(state, postsByDate){
       state.postsByDate = postsByDate;
-    },
-    postsByLike(state, postsByLike){
-      state.postsByLike = postsByLike;
-    },
-    reportedPosts(state, reportedPosts){
-      state.reportedPosts = reportedPosts;
-    },
-    postsByUserId(state, postsByUserId){
-      state.postsByUserId = postsByUserId;
-    },
-    postsByUserIdByLike(state, postsByUserIdByLike){
-      state.postsByUserIdByLike = postsByUserIdByLike;
-    },
-    reportedPostsByUserId(state, reportedPostsByUserId){
-      state.reportedPostsByUserId = reportedPostsByUserId;
-    },
-    updatePost(state, postId, postContent, postImage){
-      let index = state.postsByDate.findIndex(postsByDate => postsByDate.postId == postId);
-      state.postsByDate.splice(index, 1, postContent);
-      state.postsByDate.splice(index, 1, postImage);
-    },
-    deletePost(state, postId ){
-      let index = state.postsByDate.findIndex(postsByDate => postsByDate.postId == postId);
-      state.postsByDate.splice(index, 1);
-    },
+  },
     //COMMENT/////////////////////////////////////////
     postComments(state, postComments){
       //state.postComments.push(postComments);
@@ -185,7 +138,7 @@ export default createStore({
         });
     },
     updateUser: ({commit}, userUpdate) => {
-      commit('setStatus', 'loading');
+      commit('SET_STATUS', 'loading');
       return new Promise ((resolve, reject) => {
         instance
           .put(`/user/${userUpdate.userId}`, {
@@ -195,17 +148,17 @@ export default createStore({
           }
           )
           .then(function (response) {
-            commit('setStatus', 'updated')
+            commit('SET_STATUS', 'updated')
             resolve(response)
           })
           .catch(function (error) {
-            commit('setStatus', 'error_update')
+            commit('SET_STATUS', 'error_update')
             reject(error)
           });
         });
     },
     updatePassword: ({commit}, password)=> {
-      commit('setStatus', 'loading');
+      commit('SET_STATUS', 'loading');
       return new Promise ((resolve, reject) => {
         instance
           .put(`/user/${password.userId}/password`, {
@@ -214,18 +167,18 @@ export default createStore({
           }
           )
           .then(function (response) {
-            commit('setStatus', 'updated')
+            commit('SET_STATUS', 'updated')
             resolve(response)
             console.log(response)
           })
           .catch(function (error) {
-            commit('setStatus', 'error_update')
+            commit('SET_STATUS', 'error_update')
             reject(error.response.message)
           });
         });
     },
     updateUserPicture: ({commit}, newPicture)=> {
-      commit('setStatus', 'loading');
+      commit('SET_STATUS', 'loading');
       return new Promise ((resolve, reject) => {
         instance
           .put(`/user/${newPicture.userId}/profilePic`, 
@@ -233,18 +186,18 @@ export default createStore({
           
           )
           .then(function (response) {
-            commit('setStatus', 'updated')
+            commit('SET_STATUS', 'updated')
             resolve(response)
           })
           .catch(function (error) {
-            commit('setStatus', 'error_update')
+            commit('SET_STATUS', 'error_update')
             reject(error)
           });
         });
     },
     deleteUser: ({commit}, loginDetails)=>{
       console.log(loginDetails.password);
-      commit('setStatus', 'loading');
+      commit('SET_STATUS', 'loading');
       return new Promise ((resolve, reject) => {
         instance
           .delete(`/user/${loginDetails.userId}`, 
@@ -252,11 +205,11 @@ export default createStore({
         
           )
           .then(function (response) {
-            commit('setStatus', 'deleted')
+            commit('SET_STATUS', 'deleted')
             resolve(response)
           })
           .catch(function (error) {
-            commit('setStatus', 'error_delete')
+            commit('SET_STATUS', 'error_delete')
             reject(error)
           });
         });
@@ -273,48 +226,7 @@ export default createStore({
     },
     /**************************** POSTS ********************** */  
     
-    createPost: ({ commit }, newPost ) => {
-      commit('setStatus', 'sending');
-      return new Promise ((resolve, reject) => {
-        instance
-          .post('/posts', newPost)
-          .then(function (response) {
-            commit('setStatus', 'post_added')
-            resolve(response)
-          })
-          .catch(function (error) {
-            commit('setStatus', 'error_newPost')
-            reject(error)
-          });
-        });
-    },
-    getPostsByDate: ({ commit }) => {
-        instance
-          .get(`/posts`)
-          .then( function (response) {
-            commit('postsByDate', response.data.results);
-          })
-          .catch(function () {
-        });
-    },
-    getPopularPosts: ({ commit }) => {
-      instance
-        .get(`/posts/famous`)
-        .then( function (response) {
-          commit('postsByLike', response.data.results);
-        })
-        .catch(function () {
-      });
-    },
-    getReportedPosts: ({ commit }) => {
-      instance
-        .get(`/posts/reported`)
-        .then( function (response) {
-          commit('reportedPosts', response.data.results);
-        })
-        .catch(function () {
-      });
-    },
+    
   /*  getReportedPostsByUserId: ({ commit }, userId) => {
       instance
         .get(`/posts/${userId}/reported`)
@@ -324,83 +236,7 @@ export default createStore({
         .catch(function () {
       });
     },*/
-    getPostsByUserId: ({ commit }, userId) => {
-      instance
-        .get(`/posts/${userId}`)
-        .then( function (response) {
-          commit('postsByUserId', response.data.results);
-        })
-        .catch(function () {
-      });
-    },
-    getPopularPostsByUserId: ({ commit }, userId) => {
-      instance
-        .get(`/posts/${userId}/famous`)
-        .then( function (response) {
-          commit('postsByUserIdByLike', response.data.results);
-        })
-        .catch(function () {
-      });
-    },
-    updatePost: ({ commit }, postToUpdate)=>{
-      return new Promise ((resolve, reject) => {
-      instance
-        .put(`/posts/${postToUpdate.postId}`, postToUpdate.fdUpdatedPost) //envoi de FORMDATA
-        .then(function (response) {
-          commit('updatePost', postToUpdate.postId, postToUpdate.fdUpdatedPost.content, postToUpdate.fdUpdatedPost.image);
-          resolve(response) //retourne "commentaire modifié"
-        })
-        .catch(function (error) {
-          commit('setStatus', 'error_updateComment')
-          reject(error)
-        });
-      });
-    },
-    deletePost: ({ commit }, postId)=>{
-      instance
-        .delete(`/posts/${postId}`)
-        .then(function (response) {
-          commit('deletePost', postId);
-          console.log(response)
-        })
-        .catch(function () {
-        });
-
-    },
-    reportPost: ({ commit, state }, postReport) => {
-      return new Promise ((resolve, reject) => {
-        let userId = state.user.userId;
-        let report = postReport.report;
-        console.log(report);
-        instance
-          .post(`/posts/${postReport.postId}/report`, {userId, report})
-          .then(function (response) {
-            commit('setStatus', 'post_reported')
-            resolve(response)
-          })
-          .catch(function (error) {
-            commit('setStatus', 'error_report')
-            reject(error)
-          });
-        });
-    },
-    removeReport: ({ commit, state }, removeReport) => {
-      return new Promise ((resolve, reject) => {
-        let userId = state.user.userId;
-        let report = removeReport.report;
-        console.log(report);
-        instance
-          .post(`/posts/${removeReport.postId}/removeReport`, {userId, report})
-          .then(function (response) {
-            commit('setStatus', 'post_reported')
-            resolve(response)
-          })
-          .catch(function (error) {
-            commit('setStatus', 'error_report')
-            reject(error)
-          });
-        });
-    },
+   
     /*************************LIKE******************************/
     likePost: ({ commit, state }, postLike) => {
       return new Promise ((resolve, reject) => {
@@ -410,11 +246,11 @@ export default createStore({
         instance
           .post(`/posts/${postLike.postId}/like`, {userId, like})
           .then(function (response) {
-            commit('setStatus', 'post_liked')
+            commit('SET_STATUS', 'post_liked')
             resolve(response)
           })
           .catch(function (error) {
-            commit('setStatus', 'error_like')
+            commit('SET_STATUS', 'error_like')
             reject(error)
           });
         });
@@ -423,17 +259,17 @@ export default createStore({
     /***********************COMMENTS****************************/
     //gestion de l'envoi du nouveau commentaire au backend
     createComment: ({ commit }, newComment ) => {
-      commit('setStatus', 'sending');
+      commit('SET_STATUS', 'sending');
       console.log(newComment.fdComment);
       return new Promise ((resolve, reject) => {
         instance
           .post(`/posts/${newComment.postId}/comment`, newComment.fdComment) //envoi de FORMDATA
           .then(function (response) {
-            commit('setStatus', 'post_added')
+            commit('SET_STATUS', 'post_added')
             resolve(response) //retourne "commentaire ajouté"
           })
           .catch(function (error) { //sinon retourne erreur
-            commit('setStatus', 'error_newPost')
+            commit('SET_STATUS', 'error_newPost')
             reject(error)
           });
         });
@@ -459,7 +295,7 @@ export default createStore({
           resolve(response) //retourne "commentaire modifié"
         })
         .catch(function (error) {
-          commit('setStatus', 'error_updateComment')
+          commit('SET_STATUS', 'error_updateComment')
           reject(error)
         });
       });
