@@ -1,9 +1,13 @@
 import { createStore } from 'vuex'
+import auth from './modules/auth'
 
-const axios = require('axios');
+const axios = require('axios'); 
+
 const instance = axios.create({
-  baseURL: 'http://localhost:3000/api/'
-});
+    baseURL: 'http://localhost:3000/api/'
+  });
+
+
 
 //Initialisation du local storage
 let user = localStorage.getItem('user');
@@ -26,6 +30,10 @@ if (!user) {
 }
 
 export default createStore({
+
+  modules: {
+    auth
+  },
 
   state: {
     status: '',
@@ -53,7 +61,7 @@ export default createStore({
       return `${state.userInfos.firstName} ${state.userInfos.lastName}`
     },
 
-
+//POSTS//////////////////////////////////////
     postsByDateLength(state){
       if(state.postsByDate){
         return state.postsByDate.length
@@ -77,14 +85,15 @@ export default createStore({
     }
   },
   mutations: {
-    setStatus(state, status){
+    SET_STATUS(state, status){
       state.status = status;
     },
-    logUser(state, user){
+    LOG_USER(state, user){
       instance.defaults.headers.common = {'Authorization': `bearer ${user.token}`}
       localStorage.setItem('user', JSON.stringify(user));
       state.user = user;
-    },
+  },
+    
     logout(state) {
       state.user = {
         userId: -1,
@@ -104,6 +113,7 @@ export default createStore({
     clearSearch(state){
       state.searchResults = [];
     },
+    //POST/////////////////////////////////
     postsByDate(state, postsByDate){
       state.postsByDate = postsByDate;
     },
@@ -131,6 +141,7 @@ export default createStore({
       let index = state.postsByDate.findIndex(postsByDate => postsByDate.postId == postId);
       state.postsByDate.splice(index, 1);
     },
+    //COMMENT/////////////////////////////////////////
     postComments(state, postComments){
       //state.postComments.push(postComments);
       state.postComments = postComments;
@@ -153,37 +164,7 @@ export default createStore({
 
   actions: {
     /**************************** USER ********************** */
-    login: ({ commit }, loginInfos ) => {
-      commit('setStatus', 'loading');
-      return new Promise ((resolve, reject) => {
-        instance
-          .post('/user/login', loginInfos)
-          .then(function (response) {
-            commit('setStatus', '')
-            commit('logUser', response.data )
-            resolve(response)
-          })
-          .catch(function (error) {
-            commit('setStatus', 'error_login')
-            reject(error)
-          });
-      })
-    },
-    createAccount: ({ commit }, userInfos ) => {
-      commit('setStatus', 'loading');
-      return new Promise ((resolve, reject) => {
-        instance
-          .post('/user/signup', userInfos)
-          .then(function (response) {
-            commit('setStatus', 'created')
-            resolve(response)
-          })
-          .catch(function (error) {
-            commit('setStatus', 'error_create')
-            reject(error)
-          });
-        });
-    },
+  
     getUserLoggedIn: ({ commit, state }) => {
       const userId = state.user.userId;
       instance
@@ -496,8 +477,6 @@ export default createStore({
     },
   
     
-  },
-  modules: {
-  },
+  }
 
 })

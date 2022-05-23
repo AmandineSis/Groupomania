@@ -46,11 +46,11 @@
             <p class="form__input__error" v-if="mode == 'login' && status == 'error_login'">identifiants de connexion incorrects</p>
         
             <div class="form__valid">
-                <button class="form__valid__button" type= "button" :class="{'form__valid__button--disabled' : !loginValidation}" @click="login" v-if=" mode == 'login'">
+                <button class="form__valid__button" type= "button" :class="{'form__valid__button--disabled' : !loginValidation}" @click="logUser" v-if=" mode == 'login'">
                     <span v-if="status == 'loading'">Connexion en cours...</span>
                     <span v-else>Connexion</span>
                 </button>
-                <button  class="form__valid__button" type="button" :class="{'form__valid__button--disabled' : !signupValidation}" @click="createAccount" v-else>
+                <button  class="form__valid__button" type="button" :class="{'form__valid__button--disabled' : !signupValidation}" @click="createUserAccount" v-else>
                     <span v-if="status == 'loading'">Connexion en cours...</span>
                     <span v-else>Créer mon compte</span>
                 </button>
@@ -62,9 +62,7 @@
 
 <script>
 import BaseInput from '@/components/Base/BaseInput.vue'
-import { mapState } from 'vuex'
-
-
+import { mapState, mapActions } from 'vuex'
 export default ({
     name: 'SignupForm',
     components: {
@@ -86,11 +84,9 @@ export default ({
                 emailExists: false,
                 passwordError: false
             },
-
             nameReg: /^([a-zA-ZÀ-ÿ]{3,20}(['|s|-]{1}[a-zA-ZÀ-ÿ]{0,20})*)$/,
             emailReg: /^[a-z0-9]+([_|.|-]{1}[a-zA0-9]+)*@[a-z0-9]+([_|.|-]{1}[a-z0-9]+)*[.]{1}[a-z]{2,6}$/,
             pswdReg: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])[0-9a-zA-Z!@#$%^&*]{8,}$/,
-
             firstNameValid: false,
             lastNameValid: false,
             emailValid: false,
@@ -98,6 +94,7 @@ export default ({
         }
     },
     computed: {
+        //Validation des champs de connexion
         loginValidation(){
             if ( this.event.email !== "" && this.event.password !== "") {
                 return true;
@@ -105,6 +102,7 @@ export default ({
                 return false
                 }
             },
+        //Validation des champs d'inscription
         signupValidation(){
             if ( this.firstNameValid && this.lastNameValid && this.emailValid && this.passwordValid) {
                 return true;
@@ -112,18 +110,15 @@ export default ({
                 return false
                 }
             },
-            ...mapState({
-                status:'status',
-                user: 'user'
-                })
+        ...mapState({
+            status:'status',
+            user: 'user'
+            })
     },
-    methods: {  
-        switchToSignup() {
-            this.mode = 'signup';
-        },
-        switchToLogin() {
-            this.mode = 'login';
-        },
+    methods: {
+        ...mapActions('auth',['login','createAccount']),
+        ...mapActions(['getUserLoggedIn']),
+        //Vérification des données utilisateur
         isFirstNameValid() {
             this.nameReg.test(this.event.firstName) 
             ? (this.firstNameValid= true, this.error.firstNameError = false) 
@@ -144,17 +139,27 @@ export default ({
             this.pswdReg.test(this.event.password) 
             ? (this.passwordValid= true, this.error.passwordError = false) 
             : (this.passwordValid= false, this.error.passwordError = true);
-        },   
-        login(){
-            this.$store
-                .dispatch('login', {
+        },
+
+        //Toggle entre login et signup
+        switchToSignup() {
+            this.mode = 'signup';
+        },
+        switchToLogin() {
+            this.mode = 'login';
+        },
+
+        //Connexion de l'utilisateur
+        logUser(){
+    
+            this.login({
                     email: this.event.email,
                     password: this.event.password})
                 .then((res => {
                     console.log(res.userId)
+                    const userId = res.userId;
                     console.log('login dispatch done');
-                    this.$store
-                        .dispatch('getUserLoggedIn', this.user.userId)
+                    this.getUserLoggedIn({userId})
                         .then((res=> {
                             console.log(res)
                             console.log('getUserLoggedIn dispatch done');
@@ -165,21 +170,21 @@ export default ({
                             }))
                 }), (err => {
                     console.log(err)
+                    console.log(err)
                     this.error.loginError = true;
                     }))       
         },
-        createAccount() {
+        //Inscription de l'utilisateur
+        createUserAccount() {
             const self = this;
-            this.$store
-                .dispatch('createAccount', {
+            this.createAccount({
                     firstName: this.event.firstName,
                     lastName: this.event.lastName,
                     email: this.event.email,
                     password: this.event.password})
-                .then((res => {
+                .then((() => {
                     console.log('createAccount dispatch done');
-                    self.login();
-                    console.log(res)
+                    self.logUser();
                 }), (err => {
                     console.log(err)
                 }))
