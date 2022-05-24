@@ -69,7 +69,7 @@ export default createStore({
       instance.defaults.headers.common = {'Authorization': `bearer ${user.token}`}
       localStorage.setItem('user', JSON.stringify(user));
       state.user = user;
-  },
+    },
     
     logout(state) {
       state.user = {
@@ -90,10 +90,7 @@ export default createStore({
     clearSearch(state){
       state.searchResults = [];
     },
-    //POST/////////////////////////////////
-    postsByDate(state, postsByDate){
-      state.postsByDate = postsByDate;
-  },
+    
     //COMMENT/////////////////////////////////////////
     postComments(state, postComments){
       //state.postComments.push(postComments);
@@ -231,7 +228,7 @@ export default createStore({
       instance
         .get(`/posts/${userId}/reported`)
         .then( function (response) {
-          commit('reportedPostsByUserId', response.data.results);
+          commit('REPORTED_POSTS_BY_USERID', response.data.results);
         })
         .catch(function () {
       });

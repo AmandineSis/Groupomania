@@ -33,7 +33,7 @@ export default {
         postsByLike: [],
         reportedPosts: [],
 
-        getPostsByUserId: [],
+        postsByUserId: [],
         postsByUserIdByLike: [],
     },
     getters:{
@@ -57,34 +57,48 @@ export default {
             }else{
             return 0
             }
-        }
+        },
+        postsByUserIdByDateLength(state){
+            if(state.postsByUserId){
+                return state.postsByUserId.length
+            }else{
+            return 0
+            }
+        },
+        postsByUserIdByLikeLength(state){
+            if(state.postsByUserIdByLike){
+                return state.postsByUserIdByLike.length
+            }else{
+            return 0
+            }
+        },
     },
     mutations:{
-        postsByDate(state, postsByDate){
+        POSTS_BY_DATE(state, postsByDate){
             console.log("commit done")
             state.postsByDate = postsByDate;
         },
-        postsByLike(state, postsByLike){
+        POSTS_BY_LIKE(state, postsByLike){
             state.postsByLike = postsByLike;
         },
-        reportedPosts(state, reportedPosts){
+        REPORTED_POSTS(state, reportedPosts){
             state.reportedPosts = reportedPosts;
         },
-        postsByUserId(state, postsByUserId){
+        POSTS_BY_USER_ID(state, postsByUserId){
             state.postsByUserId = postsByUserId;
         },
-        postsByUserIdByLike(state, postsByUserIdByLike){
+        POSTS_BY_USERID_BY_LIKE(state, postsByUserIdByLike){
             state.postsByUserIdByLike = postsByUserIdByLike;
         },
-        reportedPostsByUserId(state, reportedPostsByUserId){
+        REPORTED_POSTS_BY_USERID(state, reportedPostsByUserId){
             state.reportedPostsByUserId = reportedPostsByUserId;
         },
-        updatePost(state, postId, postContent, postImage){
+        UPDATE_POST(state, postId, postContent, postImage){
             let index = state.postsByDate.findIndex(postsByDate => postsByDate.postId == postId);
             state.postsByDate.splice(index, 1, postContent);
             state.postsByDate.splice(index, 1, postImage);
         },
-        deletePost(state, postId ){
+        DELETE_POST(state, postId ){
             let index = state.postsByDate.findIndex(postsByDate => postsByDate.postId == postId);
             state.postsByDate.splice(index, 1);
         },
@@ -110,7 +124,7 @@ export default {
                 .get(`/posts`)
                 .then( function (response) {
                     console.log(response.data.results)
-                    commit('postsByDate', response.data.results);
+                    commit('POSTS_BY_DATE', response.data.results);
                     console.log('after instance')
                 })
                 .catch(function () {
@@ -120,7 +134,7 @@ export default {
             instance
             .get(`/posts/famous`)
             .then( function (response) {
-                commit('postsByLike', response.data.results);
+                commit('POSTS_BY_LIKE', response.data.results);
             })
             .catch(function () {
             });
@@ -129,16 +143,19 @@ export default {
             instance
             .get(`/posts/reported`)
             .then( function (response) {
-                commit('reportedPosts', response.data.results);
+                commit('REPORTED_POSTS', response.data.results);
             })
             .catch(function () {
             });
         },
         getPostsByUserId: ({ commit }, userId) => {
+            console.log(userId)
             instance
                 .get(`/posts/${userId}`)
                 .then( function (response) {
-                commit('postsByUserId', response.data.results);
+                    console.log(response.data)
+                commit('POSTS_BY_USER_ID', response.data.results);
+                console.log('commit done')
                 })
                 .catch(function () {
             });
@@ -147,7 +164,7 @@ export default {
             instance
                 .get(`/posts/${userId}/famous`)
                 .then( function (response) {
-                    commit('postsByUserIdByLike', response.data.results);
+                    commit('POSTS_BY_USERID_BY_LIKE', response.data.results);
                 })
                 .catch(function () {
             });
@@ -157,7 +174,7 @@ export default {
             instance
                 .put(`/posts/${postToUpdate.postId}`, postToUpdate.fdUpdatedPost) //envoi de FORMDATA
                 .then(function (response) {
-                    commit('updatePost', postToUpdate.postId, postToUpdate.fdUpdatedPost.content, postToUpdate.fdUpdatedPost.image);
+                    commit('UPDATE_POST', postToUpdate.postId, postToUpdate.fdUpdatedPost.content, postToUpdate.fdUpdatedPost.image);
                   resolve(response) //retourne "commentaire modifié"
                 })
                 .catch(function (error) {
@@ -170,7 +187,7 @@ export default {
             instance
                 .delete(`/posts/${postId}`)
                 .then(function (response) {
-                    commit('deletePost', postId);
+                    commit('DELETE_POST', postId);
                     console.log(response)
                 })
                 .catch(function () {

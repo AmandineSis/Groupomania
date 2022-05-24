@@ -3,40 +3,47 @@
         <SettingsMenu class="topMenu__settings" @show-settings="openSettings"  v-once />
         <router-link :to="`/profile/${userLoggedIn.userId}`"><UserProfile/></router-link>
     </nav> 
+    <!--Pop-up update menu-->
     <transition name="bounce">
         <UpdateMenu v-if="settings" @close-settings="closeSettings" @blur="closeSettings" tabindex="0"/>
     </transition>
     
     <NewPost v-once/>
 
-   <div class="toggle">
+    <div class="toggle">
         <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : mode=='recentPosts'}" @click="showRecentPosts"> Récents </button>
         <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : mode=='popularPosts'}" @click="showPopularPosts"> Populaires </button>
         <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : mode=='reportedPosts'}" @click="showReportedPosts" v-if="user.moderator==1"> Signalés </button>
     </div>
 
-    <!------------------------------------POSTS BY DATE------------------------------------------------------------------>
-    <main class="postsContainer" v-if="mode == 'recentPosts' && postLength!=0">  
-        <RecentPosts v-for="postItem in posts" :key="postItem.postId" :postItem="postItem" :selectedMode="mode"/>  
-    </main>
-    <main class="noPost" v-if="mode == 'recentPosts' && postLength==0"> 
-        <p class="noPost__text">Il n'existe pas encore de publication !</p>
-    </main> 
-    <!------------------------------------POSTS BY LIKE------------------------------------------------------------------>
-    <main class="postsContainer" v-if="mode == 'popularPosts'&& popularPostsLength!=0">
-        <RecentPosts v-for="popularPostItem in popularPosts" :key="popularPostItem.postId" :postItem="popularPostItem" :selectedMode="mode"/>   
-    </main>
-    <main class="noPost" v-if="mode == 'popularPosts' && popularPostsLength==0">
-        <p class="noPost__text">Il n'existe pas encore de publication !</p>
-    </main>
-    <!------------------------------------POSTS REPORTED------------------------------------------------------------------>
-    <main class="postsContainer" v-if="mode == 'reportedPosts'&& reportedPostsLength!=0">
-        <RecentPosts v-for="reportedPostsItem in reportedPosts" :key="reportedPostsItem.postId" :postItem="reportedPostsItem" :selectedMode="mode"/>   
-    </main>
-    <main class="noPost" v-if="mode == 'reportedPosts' && reportedPostsLength==0">
-        <p class="noPost__text">Aucune publication n'a été signalée !</p>
+    <!--Loader-->
+    <main class="loaderContainer" v-if="status == 'loading'">
+        <div class="lds-ring" ><div></div><div></div><div></div><div></div></div>
     </main>
 
+    <main v-else>
+        <!------------------------------------POSTS BY DATE------------------------------------------------------------------>
+        <div class="postsContainer" v-if="mode == 'recentPosts' && postLength!=0">  
+            <RecentPosts v-for="postItem in posts" :key="postItem.postId" :postItem="postItem" :selectedMode="mode"/>  
+        </div>
+        <div class="noPost" v-if="mode == 'recentPosts' && postLength==0"> 
+            <p class="noPost__text">Il n'existe pas encore de publication !</p>
+        </div> 
+        <!------------------------------------POSTS BY LIKE------------------------------------------------------------------>
+        <div class="postsContainer" v-if="mode == 'popularPosts'&& popularPostsLength!=0">
+            <RecentPosts v-for="popularPostItem in popularPosts" :key="popularPostItem.postId" :postItem="popularPostItem" :selectedMode="mode"/>   
+        </div>
+        <div class="noPost" v-if="mode == 'popularPosts' && popularPostsLength==0">
+            <p class="noPost__text">Il n'existe pas encore de publication !</p>
+        </div>
+        <!------------------------------------POSTS REPORTED------------------------------------------------------------------>
+        <div class="postsContainer" v-if="mode == 'reportedPosts'&& reportedPostsLength!=0">
+            <RecentPosts v-for="reportedPostsItem in reportedPosts" :key="reportedPostsItem.postId" :postItem="reportedPostsItem" :selectedMode="mode"/>   
+        </div>
+        <div class="noPost" v-if="mode == 'reportedPosts' && reportedPostsLength==0">
+            <p class="noPost__text">Aucune publication n'a été signalée !</p>
+        </div>
+    </main>
 </template>
 
 <script>
@@ -58,13 +65,13 @@ export default {
     },
     data(){
         return{
-            search: false,
-            settings: false,
-            mode: 'recentPosts'
+            mode: 'recentPosts',
+            settings: false
         }
     },
     computed: {
         ...mapState({
+            status: 'status',
             user: 'user',
             userLoggedIn: 'userLoggedIn',
         }),
@@ -77,10 +84,10 @@ export default {
             postLength: 'postsByDateLength',
             popularPostsLength: 'postsByLikeLength',
             reportedPostsLength: 'reportedPostsLength' 
-    })
+        })
     },
     beforeMount: 
-        //Récupération des données utilisateur et des posts à afficher
+        //Loading user data and posts to display
         function(){
             if (this.user.userId == -1) {
             this.$router.push('/');
@@ -150,6 +157,7 @@ export default {
             margin-left: 15px;
         }
     }
+/***********UPDATE MENU ANIMATION********* */    
 .bounce-enter-active {
     animation: bounce-in .8s;
 }
@@ -167,7 +175,7 @@ export default {
         transform: scale(1);
     }
 }
-
+/*******************NAV********************* */
 .toggle {
     width: 500px;
     display: flex;
@@ -193,7 +201,47 @@ export default {
         }
     }
 }
-
+/*****************LOADER********************* */
+.loaderContainer{
+    width: 100%;
+    margin-top: 50px;
+}
+.lds-ring {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.lds-ring div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border: 8px solid #ee7575;
+  border-radius: 50%;
+  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: #ee7575 transparent transparent transparent;
+}
+.lds-ring div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+.lds-ring div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.lds-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+@keyframes lds-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+/******************POSTS********************* */
 .postsContainer{
     max-width: 500px;
     height: auto;
