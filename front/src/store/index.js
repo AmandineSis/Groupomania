@@ -157,6 +157,7 @@ export default createStore({
         });
     },
     updatePassword: ({commit}, password)=> {
+      console.log('testupdate')
       commit('SET_STATUS', 'loading');
       return new Promise ((resolve, reject) => {
         instance

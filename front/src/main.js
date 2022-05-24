@@ -7,7 +7,7 @@ import store from './store'
 import './assets/styles/reset.scss';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faUserSecret, faGear, faSignOutAlt, faMagnifyingGlass, faImage, faPaperPlane, faHeart, faComment, faXmark, faPenClip, faHouse, faEllipsis } from '@fortawesome/free-solid-svg-icons'
+import { faEye, faUserSecret, faGear, faSignOutAlt, faMagnifyingGlass, faImage, faPaperPlane, faHeart, faComment, faXmark, faPenClip, faHouse, faEllipsis, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import { faHeart as farHeart, faComment as farComment } from '@fortawesome/free-regular-svg-icons'
 /******************************************************************* */
 
@@ -19,6 +19,8 @@ createApp(App)
 
 //AJOUT DES ICONES A LA LIBRAIRIE - SOLID ICON    
 library.add(
+  faEye,
+  faEyeSlash,
   faUserSecret, 
   faUserSecret, 
   faGear, 

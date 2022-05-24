@@ -1,25 +1,35 @@
 <template>
     <div class="passwordUpdate" >
         <form class="passwordUpdate__form">
-            <BaseInput
-                        class="passwordUpdate__form__input"
-                        v-model="event.oldPassword"
-                        label="Ancien mot de passe"
-                        type="password"
-            />
-            <BaseInput
-                        class="passwordUpdate__form__input"
-                        v-model="event.newPassword"
-                        v-on:change="isPasswordValid"
-                        label="Nouveau mot de passe"
-                        type="password"
-            />
-            
+            <div class="passwordUpdate__form__container">
+                <BaseInput
+                            class="passwordUpdate__form__input"
+                            v-model="event.oldPassword"
+                            label="Ancien mot de passe"
+                            :type="oldPasswordFieldType"
+                />
+                <button class="passwordUpdate__button" type='password' @click.prevent="switchVisibilityOld">
+                    <font-awesome-icon class="passwordUpdate__icon" v-if="showOldPassword" icon="eye"/>
+                    <font-awesome-icon class="passwordUpdate__icon" v-else icon="eye-slash"/>
+                </button>
+            </div>
+            <div class="passwordUpdate__form__container">
+                <BaseInput
+                            class="passwordUpdate__form__input"
+                            v-model="event.newPassword"
+                            v-on:change="isPasswordValid"
+                            label="Nouveau mot de passe"
+                            :type="newPasswordFieldType"
+                />
+                <button class="passwordUpdate__button" type='password' @click.prevent="switchVisibilityNew">
+                    <font-awesome-icon class="passwordUpdate__icon" v-if="showNewPassword" icon="eye"/>
+                    <font-awesome-icon class="passwordUpdate__icon" v-else icon="eye-slash"/>
+
+                </button>
+            </div>
         </form>
-         <div class="passwordUpdate__form__valid">
-            <button class="passwordUpdate__form__valid__button" :class="{'passwordUpdate__form__valid__button--disabled' : !passwordValid}" type= "button" @click="updatePassword" > Valider
-                <!-- <span v-if="status == 'loading'">Modification en cours...</span>
-                <span v-else>Modifié</span> -->
+        <div class="passwordUpdate__form__valid">
+            <button class="passwordUpdate__form__valid__button" :class="{'passwordUpdate__form__valid__button--disabled' : !passwordValid}" type= "button" @click="updateNewPassword" > Valider
             </button>
             <p v-if="error.passwordError">Veuillez saisir au moins 8 caratères, une majuscule, une minuscule, un chiffre et un caractère spécial</p>
         </div>
@@ -27,7 +37,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import BaseInput from '@/components/Base/BaseInput.vue';
 export default {
     
@@ -37,6 +47,10 @@ export default {
     },
      data(){
         return{
+            oldPasswordFieldType:"password",
+            newPasswordFieldType:"password",
+            showOldPassword:false,
+            showNewPassword: false,
             event: {
                 oldPassword: '',
                 newPassword: '',
@@ -62,35 +76,39 @@ export default {
         })
     },
     methods: {  
+        ...mapActions(['updatePassword']),
+        switchVisibilityOld(){
+            this.showOldPassword= !this.showOldPassword;
+            this.oldPasswordFieldType = this.oldPasswordFieldType === "password" ? "text" : "password";
+        },
+        switchVisibilityNew(){
+            this.showNewPassword= !this.showNewPassword;
+            this.newPasswordFieldType = this.newPasswordFieldType === "password" ? "text" : "password";
+        },
         isPasswordValid() {
             this.pswdReg.test(this.event.newPassword) 
             ? (this.passwordValid= true, this.error.passwordError = false) 
             : (this.passwordValid= false, this.error.passwordError = true);
         },
-        updatePassword(){
+        updateNewPassword(){
             const oldPassword = this.event.oldPassword;
             const newPassword = this.event.newPassword;
             const userId = this.user.userId
             
-            if(this.isPasswordValid){
-                this.$store
-                .dispatch('updatePassword',
+            if(this.passwordValid){
+                this.updatePassword(
                     {userId,oldPassword,newPassword})
                 .then((res => {
                     console.log(res);
                     console.log('updatePassword dispatch done');
-
                     window.alert('Modifications effectuées !');
                     this.event.oldPassword='';
                     this.event.newPassword='';
-                }), (err => {
-                    console.log(err)
                 }))
             } else {
-                window.alert("Erreur mdp")
+                window.alert("Erreur mot de passe")
             }         
             }
-             
     }
 }
 </script>
@@ -103,7 +121,13 @@ export default {
     &__form{
         display: flex;
         flex-direction: column;
-        width: 100%;
+        width: 90%;
+
+        &__container{
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+        }
         &__input {
             display: flex;
             flex-direction: column;
@@ -139,6 +163,9 @@ export default {
         }
             }
         }
-    }   
+    } 
+    &__button{
+        background-color: white;
+    }  
 }    
 </style>

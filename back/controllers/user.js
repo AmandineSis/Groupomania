@@ -181,7 +181,7 @@ exports.updateUser = (req, res) => {
 //req.token
 //result = "Mot de passe modifié !"
 exports.updatePassword = (req, res) => {
-  console.log(req.body);
+  console.log('update password---->'+req.body);
   console.log(req.body.password);
   //trouver le user dans la base de données
   const userId = parseInt(req.params.userId);
