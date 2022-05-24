@@ -151,41 +151,49 @@ export default ({
 
         //Connexion de l'utilisateur
         logUser(){
-            this.login({
-                    email: this.event.email,
-                    password: this.event.password})
-                .then((res => {
-                    console.log(res.data.userId)
-                    const userId = res.data.userId;
-                    console.log('login dispatch done');
-                    this.getUserLoggedIn({userId})
-                        .then((() => {
-                            console.log('getUserLoggedIn dispatch done');
-                            this.$router.push('Home')    
-                            }), (err => {
-                                console.log(err)
-                                this.error.loginError = true;
-                            }))
-                }), (err => {
-                    console.log(err)
-                    console.log(err)
-                    this.error.loginError = true;
-                    }))       
+            if(!this.loginValidation){
+                return this.status = 'error_login'
+            }else{
+                this.login({
+                        email: this.event.email,
+                        password: this.event.password})
+                    .then((res => {
+                        console.log(res.data.userId)
+                        const userId = res.data.userId;
+                        console.log('login dispatch done');
+                        this.getUserLoggedIn({userId})
+                            .then((() => {
+                                console.log('getUserLoggedIn dispatch done');
+                                this.$router.push('Home')    
+                                }), (err => {
+                                    console.log(err)
+                                    this.error.loginError = true;
+                                }))
+                    }), (err => {
+                        console.log(err)
+                        console.log(err)
+                        this.error.loginError = true;
+                        }))    
+            }   
         },
         //Inscription de l'utilisateur
         createUserAccount() {
             const self = this;
-            this.createAccount({
-                    firstName: this.event.firstName,
-                    lastName: this.event.lastName,
-                    email: this.event.email,
-                    password: this.event.password})
-                .then((() => {
-                    console.log('createAccount dispatch done');
-                    self.logUser();
-                }), (err => {
-                    console.log(err)
-                }))
+            if(!this.signupValidation){
+                return  this.status = 'error_signup'
+            }else{
+                this.createAccount({
+                        firstName: this.event.firstName,
+                        lastName: this.event.lastName,
+                        email: this.event.email,
+                        password: this.event.password})
+                    .then((() => {
+                        console.log('createAccount dispatch done');
+                        self.logUser();
+                    }), (err => {
+                        console.log(err)
+                    }))
+            }
         }    
     }
 })

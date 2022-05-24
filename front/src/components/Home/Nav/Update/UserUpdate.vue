@@ -63,9 +63,9 @@ export default {
             nameReg: /^([a-zA-ZÀ-ÿ]{3,20}(['|s|-]{1}[a-zA-ZÀ-ÿ]{0,20})*)$/,
             emailReg: /^[a-z0-9]+([_|.|-]{1}[a-zA0-9]+)*@[a-z0-9]+([_|.|-]{1}[a-z0-9]+)*[.]{1}[a-z]{2,6}$/,
 
-            firstNameValid: false,
-            lastNameValid: false,
-            emailValid: false
+            firstNameValid: true,
+            lastNameValid: true,
+            emailValid: true
         }
     },
     computed: {
@@ -107,22 +107,25 @@ export default {
             const firstNameUpdate = (this.event.firstName ? this.event.firstName : this.userLoggedIn.firstName)
             const lastNameUpdate = (this.event.lastName ? this.event.lastName : this.userLoggedIn.lastName)
             const emailUpdate = (this.event.email ? this.event.email : this.userLoggedIn.email)
-
-            this.updateUser({userId,
-                    firstName: firstNameUpdate,
-                    lastName: lastNameUpdate,
-                    email: emailUpdate})
-                .then((res => {
-                    console.log(res);
-                    console.log('updateUser dispatch done');
-                    window.alert('Modifications effectuées !');
-                    this.getUserLoggedIn({ userId })
-                        .then(() => {
-                            console.log("getUserLoggedIn dispatch done !")
-                        });
-                    }), (err => {
-                        console.log(err)
-                    }))
+            if(!this.updateValidation){
+                return this.status= 'error_update'
+            }else{
+                this.updateUser({userId,
+                        firstName: firstNameUpdate,
+                        lastName: lastNameUpdate,
+                        email: emailUpdate})
+                    .then((res => {
+                        console.log(res);
+                        console.log('updateUser dispatch done');
+                        window.alert('Modifications effectuées !');
+                        this.getUserLoggedIn({ userId })
+                            .then(() => {
+                                console.log("getUserLoggedIn dispatch done !")
+                            });
+                        }), (err => {
+                            console.log(err)
+                        }))
+            }
         }    
     }
 }
@@ -161,7 +164,7 @@ export default {
                 border-radius: 5px;
                 background-color: #ee7575;
                 transition: .4s background-color;
-                --disabled{
+                &--disabled{
                     background-color: grey;
                 }
                 &:hover {
