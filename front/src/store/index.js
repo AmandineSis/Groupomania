@@ -71,7 +71,7 @@ export default createStore({
       state.user = user;
     },
     
-    logout(state) {
+    LOG_OUT(state) {
       state.user = {
         userId: -1,
         token: '',
@@ -87,7 +87,7 @@ export default createStore({
     searchResult(state, searchResults){
       state.searchResults = searchResults;
     },
-    clearSearch(state){
+    CLEAR_SEARCH(state){
       state.searchResults = [];
     },
     

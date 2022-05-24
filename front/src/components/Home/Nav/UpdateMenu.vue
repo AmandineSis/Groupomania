@@ -79,7 +79,7 @@ export default {
 
 .updateMenu {
     max-width: 550px;
-    height: 150px;
+    min-height: 150px;
     margin: 30px auto;
     
     z-index: 1000;

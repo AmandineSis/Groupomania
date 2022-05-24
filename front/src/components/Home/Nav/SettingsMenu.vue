@@ -1,16 +1,19 @@
 <template>
     <ul class="settings__list">
+        <!-----------Logout--------------->
         <li class="settings__list__item">
             <router-link to="/">
                 <font-awesome-icon class="settings__icon" icon="sign-out-alt"  @click="logoutUser"/>
             </router-link>
         </li>
+        <!---------UpadeMenu--------------->
         <li class="settings__list__item">
-            <font-awesome-icon class="settings__icon" icon="gear" @click="showSettings" @blur="closeSettings"/>
+            <font-awesome-icon class="settings__icon" icon="gear" @click="showUpdate" @blur="closeUpdate"/>
         </li>
-        
+        <!---------SearchUser--------------->
         <li class="settings__list__item">
             <font-awesome-icon class="settings__icon" icon="magnifying-glass" @click="showSearchBar"/>
+
             <transition name="grow">
                 <form  v-if="search" method="POST"> 
                     <div class="settings__searchForm" >  
@@ -25,14 +28,16 @@
                                 />
                         <font-awesome-icon class="settings__searchForm__input__delete" icon="xmark" @click="deleteSearch" />
                     </div>
+                    <!---------SearchUser results--------------->
                     <div class="settings__searchForm__results" v-if="searchResults && event.userSearch != ''">
                         <div class="result" v-for="result in searchResults" :key="result.userId" >
-                            <router-link  class="result__link" :to="`/profile/${result.userId}`">
-                            <img class="result__image" :src="result.profilePicUrl" alt="profile picture"/>
-                            <p class="result__name">{{ result.firstName }} {{ result.lastName }}</p>
+                            <router-link  class="result__link" :to="{ name: 'Profile', params: { userId: result.userId }}" :key="$route.params">
+                                <img class="result__image" :src="result.profilePicUrl" alt="profile picture"/>
+                                <p class="result__name">{{ result.firstName }} {{ result.lastName }}</p>
                             </router-link>
                         </div>
                     </div>
+
                 </form>
             </transition>    
         </li>
@@ -63,20 +68,25 @@ export default {
     },
     methods: {
         ...mapActions(['searchUser']),
-        ...mapMutations(['logout', 'clearSearch']),
+        ...mapMutations(['LOG_OUT', 'CLEAR_SEARCH']),
+
+        
         logoutUser(){
-            this.logout();
+            this.LOG_OUT();
             this.$router.push('/');
+        },
+        //toggle du menu settings
+        showUpdate(){
+                this.$emit('show-update');
+            },
+        closeUpdate(){
+            this.$emit('close-update');
         },
         showSearchBar(){
                 this.search=!this.search;
                 },
-        showSettings(){
-                this.$emit('show-settings');
-            },
-        closeSettings(){
-            this.$emit('close-settings');
-        },
+        
+        //Recherche utilisateur
         getSearchResults(){
             let nameSearched = this.event.userSearch;
             this.searchUser({indexName: nameSearched})
@@ -84,21 +94,9 @@ export default {
                     console.log('searchUser dispatch done !')
                 })
         },
-        /*stopSearch(){
-                
-                     this.event.userSearch = "";
-                     this.clearSearch()
-                .then(() => {
-                    console.log('clearSearch dispatch done !')
-                    
-                })
-                
-                console.log("search stopped");
-               
-        },*/
         deleteSearch(){
-            this.clearSearch()
-            console.log('clearSearch dispatch done !')
+            this.CLEAR_SEARCH()
+            console.log('CLEAR_SEARCH dispatch done !')
             this.event.userSearch = "";
         }
         
@@ -158,7 +156,7 @@ export default {
         }
     }
 }
-
+/**********SEARCHBAR ANIMATION********* */  
 .grow-enter-active {
   animation: bounce-in .8s ease;
 }
@@ -180,7 +178,7 @@ export default {
     width: 140px;
   }
 }
-
+/********RESULTATS DE LA RECHERCHE****** */ 
 .result{
     border: 1px solid #dbdbdb;
     background-color: white;

@@ -151,7 +151,6 @@ export default ({
 
         //Connexion de l'utilisateur
         logUser(){
-    
             this.login({
                     email: this.event.email,
                     password: this.event.password})

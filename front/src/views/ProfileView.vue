@@ -1,6 +1,6 @@
 <template>
     <nav class="topMenu" v-once>
-        <SettingsMenu class="topMenu__settings" @show-settings="openSettings" v-once />
+        <SettingsMenu class="topMenu__settings" @show-update="openUpdateMenu" v-once />
         <router-link class="topMenu__home" :to="`/home/`" ><font-awesome-icon icon="house"/></router-link>
     </nav> 
 
@@ -9,7 +9,7 @@
     <DeleteBlock v-if="deleteBlock"/>
 
     <transition name="bounce">
-        <UpdateMenu v-if="settings"/>
+        <UpdateMenu v-if="updateMenu" @close-update="closeUpdateMenu" @blur="closeUpdateMenu" tabindex="0"/>
     </transition>
 
     <NewPost :mode="profilePage" v-once/> 
@@ -65,7 +65,7 @@ export default {
     data(){
         return{
             mode: 'recentPosts',
-            settings: false,
+            updateMenu: false,
             userIdProfile: '',
             deleteBlock: false
         }
@@ -97,9 +97,12 @@ export default {
     methods: {
         ...mapActions('posts',['getPostsByUserId','getPopularPostsByUserId','getReportedPosts']),
         //toggle des menus settings et delete
-        openSettings(){
-                this.settings=!this.settings;
+        openUpdateMenu(){
+                this.updateMenu=!this.updateMenu;
             },
+        closeUpdateMenu(){
+            this.updateMenu = false;
+        },
         showDeleteBlock(){
             this.deleteBlock = !this.deleteBlock;
         },

@@ -1,11 +1,11 @@
 <template>
     <nav class="topMenu" v-once>
-        <SettingsMenu class="topMenu__settings" @show-settings="openSettings"  v-once />
+        <SettingsMenu class="topMenu__settings" @show-update="openUpdateMenu"  v-once />
         <router-link :to="`/profile/${userLoggedIn.userId}`"><UserProfile/></router-link>
     </nav> 
     <!--Pop-up update menu-->
     <transition name="bounce">
-        <UpdateMenu v-if="settings" @close-settings="closeSettings" @blur="closeSettings" tabindex="0"/>
+        <UpdateMenu v-if="updateMenu" @close-update="closeUpdateMenu" @blur="closeUpdateMenu" tabindex="0"/>
     </transition>
     
     <NewPost v-once/>
@@ -66,7 +66,7 @@ export default {
     data(){
         return{
             mode: 'recentPosts',
-            settings: false
+            updateMenu: false
         }
     },
     computed: {
@@ -108,12 +108,12 @@ export default {
     methods: {
         ...mapActions(['getUserLoggedIn','getUserInfos']),
         ...mapActions('posts',['getPostsByDate','getPopularPosts','getReportedPosts']),
-        //toggle du menu settings
-        openSettings(){
-                this.settings=!this.settings;
+        //toggle updateMenu
+        openUpdateMenu(){
+                this.updateMenu=!this.updateMenu;
             },
-        closeSettings(){
-            this.settings = false;
+        closeUpdateMenu(){
+            this.updateMenu = false;
         },
         //toggle entre les différentes listes de publication
         showRecentPosts(){

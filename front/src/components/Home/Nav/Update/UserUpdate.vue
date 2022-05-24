@@ -8,7 +8,7 @@
                 @change="isFirstNameValid"
                 type="text"
             />
-            <p v-if="error.firstNameError">Veuillez saisir au moins 3 caratères</p>
+            <p class="userUpdate__form__input__error" v-if="error.firstNameError">Veuillez saisir au moins 3 caratères</p>
             <BaseInput
                 class="userUpdate__form__input"
                 :value="userLoggedIn.lastName"
@@ -16,7 +16,7 @@
                 @change="isLastNameValid"
                 type="text"
             />
-            <p v-if="error.lastNameError">Veuillez saisir au moins 3 caratères</p>
+            <p class="userUpdate__form__input__error" v-if="error.lastNameError">Veuillez saisir au moins 3 caratères</p>
             <BaseInput
                 class="userUpdate__form__input"
                 :value="userLoggedIn.email"
@@ -24,8 +24,8 @@
                 @change="isEmailValid"
                 type="email"
             />
-            <p v-if="error.emailError">Veuillez saisir un email valide</p>
-            <p v-if="error.emailExists">Cet email existe déjà</p>
+            <p class="userUpdate__form__input__error" v-if="error.emailError">Veuillez saisir un email valide</p>
+            <p class="userUpdate__form__input__error" v-if="error.emailExists">Cet email existe déjà</p>
         </form>
 
 
@@ -144,7 +144,12 @@ export default {
             width: 90%;
             height: 25px;
             border-radius: 5px;
-            margin: 3px auto;}
+            margin: 3px auto;
+            &__error{
+                font-size: 13px;
+                color: #ee7575;
+        }
+            }
         &__valid{
             width: 100%;
             &__button {
@@ -170,6 +175,7 @@ export default {
                 }
             }
         }
+        
     }
 }
 
