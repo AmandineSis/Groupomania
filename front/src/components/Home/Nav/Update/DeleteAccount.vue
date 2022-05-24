@@ -1,5 +1,8 @@
 <template>
-    <div class="DeleteAccount" >
+    <div class="deleteUser" >
+        <p class="deleteUser__text">
+            Entrez votre mot de passe pour supprimer ce compte :
+        </p>
         <form class="deleteUser__form">
              <BaseInput
                 class="deleteUser__form__input"
@@ -13,7 +16,7 @@
 
 
         <div class="deleteUser__form__valid">
-            <button class="deleteUser__form__valid__button" type= "button" @click="deleteAccount" > Valider
+            <button class="deleteUser__form__valid__button" :class="{'deleteUser__form__valid__button--disabled' : !event.password}" type= "button" @click="deleteAccount" > Valider
                 <!-- <span v-if="status == 'loading'">Modification en cours...</span>
                 <span v-else>Modifié</span> -->
             </button>
@@ -24,7 +27,7 @@
 
 <script>
 import BaseInput from '@/components/Base/BaseInput.vue';
-import { mapState } from 'vuex'
+import {  mapState, mapMutations, mapActions } from 'vuex'
 export default {
     name: 'DeleteAccount',
     components: {
@@ -37,7 +40,7 @@ export default {
             },
             error: {
                 passwordError: false
-            }
+            },
         }
     },
     computed: {
@@ -47,25 +50,24 @@ export default {
         })
     },
     methods: {  
+        ...mapMutations(['LOG_OUT']),
+        ...mapActions(['deleteUser']),
         deleteAccount(){
-            
             const password = this.event.password;
             const userId = this.user.userId;
-
             if (password != ""){
                 if (window.confirm(`Attention ! Toutes les données de cet utilisateur seront perdues, êtes-vous sûr de vouloir supprimer ?`)){
-                    this.$store
-                    .dispatch('deleteUser',
-                        {userId, password})
+                    this.deleteUser({userId, password})
                     .then((res => {
                         console.log(res);
                         console.log('deleteUser dispatch done');
-                        this.$store.commit('LOG_OUT');
+                        this.LOG_OUT();
                         this.$router.push('/');
                     }), (err => {
                         console.log(err);
                         window.alert('Mot de passe invalide !');
                         this.event.password ="";
+                        this.passwordField= false;
                     }))
                 }else{
                     this.event.password = "";
@@ -84,6 +86,10 @@ export default {
     display: flex;
     flex-direction: column;
     width: 50%;
+    &__text{
+        width: 90%;
+        text-align: left;
+    }
     &__form{
         display: flex;
         flex-direction: column;
@@ -108,10 +114,10 @@ export default {
                 border-radius: 5px;
                 background-color: #ee7575;
                 transition: .4s background-color;
-                &:hover {
-                    background-color: #a71e05;
-                    color: #ffffff;
+                 &--disabled{
+                    background-color: grey;
                 }
+                
             }
         }
     }   

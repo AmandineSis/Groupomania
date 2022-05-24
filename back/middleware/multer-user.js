@@ -20,12 +20,12 @@ const storage = multer.diskStorage({
     callback(null, name + Date.now() + '.' + extension);
   }
 });
-const multerFilter = (req, file, cb) => {
+const multerFilter = (req, file, callback) => {
   if (file.mimetype == "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg") {
-    cb(null, true);
+    callback(null, true);
   } else {
-    cb(null, false);
-    return cb(new Error('Only .png, .jpg and .jpeg format allowed!'));
+    callback(null, false);
+    return callback(new Error('Only .png, .jpg and .jpeg format allowed!'));
   }
 };
 
