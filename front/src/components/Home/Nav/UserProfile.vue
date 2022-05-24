@@ -41,13 +41,13 @@ export default {
                     this.$router.push('/');
                     return;
                 }
-                const userId = this.$store.state.user.userId;
+                const userId = this.user.userId;
                 console.log(userId);
                 this.$store
                     .dispatch('getUser', userId )
                     .then(() => {
                         console.log("getUSer dispatch done !")
-                });
+                    });
             }else{
                 const userId = this.$route.params.userId;
                 this.$store
@@ -61,6 +61,7 @@ export default {
     computed: {
         ...mapState({
             status: 'status',
+            user: 'user',
             userLoggedIn: 'userLoggedIn',
             userInfos: 'userInfos',
             
@@ -127,11 +128,4 @@ export default {
         }
     }
 }
-    
-  /*  .link {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-    }*/
-
 </style>

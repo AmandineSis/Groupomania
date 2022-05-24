@@ -120,7 +120,6 @@ export default {
             });
         },
         getPostsByDate: ({ commit }) => {
-            console.log(instance)
             instance
                 .get(`/posts`)
                 .then( function (response) {
