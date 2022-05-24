@@ -16,7 +16,7 @@
                 label="Prénom"
                 type="text"
             />
-            <p class="form__input__error" v-if="mode == 'signup' && error.firstNameError">Veuillez saisir au moins 3 caratères</p>
+            <p class="form__input__error" v-if="mode == 'signup' && error.firstNameError">Veuillez saisir au moins 3 caratères alphabétiques</p>
             <BaseInput
                 v-if=" mode == 'signup'"
                 class="form__input"
@@ -25,7 +25,7 @@
                 label="Nom"
                 type="text"
             />
-            <p class="form__input__error" v-if="mode == 'signup' && error.lastNameError">Veuillez saisir au moins 3 caratères</p>
+            <p class="form__input__error" v-if="mode == 'signup' && error.lastNameError">Veuillez saisir au moins 3 caratères alphabétiques</p>
             <BaseInput
                 class="form__input"
                 v-model="event.email"

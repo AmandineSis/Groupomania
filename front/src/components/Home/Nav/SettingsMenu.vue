@@ -8,14 +8,14 @@
         </li>
         <!---------UpadeMenu--------------->
         <li class="settings__list__item">
-            <font-awesome-icon class="settings__icon" icon="gear" @click="showUpdate" @blur="closeUpdate"/>
+            <font-awesome-icon class="settings__icon" icon="gear" @click="showUpdate"/>
         </li>
         <!---------SearchUser--------------->
         <li class="settings__list__item">
             <font-awesome-icon class="settings__icon" icon="magnifying-glass" @click="showSearchBar"/>
 
             <transition name="grow">
-                <form  v-if="search" method="POST"> 
+                <form  v-if="searchBarIsActive" method="POST"> 
                     <div class="settings__searchForm" >  
                             <BaseInput 
                                 class="settings__searchForm__input" 
@@ -24,7 +24,7 @@
                                 name="user" 
                                 label="Rechercher..."
                                 @keyup="getSearchResults"
-                                
+                                @blur="closeSearch"
                                 />
                         <font-awesome-icon class="settings__searchForm__input__delete" icon="xmark" @click="deleteSearch" />
                     </div>
@@ -63,11 +63,15 @@ export default {
     computed: {
         ...mapState({
             searchResults: 'searchResults'
+        }),
+        ...mapState('toggle',{
+            searchBarIsActive: 'searchBarIsActive'
         })
     },
     methods: {
         ...mapActions(['searchUser']),
         ...mapMutations(['LOG_OUT', 'CLEAR_SEARCH']),
+        ...mapMutations('toggle',['UPDATE_MENU_TOGGLE','SEARCH_BAR_TOGGLE']),
 
         
         logoutUser(){
@@ -76,13 +80,10 @@ export default {
         },
         //toggle du menu settings
         showUpdate(){
-                this.$emit('show-update');
+                this.UPDATE_MENU_TOGGLE()
             },
-        closeUpdate(){
-            this.$emit('close-update');
-        },
         showSearchBar(){
-                this.search=!this.search;
+                this.SEARCH_BAR_TOGGLE()
                 },
         
         //Recherche utilisateur
@@ -92,6 +93,11 @@ export default {
                 .then(() => {
                     console.log('searchUser dispatch done !')
                 })
+        },
+        closeSearch(){
+            this.CLEAR_SEARCH()
+            this.event.userSearch = "";
+            this.SEARCH_BAR_TOGGLE()
         },
         deleteSearch(){
             this.CLEAR_SEARCH()

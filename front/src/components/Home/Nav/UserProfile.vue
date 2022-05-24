@@ -6,26 +6,22 @@
             </router-link>
         </div>
         
-        <div class="userProfile" :class="{'userProfile--inBlock' : profileView}" v-else >
-            <!-- <router-link class="link" :to="{ name: 'Profile', params: { userId: status.user.userId } }"> -->    
+        <div class="userProfile" :class="{'userProfile--inBlock' : profileView}" v-else >  
                 <p class="userProfile__fullname" :class="{'userProfile__fullname--black' : profileView}" v-if="profileView && $route.params.userId == userLoggedIn.userId">{{ fullNameUserLoggedIn }}</p> 
                 <p class="userProfile__fullname" :class="{'userProfile__fullname--black' : profileView}" v-if="profileView && $route.params.userId != userLoggedIn.userId">{{ fullNameUser }}</p> 
                 
                 <img class="userProfile__picture" :class="{'userProfile__picture--sizeUp' : profileView}" :src="userLoggedIn.profilePicUrl" alt="photo de profil" v-if="profileView && $route.params.userId == userLoggedIn.userId">
                 <img class="userProfile__picture" :class="{'userProfile__picture--sizeUp' : profileView}" :src="userInfos.profilePicUrl" alt="photo de profil" v-if="profileView && $route.params.userId != userLoggedIn.userId">
-            <!-- </router-link> -->
         </div>
-
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex';
 
 export default {
     name: 'UserProfile',
     props: {
-        profileView: Boolean,
-        posts: Object
+        profileView: Boolean
     },
     data(){
         return{
@@ -35,14 +31,12 @@ export default {
     beforeMount:
         function(){
             if(!this.profileView){
-                console.log(this.$store.state.user)
+                const userId = this.user.userId;
                 //Si userId = -1, retour à la page de connexion
-                if(this.$store.state.user.userId == -1){
+                if(userId == -1){
                     this.$router.push('/');
                     return;
                 }
-                const userId = this.user.userId;
-                console.log(userId);
                 this.$store
                     .dispatch('getUser', userId )
                     .then(() => {
@@ -64,9 +58,11 @@ export default {
             user: 'user',
             userLoggedIn: 'userLoggedIn',
             userInfos: 'userInfos',
-            
         }),
         ...mapGetters(['fullNameUserLoggedIn','fullNameUser'])
+    },
+    methods: {
+        ...mapActions(['getUser'])
     }
 }
 </script>

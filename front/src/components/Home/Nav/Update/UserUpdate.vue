@@ -8,7 +8,7 @@
                 @change="isFirstNameValid"
                 type="text"
             />
-            <p class="userUpdate__form__input__error" v-if="error.firstNameError">Veuillez saisir au moins 3 caratères</p>
+            <p class="userUpdate__form__input__error" v-if="error.firstNameError">Veuillez saisir au moins 3 caratères alphabétiques</p>
             <BaseInput
                 class="userUpdate__form__input"
                 :value="userLoggedIn.lastName"
@@ -16,7 +16,7 @@
                 @change="isLastNameValid"
                 type="text"
             />
-            <p class="userUpdate__form__input__error" v-if="error.lastNameError">Veuillez saisir au moins 3 caratères</p>
+            <p class="userUpdate__form__input__error" v-if="error.lastNameError">Veuillez saisir au moins 3 caratères alphabétiques</p>
             <BaseInput
                 class="userUpdate__form__input"
                 :value="userLoggedIn.email"

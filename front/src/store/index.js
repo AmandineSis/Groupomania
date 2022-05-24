@@ -1,4 +1,5 @@
 import { createStore, createLogger } from 'vuex'
+import toggle from './modules/toggle'
 import auth from './modules/auth'
 import posts from './modules/posts'
 
@@ -36,6 +37,7 @@ export default createStore({
   strict: debug,
   plugins: debug ? [createLogger()] : [],
   modules: {
+    toggle,
     auth,
     posts
   },

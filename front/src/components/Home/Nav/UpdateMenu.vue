@@ -12,7 +12,7 @@
             <PasswordUpdate v-if="mode == 'password'"/>
             <PictureUpdate v-if="mode == 'profilePicture'"/>
             <DeleteAccount v-if="mode == 'deleteAccount'"/>
-           <div class="updateMenu__close" @click="closeSettings" >
+           <div class="updateMenu__close" @click="closeUpdate" >
                 <font-awesome-icon class="updateMenu__close__icon" icon="xmark"/>Fermer
             </div>
         </div>
@@ -24,7 +24,7 @@ import UserUpdate from '@/components/Home/Nav/Update/UserUpdate.vue';
 import PasswordUpdate from '@/components/Home/Nav/Update/PasswordUpdate.vue';
 import PictureUpdate from '@/components/Home/Nav/Update/PictureUpdate.vue';
 import DeleteAccount from '@/components/Home/Nav/Update/DeleteAccount.vue';
-import { mapState } from 'vuex';
+import { mapState, mapMutations } from 'vuex';
 export default {
 
     name: 'UpdateMenu',
@@ -45,6 +45,7 @@ export default {
         })
     },
     methods: {  
+         ...mapMutations('toggle',['UPDATE_MENU_TOGGLE']),
         switchToPassword() {
             this.mode = 'password';
         },
@@ -57,10 +58,10 @@ export default {
         switchToIdentification() {
             this.mode = 'identification';
         },
-        closeSettings(){
-            console.log('close')
-            this.$emit('close-settings');
+        closeUpdate(){
+            this.UPDATE_MENU_TOGGLE()
         },
+        
     }
 }
 </script>
