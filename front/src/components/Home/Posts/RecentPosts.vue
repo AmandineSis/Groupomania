@@ -17,7 +17,7 @@
         <div class="posts__container">
             <!--Modification/suprression de la publication -->
             <div class="posts__content__update" v-if="showPostSettings && user.userId== postItem.userId" >
-                <PostSettings :postItem="postItem" @hide-post-settings="closeSettings"/>
+                <PostSettings :postItem="postItem" :currentPage="homePage" @hide-post-settings="closeSettings"/>
             </div>
             <!--Signalement de la publication -->
             <div class="posts__content__settings" v-if="showPostSettings && user.moderator == 0 && user.userId!= postItem.userId" >
@@ -86,7 +86,8 @@ export default ({
     },
     props: {
         'postItem': Object,
-        'selectedMode': String
+        'selectedMode': String,
+        'currentPage': String
     },
     data(){
         return {
@@ -103,24 +104,21 @@ export default ({
     computed: {
         ...mapState({
             user: 'user',
-           // userInfos: 'userInfos',
-           // posts: 'posts',
-            //postComments: 'postComments'
         }),
         ...mapGetters({
             fullname: 'fullname',
         })
     },
     methods: {
-        ...mapActions('posts',['likePost','getPostsByDate','getCommentsByPostId','deletePost','reportPost']),
+        ...mapActions('posts',['likePost','getPostsByDate','getCommentsByPostId','deletePost','reportPost','removeReport']),
         //Toggle post settings
         openPostSettings(){
             this.showPostSettings=!this.showPostSettings
         },
         closeSettings(){
+            console.log('close settings emit')
             this.showPostSettings = false;
         },
-        
         addLikePost(postId){
             //toggle like value between 0 and 1
             this.isLiked = !this.isLiked;
@@ -189,22 +187,19 @@ export default ({
                 report: 0
             };
             //envoie requête vers store - requête LikePost
-            this.$store
-                .dispatch('removeReport', unreportPost)
+            this.removeReport(unreportPost)
                 .then((res) => {
                     console.log(res)
                     console.log("removeReport dispatch done !")
                     if(this.mode=='homePage'){
-                        this.$store
-                            .dispatch('getPostsByDate')
+                        this.getPostsByDate()
                             .then(() => {
                                 console.log("getPostsByDate dispatch done !");
                                 this.showUpdateBlock = false;
                             });
                         } else {
                             const userId = this.$route.params.userId;
-                            this.$store
-                            .dispatch('getPostsByUserId', userId)
+                            this.getPostsByUserId(userId)
                             .then(() => {
                                 console.log("getPostsByDate dispatch done !");
                                 this.showUpdateBlock = false;
@@ -310,7 +305,6 @@ export default ({
                 width: 100%;
             }
         }
-        
         &__text{
             background-color: white;
             border: 1px 1px 1px 0 solid grey;
@@ -362,7 +356,7 @@ export default ({
                     &__full{
                         color: #ee7575;
                     }
-                }
+            }
         }
     }
 }

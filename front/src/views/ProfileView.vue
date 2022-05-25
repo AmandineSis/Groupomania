@@ -27,7 +27,7 @@
     <main v-else>
         <!------------------------------------POSTS BY DATE------------------------------------------------------------------>
         <div class="postsContainer" v-if="mode == 'recentPosts' && postLength!=0">  
-            <RecentPosts v-for="postItem in posts" :key="postItem.postId" :postItem="postItem" :selectedMode="mode"/>  
+            <RecentPosts v-for="postItem in posts" :key="postItem.postId" :postItem="postItem" :selectedMode="profilePage"/>  
         </div>
         <div class="noPost" v-if="mode == 'recentPosts' && postLength==0"> 
             <p class="noPost__text">Il n'existe pas encore de publication !</p>

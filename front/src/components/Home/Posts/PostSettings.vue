@@ -1,23 +1,20 @@
 <template>
-
-    <!----------------------------------Post settings-------------------------------------------------->
-
-    <!----------------------------------Post settings-------------------------------------------------->
     <div class="updatePost">
         <form class="updatePost__form"  >
             <textarea 
                 class="updatePost__form__input"
                 rows ="5" 
-                v-model="postUpdated"
                 name ="newPost"
-                :placeholder="postItem.content"
+                :value="postItem.content"
+                @input="event.content = $event.target.value"
             ></textarea>
-            <div class="updatePost__form__addedImage" v-if="postItem.imageUrl != null && !imageUpdated && displayImageName" >
-                <p class="updatePost__form__addedImage__image" >{{postItem.imageUrl.name}}</p>
+
+            <div class="updatePost__form__addedImage test" v-if="postItem.imageUrl && !event.image.name && displayUpload" >
+                <p class="updatePost__form__addedImage__image" >{{postItem.imageUrl}}</p>
                 <font-awesome-icon class="updatePost__form__addedImage__icon" icon="xmark" @click="deleteUploadedFile" />
             </div>
-            <div class="updatePost__form__addedImage" v-if="postItem.imageUrl == null && imageUpdated" >
-                <p class="updatePost__form__addedImage__image" >{{imageUpdated.name}}</p>
+            <div class="updatePost__form__addedImage" v-if="event.image" >
+                <p class="updatePost__form__addedImage__image" >{{event.image.name}}</p>
                 <font-awesome-icon class="updatePost__form__addedImage__icon" icon="xmark" @click="deleteUpdatedFile" />
             </div>
 
@@ -27,7 +24,7 @@
                 <button
                     class="updatePost__form__btn updatePost__form__btn__submit"
                     type="submit"
-                    @click.prevent="updatePost(postItem.postId, postItem.content)">
+                    @click.prevent="updatePostContent(postItem.postId, postItem.content, postItem.imageUrl)">
                 Modifier
                 </button> 
                  <button class="updatePost__form__btn updatePost__form__btn__delete" v-if=" user.moderator == 1 || user.userId== postItem.userId" @click="postDelete(postItem.postId)" >
@@ -40,18 +37,25 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 
 
 export default ({
     name: 'PostSettings',
-    props: {'postItem': Object},
+    props: {
+        'postItem': Object,
+        'currentPage': String,
+        'selectedMode': String
+    },
     data(){
         return {
-            postUpdated:'',
-            imageUpdated:'',
-            displayImageName: true,
-            mode: 'homePage',
+            event: {
+                content:'',
+                image:''
+            },
+           /* postUpdated:'',
+            imageUpdated:'',*/
+            displayUpload: true,
             isReported: '',
             report:''
         }
@@ -62,13 +66,10 @@ export default ({
             posts: 'posts',
             postComments: 'postComments',
             reportedPosts: 'reportedPostsByUserId'
-        }),
-        ...mapState('toggle',{
-            showPostSettings: 'showPostSettings'
-        }),
-        
+        })
     },
     methods: {
+        ...mapActions('posts',['deletePost','updatePost', 'getPostsByDate','getPostsByUserId']),
         closeSettings(){
             this.$emit('hidePostSettings')
         },
@@ -76,16 +77,15 @@ export default ({
             this.showUpdateBlock = !this.showUpdateBlock;
         },
         updateImage(e){
-            this.imageUpdated = e.target.files[0];
-            console.log(this.imageUpdated);
-            this.displayImageName = !this.displayImageName;
+            this.event.image = e.target.files[0];
+         //   this.displayImageName = !this.displayImageName;
           
         },
         deleteUploadedFile(){
-            this.displayImageName = !this.displayImageName;
+            this.displayUpload = false;
         },
         deleteUpdatedFile(){
-            this.imageUpdated = ''
+            this.event.image = ''
         },
         postDelete(postId) {
             this.deletePost(postId)
@@ -100,41 +100,43 @@ export default ({
                     console.log(err)
                 })
         },
-        updatePost(postId,content) {
-     
+        updatePostContent(postId,content, image) {
+            let imageUpdate
+            let contentUpdate = (this.event.content ? this.event.content : content)
             console.log(postId);
-            console.log(this.postUpdated);
-            console.log(content);
-            console.log(this.imageUpdated.name);
-            
-            
+            console.log(image);
+            console.log(this.currentPage);
+            if(!this.displayUpload){
+                imageUpdate= null
+            }else{
+                imageUpdate = (this.event.image ? this.event.image : image)
+            }
+            console.log(contentUpdate)
+            console.log(imageUpdate)
             const fdUpdatedPost = new FormData();
-            if (this.postUpdated != "") {
-                fdUpdatedPost.append('content', this.postUpdated);
+            if (contentUpdate != "") {
+                fdUpdatedPost.append('content', contentUpdate);
             }
             /*else{
                 fdUpdatePost.append('updatedContent', this.postUpdated);
             }*/
-            if (this.imageUpdated != "") {
-                fdUpdatedPost.append('image', this.imageUpdated, this.imageUpdated.name);
+            if (imageUpdate != null) {
+                fdUpdatedPost.append('image', imageUpdate, imageUpdate.name);
             }
-            if (this.postUpdated || this.imageUpdated) {
-                this.$store
-                    .dispatch('updatePost', {postId, fdUpdatedPost})
-                    .then((res => {
-                        console.log(res);
-                       
-                        if(this.mode=='homePage'){
-                        this.$store
-                            .dispatch('getPostsByDate')
+            if (contentUpdate || imageUpdate) {
+                this.updatePost({postId, fdUpdatedPost})
+                    .then(() => {
+                        if(this.currentPage=='homePage'){
+                            console.log(this.currentPage)
+                        this.getPostsByDate()
                             .then(() => {
                                 console.log("getPostsByDate dispatch done !");
                                 this.showUpdateBlock = false;
                             });
                         } else {
+                            console.log(this.currentPage)
                             const userId = this.$route.params.userId;
-                            this.$store
-                            .dispatch('getPostsByUserId', userId)
+                            this.getPostsByUserId(userId)
                             .then(() => {
                                 console.log("getPostsByDate dispatch done !");
                                 this.showUpdateBlock = false;
@@ -143,7 +145,7 @@ export default ({
                         }
                     }), (err => {
                         console.log(err)
-                    }))
+                    })
             }
         },
         reportPost(postId) {
@@ -214,7 +216,7 @@ export default ({
         width:100%;
         height: auto;
         margin: 0;
-    
+        border-radius: 20px;
         display: flex;
         flex-direction: column ;
         justify-content: center;
@@ -236,15 +238,18 @@ export default ({
                     color: grey;    
             }
             &__addedImage{
+                    
                     display: flex;
                     flex-direction: row;
                     justify-content: space-between;
                     width: 100%;
                     border: 2px solid #999999;
-                    background-color: #ffffff;
+                    background-color: #ee7575;
                 &__image {
+                    color: inherit;
+                    
                     text-align: left;
-                    margin: 0;
+                    margin: 2px;
                 }
                 &__icon{
                     width: 10px;
