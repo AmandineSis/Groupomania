@@ -12,7 +12,7 @@
         <UpdateMenu v-if="updateMenuIsActive" />
     </transition>
 
-    <NewPost :mode="profilePage" v-once/> 
+    <AddPost mode="profilePage" v-once/> 
 
     <div class="toggle">
         <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : mode=='recentPosts'}" @click="getUserRecentPosts"> Récents </button>
@@ -49,7 +49,7 @@ import SettingsMenu from '@/components/Home/Nav/SettingsMenu.vue'
 import UserProfile from '@/components/Home/Nav/UserProfile.vue'
 import UpdateMenu from '@/components/Home/Nav/UpdateMenu.vue'
 import DeleteBlock from '@/components/Home/Nav/Update/DeleteBlock.vue'
-import NewPost from '@/components/Home/Posts/NewPost.vue'
+import AddPost from '@/components/Home/Posts/AddPost.vue'
 import RecentPosts from '@/components/Home/Posts/RecentPosts.vue'
 
 export default {
@@ -59,7 +59,7 @@ export default {
         UpdateMenu,
         DeleteBlock,
         UserProfile,
-        NewPost,
+        AddPost,
         RecentPosts
     },
     data(){

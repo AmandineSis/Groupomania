@@ -25,7 +25,7 @@ export default {
     },
     data(){
         return{
-        
+            
         }
     },
     beforeMount:
@@ -117,6 +117,7 @@ export default {
         border-radius: 50px;
         border: 2px solid #999999;
         object-fit: cover;
+        box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
         &--sizeUp{
             width: 145px;
             height: 145px;

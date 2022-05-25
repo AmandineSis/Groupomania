@@ -16,28 +16,27 @@
             <div class="form__valid">
 
                 <label for="uploadImage" class="form__btn form__btn__upload"><font-awesome-icon icon="image" /></label>
-                <input id="uploadImage" type="file" @change="onFileSelected">
+                <input id="uploadImage" type="file" @change="uploadImage">
                 <button
                     class="form__btn form__btn__submit"
                     type="submit"
-                    @click="createPost">
+                    @click.prevent="addNewPost">
                 <font-awesome-icon icon="paper-plane" />
                 </button> 
             </div>
         </form>
-        
     </div>
-     
 </template>
 
 
 <script>
+import { mapActions } from "vuex";
+
 
 export default ({
-    name: 'NewPost',
-    
+    name: 'AddPost',
     props: {
-        "mode": String
+        mode: String
     },
     data(){
         return {
@@ -46,15 +45,16 @@ export default ({
         }
     },
     methods: {
-        onFileSelected(e){
+        ...mapActions('posts',['createPost', 'getPostsByDate','getPostsByUserId']),
+        uploadImage(e){
             this.imageUrl = e.target.files[0];
             console.log(this.imageUrl);
         },
         deleteUpload(){
             this.imageUrl = ''
         },
-        createPost(e) {
-            e.preventDefault();
+        addNewPost(){
+            //Ajout du contenu de la publication 
             const fd = new FormData();
             if (this.post != "") {
                 fd.append('content', this.post);
@@ -63,25 +63,27 @@ export default ({
                 fd.append('image', this.imageUrl, this.imageUrl.name);
             }
             if (this.post || this.imageUrl) {
-                this.$store
-                    .dispatch('createPost', fd)
+                //création de la publication et ajout à la liste des publications 
+                this.createPost(fd)
                     .then((res => {
                         console.log(res);
-
+                        console.log("createPost dispatch done !");
+                        //Reload des publications récentes si utilisateur sur la page d'accueil
                         if(this.mode!='profilePage'){
-                        this.$store
-                            .dispatch('getPostsByDate')
-                            .then(() => {
-                                console.log("getPostsByDate dispatch done !");
-                                this.post= "";
-                                this.imageUrl="";
-                            });
+                            console.log('pas profile')
+                            this.getPostsByDate()
+                                .then(() => {
+                                    console.log("getPostsByDate dispatch done !");
+                                    this.post= "";
+                                    this.imageUrl="";
+                                });
+                        //Reload des publications de l'utilisateur si utilisateur sur la page profil
                         } else {
+                            console.log('profile')
                             const userId = this.$route.params.userId;
-                            this.$store
-                            .dispatch('getPostsByUserId', userId)
+                            this.getPostsByUserId(userId)
                             .then(() => {
-                                console.log("getPostsByDate dispatch done !");
+                                console.log("getPostsByUserId dispatch done !");
                                 this.post= "";
                                 this.imageUrl="";
                             });
@@ -101,9 +103,9 @@ export default ({
         max-width: 500px;
         align-items: center;
         border-radius: 20px;
+        box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
     }
     .form {
-       
         &__input {
             width:100%;
             height: 91%;
@@ -116,7 +118,6 @@ export default ({
             display: inline-block;
             white-space: normal;
             color: grey;
-      
         }
         &__addedImage{
             display: flex;
@@ -137,10 +138,7 @@ export default ({
             display: flex;
             flex-direction: row;
             justify-content: space-between;
-            
             width: 100%;
-           
-            
         }
         &__btn {
         padding: 0px;
@@ -148,38 +146,33 @@ export default ({
         border-radius: 100px;
         height: 40px;
         background-color: #ee7575;
-        
         color: #ffffff;
-        &__submit {
-            border-radius: 0 0 20px 0;
-            border-left: solid 1.5px #ffffff;
+            &__submit {
+                border-radius: 0 0 20px 0;
+                border-left: solid 1.5px #ffffff;
+            }
+            &__upload {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border-radius: 0 0 0 20px;
+                border-right: solid 1.5px #ffffff;
+            }
+            &:hover {
+                background-color:  #ffffff;
+                color:#ee7575;
+                border: solid 1.5px #ee7575;
+            }
+            &:active {
+                color: #ffffff;;
+                background-color:#ee7575;
+                border: solid 1.5px #ee7575;
+            }
         }
-        &__upload {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 0 0 0 20px;
-            border-right: solid 1.5px #ffffff;
-        }
-        &:hover {
-            background-color:  #ffffff;
-            color:#ee7575;
-            border: solid 1.5px #ee7575;
-        }
-        &:active {
-            color: #ffffff;;
-            background-color:#ee7575;
-             border: solid 1.5px #ee7575;
-        }
-        
     }
-    }
-  
     #uploadImage {
-       opacity: 0;
-       position: absolute;
-       z-index: -1;
+        opacity: 0;
+        position: absolute;
+        z-index: -1;
     }
-    
-    
 </style>

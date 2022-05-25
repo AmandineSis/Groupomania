@@ -10,7 +10,7 @@
         <!-- <UpdateMenu v-if="updateMenu" @close-update="closeUpdateMenu" @blur="closeUpdateMenu" tabindex="0"/> -->
     </transition>
     
-    <NewPost v-once/>
+    <AddPost v-once/>
 
     <div class="toggle">
         <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : mode=='recentPosts'}" @click="showRecentPosts"> Récents </button>
@@ -53,7 +53,7 @@ import {mapState, mapActions, mapGetters} from 'vuex';
 import SettingsMenu from '@/components/Home/Nav/SettingsMenu.vue'
 import UserProfile from '@/components/Home/Nav/UserProfile.vue'
 import UpdateMenu from '@/components/Home/Nav/UpdateMenu.vue'
-import NewPost from '@/components/Home/Posts/NewPost.vue'
+import AddPost from '@/components/Home/Posts/AddPost.vue'
 import RecentPosts from '@/components/Home/Posts/RecentPosts.vue'
 
 export default {
@@ -62,7 +62,7 @@ export default {
         SettingsMenu,
         UpdateMenu,
         UserProfile,
-        NewPost,
+        AddPost,
         RecentPosts
     },
     data(){

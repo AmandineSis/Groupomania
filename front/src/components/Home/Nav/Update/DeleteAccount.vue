@@ -1,17 +1,16 @@
 <template>
     <div class="deleteUser" >
-        <p class="deleteUser__text">
+        <p class="deleteUser__text" v-if="updateMenuIsActive">
             Entrez votre mot de passe pour supprimer ce compte :
         </p>
         <form class="deleteUser__form">
-             <BaseInput
+            <BaseInput
                 class="deleteUser__form__input"
                 v-model="event.password"
                 label="mot de passe"
                 type="password"
             />
             <p v-if="error.passwordError">Mot de passe invalide</p>
-            <!-- <p v-if="error.passwordError">Cet email existe déjà</p> -->
         </form>
 
 
@@ -44,9 +43,12 @@ export default {
         }
     },
     computed: {
-            ...mapState({
-                status: 'status',
-                user: 'user'
+        ...mapState({
+            status: 'status',
+            user: 'user'
+        }),
+        ...mapState('toggle',{
+            updateMenuIsActive: 'updateMenuIsActive'
         })
     },
     methods: {  

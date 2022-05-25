@@ -183,6 +183,22 @@ export default {
                 });
             });
         },
+        likePost: ({ commit, rootState }, postLike) => {
+            let userId = rootState.user.userId;
+            let like = postLike.like;
+            return new Promise ((resolve, reject) => {
+            instance
+                .post(`/posts/${postLike.postId}/like`, {userId, like})
+                .then(function (response) {
+                    commit('SET_STATUS', 'post_liked', { root: true })
+                    resolve(response)
+                })
+                .catch(function (error) {
+                    commit('SET_STATUS', 'error_like', { root: true })
+                    reject(error)
+                });
+            });
+        },
         deletePost: ({ commit }, postId)=>{
             instance
                 .delete(`/posts/${postId}`)
@@ -194,9 +210,9 @@ export default {
                 });
     
         },
-        reportPost: ({ commit, state }, postReport) => {
+        reportPost: ({ commit, rootState }, postReport) => {
             return new Promise ((resolve, reject) => {
-            let userId = state.user.userId;
+            let userId = rootState.user.userId;
             let report = postReport.report;
             console.log(report);
             instance

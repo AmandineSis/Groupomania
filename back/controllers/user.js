@@ -299,8 +299,6 @@ exports.deleteUser = (req, res) => {
         return res.status(401).json({ message: "utilisateur non authorisé !" });
       } 
 
-
-
       //Vérification de l'ancien mot de passe
       bcrypt.compare(req.body.password, userExists.password)
         .then(valid => {

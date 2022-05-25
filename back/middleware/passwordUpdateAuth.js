@@ -12,7 +12,6 @@ module.exports = (req, res, next) => {
      * minimum : 8 caractères
     */
     let validPswd = new RegExp(  /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])[0-9a-zA-Z!@#$%^&*]{8,}$/);
-    console.log(req.body.newPswd)
     if (validPswd.test(req.body.newPswd)) {
 
         next();
