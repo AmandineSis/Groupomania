@@ -15,8 +15,8 @@
     <AddPost mode="profilePage" v-once/> 
 
     <div class="toggle">
-        <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : mode=='recentPosts'}" @click="getUserRecentPosts"> Récents </button>
-        <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : mode=='popularPosts'}" @click="getUserPopularPosts"> Populaires </button>
+        <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : selected=='recentPosts'}" @click="getUserRecentPosts"> Récents </button>
+        <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : selected=='popularPosts'}" @click="getUserPopularPosts"> Populaires </button>
     </div>
 
     <!--Loader-->
@@ -26,17 +26,17 @@
 
     <main v-else>
         <!------------------------------------POSTS BY DATE------------------------------------------------------------------>
-        <div class="postsContainer" v-if="mode == 'recentPosts' && postLength!=0">  
+        <div class="postsContainer" v-if="selected == 'recentPosts' && postLength!=0">  
             <RecentPosts v-for="postItem in posts" :key="postItem.postId" :postItem="postItem" :selectedMode="profilePage"/>  
         </div>
-        <div class="noPost" v-if="mode == 'recentPosts' && postLength==0"> 
+        <div class="noPost" v-if="selected == 'recentPosts' && postLength==0"> 
             <p class="noPost__text">Il n'existe pas encore de publication !</p>
         </div> 
         <!------------------------------------POSTS BY LIKE------------------------------------------------------------------>
-        <div class="postsContainer" v-if="mode == 'popularPosts'&& popularPostsLength!=0">
-            <RecentPosts v-for="popularPostItem in popularPosts" :key="popularPostItem.postId" :postItem="popularPostItem" :selectedMode="mode"/>   
+        <div class="postsContainer" v-if="selected == 'popularPosts'&& popularPostsLength!=0">
+            <RecentPosts v-for="popularPostItem in popularPosts" :key="popularPostItem.postId" :postItem="popularPostItem" :selectedMode="selected"/>   
         </div>
-        <div class="noPost" v-if="mode == 'popularPosts' && popularPostsLength==0">
+        <div class="noPost" v-if="selected == 'popularPosts' && popularPostsLength==0">
             <p class="noPost__text">Il n'existe pas encore de publication !</p>
         </div>
     </main>
@@ -65,7 +65,7 @@ export default {
     },
     data(){
         return{
-            mode: 'recentPosts',
+            selected: 'recentPosts',
             updateMenu: false,
             userIdProfile: '',
             deleteBlock: false
@@ -101,12 +101,12 @@ export default {
             this.deleteBlock = !this.deleteBlock;
         },
         getUserRecentPosts(){
-            this.mode='recentPosts';
+            this.selected='recentPosts';
             const userId = this.$route.params.userId;
             this.getAllUserPosts(userId)
         },
         getUserPopularPosts(){
-            this.mode = 'popularPosts';
+            this.selected = 'popularPosts';
             const userId = this.$route.params.userId;
             console.log(this.mode);
             this.getAllUserPopularPosts(userId)

@@ -38,77 +38,47 @@
 <script>
 import BaseInput from '@/components/Base/BaseInput.vue';
 import { mapActions, mapState } from 'vuex'
-
+import { userValidationMixin } from '@/mixins/userValidationMixin'
+import { homePostsMixin } from '@/mixins/homePostsMixin'
+import { profilePostsMixin } from '@/mixins/profilePostsMixin'
 export default {
     
     name: 'UserUpdate',
+    mixins: [userValidationMixin,homePostsMixin,profilePostsMixin],
     components: {
         BaseInput
     },
-     data(){
-        return{
-            mode: 'login',
-            event: {
-                firstName: '',
-                lastName: '',
-                email: ''
-            },
-            error: {
-                firstNameError:false,
-                lastNameError:false,
-                emailError: false,
-                emailExists: false
-            },
-
-            nameReg: /^([a-zA-ZÀ-ÿ]{3,20}(['|s|-]{1}[a-zA-ZÀ-ÿ]{0,20})*)$/,
-            emailReg: /^[a-z0-9]+([_|.|-]{1}[a-zA0-9]+)*@[a-z0-9]+([_|.|-]{1}[a-z0-9]+)*[.]{1}[a-z]{2,6}$/,
-
-            firstNameValid: true,
-            lastNameValid: true,
-            emailValid: true
-        }
+    props: {
+        selectedPage: String,
+        selectedTab: String,
     },
+    
     computed: {
         userDataValidation(){
-            if ( this.firstNameValid && this.lastNameValid && this.emailValid) {
+            if ( this.userLoggedIn.firstName || this.firstNameValid && this.userLoggedIn.lastName || this.lastNameValid && this.userLoggedIn.email || this.emailValid) {
                 return true;
             }else{
                 return false
             }
         },
         ...mapState({
-            status: 'status',
-            user: 'user',
             userLoggedIn: 'userLoggedIn',
-            postComments: 'postComments'
+            postComments: 'postComments',
         }),
     },
     methods: {
         ...mapActions(['updateUser','getUserLoggedIn']),
-        isFirstNameValid() {
-            this.nameReg.test(this.event.firstName) 
-            ? (this.firstNameValid= true, this.error.firstNameError = false) 
-            : (this.firstNameValid= false, this.error.firstNameError = true);
-        },
-        isLastNameValid() {
-            this.nameReg.test(this.event.lastName) 
-            ? (this.lastNameValid= true, this.error.lastNameError = false) 
-            : (this.lastNameValid= false, this.error.lastNameError = true);
-        },
-        isEmailValid() {
-            let LowerCaseEmail= this.event.email.toLowerCase();
-            this.emailReg.test(LowerCaseEmail) 
-            ? (this.emailValid= true, this.error.emailError = false) 
-            : (this.emailValid= false, this.error.emailError = true);
-        },
         
         updateUserInfos() {
+            console.log(this.mode);
+            console.log(this.selected)
             const userId = this.user.userId
             const firstNameUpdate = (this.event.firstName ? this.event.firstName : this.userLoggedIn.firstName)
             const lastNameUpdate = (this.event.lastName ? this.event.lastName : this.userLoggedIn.lastName)
             const emailUpdate = (this.event.email ? this.event.email : this.userLoggedIn.email)
+
             if(!this.userDataValidation){
-                return this.status= 'error_update'
+                return this.$store.commit('SET_STATUS', 'error_update_user')
             }else{
                 this.updateUser({userId,
                         firstName: firstNameUpdate,
@@ -120,11 +90,17 @@ export default {
                         window.alert('Modifications effectuées !');
                         this.getUserLoggedIn({ userId })
                             .then(() => {
-                                console.log("getUserLoggedIn dispatch done !")
-                            });
+                                console.log("getUserLoggedIn dispatch done !");
+                                if(this.selectedPage == "homePage" && this.selectedTab == "recentPosts"){
+                                this.getAllRecentPosts();
+                                }else if(this.selectedPage == "homePage" && this.selectedTab == "popularPosts"){
+                                this.getAllPopularPosts();
+                                } else {
+                                this.getAllReportedPosts();
+                                }
                         }), (err => {
                             console.log(err)
-                        }))
+                        })}))
             }
         }    
     }

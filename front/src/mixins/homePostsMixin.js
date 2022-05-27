@@ -3,13 +3,24 @@
 /********************************************************/
 
 
-import { mapActions } from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex';
 export const homePostsMixin = {
+    computed: {
+        ...mapState('posts',{
+            posts: 'postsByDate',
+            popularPosts: 'postsByLike',
+            reportedPosts: 'reportedPosts',
+        }),
+        ...mapGetters('posts',{
+            postLength: 'postsByDateLength',
+            popularPostsLength: 'postsByLikeLength',
+            reportedPostsLength: 'reportedPostsLength' 
+        })
+    },
     methods: {
         ...mapActions('posts',['getPostsByDate','getPopularPosts','getReportedPosts']),
         getAllRecentPosts(){
-            const self = this;
-            self.getPostsByDate()
+            this.getPostsByDate()
                 .then(() => {
                     console.log("getPostsByDate dispatch done !")
                 })
@@ -19,21 +30,21 @@ export const homePostsMixin = {
         },
         getAllPopularPosts(){
             this.getPopularPosts()
-            .then(() => {
-                    console.log("getPopularPosts dispatch done !")
+                .then(() => {
+                        console.log("getPopularPosts dispatch done !")
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    })
+        },
+        getAllReportedPosts(){
+            this.getReportedPosts()
+                .then(() => {
+                    console.log("getReportedPosts dispatch done !")
                 })
                 .catch((err) => {
                     console.log(err);
                 })
-        },
-        getAllReportedPosts(){
-            this.getReportedPosts()
-            .then(() => {
-                console.log("getReportedPosts dispatch done !")
-            })
-            .catch((err) => {
-                console.log(err);
-            })
         }
     }
 }

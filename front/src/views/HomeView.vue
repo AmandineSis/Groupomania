@@ -6,16 +6,16 @@
     </nav> 
     <!--Pop-up update menu-->
     <transition name="bounce">
-        <UpdateMenu v-if="updateMenu"/>
+        <UpdateMenu v-if="updateMenu" :selected='selected' :mode='mode'/>
         <!-- <UpdateMenu v-if="updateMenu" @close-update="closeUpdateMenu" @blur="closeUpdateMenu" tabindex="0"/> -->
     </transition>
     
     <AddPost :mode='"homePage"' v-once/>
 
     <div class="toggle">
-        <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : mode=='recentPosts'}" @click="showRecentPosts"> Récents </button>
-        <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : mode=='popularPosts'}" @click="showPopularPosts"> Populaires </button>
-        <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : mode=='reportedPosts'}" @click="showReportedPosts" v-if="user.moderator==1"> Signalés </button>
+        <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : selected=='recentPosts'}" @click="showRecentPosts"> Récents </button>
+        <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : selected=='popularPosts'}" @click="showPopularPosts"> Populaires </button>
+        <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : selected=='reportedPosts'}" @click="showReportedPosts" v-if="user.moderator==1"> Signalés </button>
     </div>
 
     <!--Loader-->
@@ -25,39 +25,39 @@
 
     <main v-else>
         <!------------------------------------POSTS BY DATE------------------------------------------------------------------>
-        <div class="postsContainer" v-if="mode == 'recentPosts' && postLength!=0">  
+        <div class="postsContainer" v-if="selected == 'recentPosts' && postLength!=0">  
             <div v-for="postItem in posts" :key="postItem.postId">
             <RecentPosts  :postItem="postItem" :currentPage='"homePage"' :selectedMode="mode" />  
         </div>
         </div>
-        <div class="noPost" v-if="mode == 'recentPosts' && postLength==0"> 
+        <div class="noPost" v-if="selected == 'recentPosts' && postLength==0"> 
             <p class="noPost__text">Il n'existe pas encore de publication !</p>
         </div> 
         <!------------------------------------POSTS BY LIKE------------------------------------------------------------------>
-        <div class="postsContainer" v-if="mode == 'popularPosts'&& popularPostsLength!=0">
+        <div class="postsContainer" v-if="selected == 'popularPosts'&& popularPostsLength!=0">
             <RecentPosts v-for="popularPostItem in popularPosts" :key="popularPostItem.postId" :postItem="popularPostItem" :selectedMode="mode"/>   
         </div>
-        <div class="noPost" v-if="mode == 'popularPosts' && popularPostsLength==0">
+        <div class="noPost" v-if="selected == 'popularPosts' && popularPostsLength==0">
             <p class="noPost__text">Il n'existe pas encore de publication !</p>
         </div>
         <!------------------------------------POSTS REPORTED------------------------------------------------------------------>
-        <div class="postsContainer" v-if="mode == 'reportedPosts'&& reportedPostsLength!=0">
+        <div class="postsContainer" v-if="selected == 'reportedPosts'&& reportedPostsLength!=0">
             <RecentPosts v-for="reportedPostsItem in reportedPosts" :key="reportedPostsItem.postId" :postItem="reportedPostsItem" :selectedMode="mode"/>   
         </div>
-        <div class="noPost" v-if="mode == 'reportedPosts' && reportedPostsLength==0">
+        <div class="noPost" v-if="selected == 'reportedPosts' && reportedPostsLength==0">
             <p class="noPost__text">Aucune publication n'a été signalée !</p>
         </div>
     </main>
 </template>
 
 <script>
-import {mapState, mapActions, mapGetters} from 'vuex';
+import  {mapState, mapActions } from 'vuex';
 import SettingsMenu from '@/components/Home/Nav/SettingsMenu.vue'
 import UserProfile from '@/components/Home/Nav/UserProfile.vue'
 import UpdateMenu from '@/components/Home/Nav/UpdateMenu.vue'
 import AddPost from '@/components/Home/Posts/AddPost.vue'
 import RecentPosts from '@/components/Home/Posts/RecentPosts.vue'
-import { homePostsMixin } from '../mixins/homePostsMixin'
+import { homePostsMixin } from '@/mixins/homePostsMixin'
 export default {
     name: 'HomeView',
     mixins : [homePostsMixin],
@@ -70,8 +70,8 @@ export default {
     },
     data(){
         return{
-            mode: 'recentPosts',
-          //  updateMenu: false
+            mode: "homePage",
+            selected: 'recentPosts',
         }
     },
     computed: {
@@ -80,19 +80,10 @@ export default {
             user: 'user',
             userLoggedIn: 'userLoggedIn',
         }),
-        ...mapState('posts',{
-            posts: 'postsByDate',
-            popularPosts: 'postsByLike',
-            reportedPosts: 'reportedPosts',
-        }),
         ...mapState('toggle',{
             updateMenu: 'updateMenuIsActive'
         }),
-        ...mapGetters('posts',{
-            postLength: 'postsByDateLength',
-            popularPostsLength: 'postsByLikeLength',
-            reportedPostsLength: 'reportedPostsLength' 
-        })
+       
     },
     beforeMount: 
         //Loading user data and posts to display
@@ -111,15 +102,15 @@ export default {
         ...mapActions(['getUserLoggedIn','getUserInfos']),
         //toggle entre les différentes listes de publication
         showRecentPosts(){
-            this.mode='recentPosts';
+            this.selected='recentPosts';
             this.getAllRecentPosts()
         },    
         showPopularPosts(){
-            this.mode = 'popularPosts';
+            this.selected = 'popularPosts';
             this.getAllPopularPosts()
         },
         showReportedPosts(){
-            this.mode='reportedPosts';
+            this.selected='reportedPosts';
             this.getAllReportedPosts()
         }
     }

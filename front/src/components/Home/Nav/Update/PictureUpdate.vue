@@ -15,21 +15,28 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
-
+import { homePostsMixin } from '@/mixins/homePostsMixin'
+import { profilePostsMixin } from '@/mixins/profilePostsMixin'
 export default {
     name: 'PictureUpdate',
+    mixins: [homePostsMixin,profilePostsMixin],
+    props: {
+        selectedPage: String,
+        selectedTab: String,
+    },
     data(){
         return{
             profilePic:""      
             }
     },
+
     computed: {
         ...mapState({
-                user: 'user',
+            userLoggedIn: 'userLoggedIn',
         })
     },
     methods: {
-        ...mapActions(['updateUserPicture', 'getUser']),
+        ...mapActions(['updateUserPicture', 'getUserLoggedIn']),
         updloadProfilePicture(e){
             this.profilePic = e.target.files[0];
             console.log("click ok!");
@@ -42,17 +49,23 @@ export default {
             }
             this.updateUserPicture({userId,fdProfile})
                 .then((() => {
+                    console.log(this.selectedPage);
                     console.log('updateUser dispatch done');
                     window.alert('Modifications effectuées !');
-                    this.getUser(userId)
-                        .then(() => {
-                            console.log("getUSer dispatch done !")
-                        });
-                    }), (err => {
-                        console.log(err)
-                }))
-            }
-        }      
+                        this.getUserLoggedIn({ userId })
+                            .then(() => {
+                                console.log("getUserLoggedIn dispatch done !");
+                                if(this.selectedPage == "homePage" && this.selectedTab == "recentPosts"){
+                                this.getAllRecentPosts();
+                                }else if(this.selectedPage == "homePage" && this.selectedTab == "popularPosts"){
+                                this.getAllPopularPosts();
+                                } else {
+                                this.getAllReportedPosts();
+                                }
+                        }), (err => {
+                            console.log(err)
+                        })})) 
+        }}
 }
 </script>
 

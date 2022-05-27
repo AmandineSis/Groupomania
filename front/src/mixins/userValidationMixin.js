@@ -20,16 +20,14 @@ export const userValidationMixin = {
             },
             nameReg: /^([a-zA-ZÀ-ÿ]{3,20}(['|s|-]{1}[a-zA-ZÀ-ÿ]{0,20})*)$/,
             emailReg: /^[a-z0-9]+([_|.|-]{1}[a-zA0-9]+)*@[a-z0-9]+([_|.|-]{1}[a-z0-9]+)*[.]{1}[a-z]{2,6}$/,
-            pswdReg: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])[0-9a-zA-Z!@#$%^&*]{8,}$/,
             firstNameValid: false,
             lastNameValid: false,
             emailValid: false,
-    
         }
     },
     computed: {
         ...mapState({
-            status: 'status',
+            //status: 'status',
             user: 'user',
         }),
     },

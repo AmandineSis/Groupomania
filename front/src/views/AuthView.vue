@@ -64,7 +64,7 @@
 import BaseInput from '@/components/Base/BaseInput.vue'
 import { mapActions } from 'vuex'
 import { userValidationMixin } from '../mixins/userValidationMixin'
-import { passwordValidationMixin } from '../mixins/passwordValidationMixin'
+import { passwordValidationMixin } from '@/mixins/passwordValidationMixin'
 
 export default ({
     name: 'SignupForm',

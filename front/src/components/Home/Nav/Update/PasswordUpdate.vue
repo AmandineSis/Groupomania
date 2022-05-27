@@ -38,7 +38,7 @@
 
 <script>
 import { mapActions } from 'vuex'
-import { passwordValidationMixin } from '../../../../mixins/passwordValidationMixin'
+import { passwordValidationMixin } from '@/mixins/passwordValidationMixin'
 import BaseInput from '@/components/Base/BaseInput.vue';
 export default {
     

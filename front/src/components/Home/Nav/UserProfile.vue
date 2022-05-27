@@ -2,7 +2,7 @@
         <div class="userProfile" v-if="!profileView" >
             <router-link class="userProfile__link" :to="`/profile/${userLoggedIn.userId}`">
                 <p class="userProfile__fullname">{{ fullNameUserLoggedIn }}</p> 
-                <img class="userProfile__picture" :src="userInfos.profilePicUrl" alt="photo de profil">
+                <img class="userProfile__picture" :src="userLoggedIn.profilePicUrl" alt="photo de profil">
             </router-link>
         </div>
         

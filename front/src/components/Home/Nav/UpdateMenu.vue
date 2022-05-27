@@ -8,10 +8,10 @@
                 <button class="updateMenu__selection__btn updateMenu__selection__btn__delete " v-if="user.userId != 1" @click="switchToDeleteAccount">Supprimer mon compte</button>
 
             </div>
-            <UserUpdate v-if="mode == 'identification'"/>
-            <PasswordUpdate v-if="mode == 'password'"/>
-            <PictureUpdate v-if="mode == 'profilePicture'"/>
-            <DeleteAccount v-if="mode == 'deleteAccount'"/>
+            <UserUpdate v-if="menu == 'identification'" :selectedPage='mode' :selectedTab='selected'/>
+            <PasswordUpdate v-if="menu == 'password'"/>
+            <PictureUpdate v-if="menu == 'profilePicture'" :selectedPage='mode' :selectedTab='selected'/>
+            <DeleteAccount v-if="menu == 'deleteAccount'"/>
            <div class="updateMenu__close" @click="closeUpdate" >
                 <font-awesome-icon class="updateMenu__close__icon" icon="xmark"/>Fermer
             </div>
@@ -28,6 +28,10 @@ import { mapState, mapMutations } from 'vuex';
 export default {
 
     name: 'UpdateMenu',
+    props: {
+        mode: String,
+        selected: String,
+    },
     components: {
         UserUpdate,
         PasswordUpdate,
@@ -36,7 +40,7 @@ export default {
     },
     data() {
         return {
-            mode: 'identification'
+            menu: 'identification'
         }
     },
     computed: {
@@ -47,16 +51,16 @@ export default {
     methods: {  
          ...mapMutations('toggle',['UPDATE_MENU_TOGGLE']),
         switchToPassword() {
-            this.mode = 'password';
+            this.menu = 'password';
         },
         switchToProfilePicture() {
-            this.mode = 'profilePicture';
+            this.menu = 'profilePicture';
         },
         switchToDeleteAccount() {
-            this.mode = 'deleteAccount';
+            this.menu = 'deleteAccount';
         },
         switchToIdentification() {
-            this.mode = 'identification';
+            this.menu = 'identification';
         },
         closeUpdate(){
             this.UPDATE_MENU_TOGGLE()
