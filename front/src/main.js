@@ -7,7 +7,7 @@ import store from './store'
 import './assets/styles/reset.scss';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faEye, faUserSecret, faGear, faSignOutAlt, faMagnifyingGlass, faImage, faPaperPlane, faHeart, faComment, faXmark, faPenClip, faHouse, faEllipsis, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
+import { faEye, faUserSecret, faGear, faSignOutAlt, faMagnifyingGlass, faImage, faPaperPlane, faHeart, faComment, faXmark, faHouse, faEllipsis, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import { faHeart as farHeart, faComment as farComment } from '@fortawesome/free-regular-svg-icons'
 /******************************************************************* */
 
@@ -21,8 +21,7 @@ createApp(App)
 library.add(
   faEye,
   faEyeSlash,
-  faUserSecret, 
-  faUserSecret, 
+  faUserSecret,
   faGear, 
   faSignOutAlt, 
   faMagnifyingGlass, 
@@ -31,7 +30,6 @@ library.add(
   faHeart,
   faComment,
   faXmark,
-  faPenClip,
   faHouse,
   faEllipsis);
 
@@ -39,3 +37,4 @@ library.add(
 library.add(
   farHeart,
   farComment);    
+

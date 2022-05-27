@@ -10,7 +10,7 @@
         <!-- <UpdateMenu v-if="updateMenu" @close-update="closeUpdateMenu" @blur="closeUpdateMenu" tabindex="0"/> -->
     </transition>
     
-    <AddPost v-once/>
+    <AddPost :mode='"homePage"' v-once/>
 
     <div class="toggle">
         <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : mode=='recentPosts'}" @click="showRecentPosts"> Récents </button>
@@ -26,7 +26,9 @@
     <main v-else>
         <!------------------------------------POSTS BY DATE------------------------------------------------------------------>
         <div class="postsContainer" v-if="mode == 'recentPosts' && postLength!=0">  
-            <RecentPosts v-for="postItem in posts" :key="postItem.postId" :postItem="postItem" :currentPage="homePage" :selectedMode="mode" />  
+            <div v-for="postItem in posts" :key="postItem.postId">
+            <RecentPosts  :postItem="postItem" :currentPage='"homePage"' :selectedMode="mode" />  
+        </div>
         </div>
         <div class="noPost" v-if="mode == 'recentPosts' && postLength==0"> 
             <p class="noPost__text">Il n'existe pas encore de publication !</p>
@@ -55,9 +57,10 @@ import UserProfile from '@/components/Home/Nav/UserProfile.vue'
 import UpdateMenu from '@/components/Home/Nav/UpdateMenu.vue'
 import AddPost from '@/components/Home/Posts/AddPost.vue'
 import RecentPosts from '@/components/Home/Posts/RecentPosts.vue'
-
+import { homePostsMixin } from '../mixins/homePostsMixin'
 export default {
     name: 'HomeView',
+    mixins : [homePostsMixin],
     components : {
         SettingsMenu,
         UpdateMenu,
@@ -101,40 +104,23 @@ export default {
             this.getUserLoggedIn()
                 .then(() => {
                     console.log("getUserLoggedIn dispatch done !")
-                    this.getPostsByDate()
-                        .then((res) => {
-                            console.log(res)
-                            console.log("getPostsByDate dispatch done !")
-                            })
-                        .catch((err) => {
-                            console.log(err);
-                        })
+                    this.getAllRecentPosts()
+                    
         })},  
     methods: {
         ...mapActions(['getUserLoggedIn','getUserInfos']),
-        ...mapActions('posts',['getPostsByDate','getPopularPosts','getReportedPosts']),
-       
         //toggle entre les différentes listes de publication
         showRecentPosts(){
             this.mode='recentPosts';
-            this.getPostsByDate()
-                .then(() => {
-                    console.log("getPostsByDate dispatch done !")
-                });
+            this.getAllRecentPosts()
         },    
         showPopularPosts(){
             this.mode = 'popularPosts';
-            this.getPopularPosts()
-            .then(() => {
-                    console.log("getPopularPosts dispatch done !")
-                });
+            this.getAllPopularPosts()
         },
         showReportedPosts(){
             this.mode='reportedPosts';
-            this.getReportedPosts()
-                .then(() => {
-                    console.log("getReportedPosts dispatch done !")
-                });
+            this.getAllReportedPosts()
         }
     }
 }
@@ -182,7 +168,7 @@ export default {
     justify-content:  space-between;
     &__btn{
         background: white;
-        color:grey;
+        color:#4E5166;
         font-weight: 800;
         font-size: 15px;
         border-bottom: 1px  solid grey;

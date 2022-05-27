@@ -17,7 +17,7 @@
                 <BaseInput
                             class="passwordUpdate__form__input"
                             v-model="event.newPassword"
-                            v-on:change="isPasswordValid"
+                            v-on:change="isNewPasswordValid"
                             label="Nouveau mot de passe"
                             :type="newPasswordFieldType"
                 />
@@ -29,7 +29,7 @@
             </div>
         </form>
         <div class="passwordUpdate__form__valid">
-            <button class="passwordUpdate__form__valid__button" :class="{'passwordUpdate__form__valid__button--disabled' : !passwordValid}" type= "button" @click="updateNewPassword" > Valider
+            <button class="passwordUpdate__form__valid__button" :class="{'passwordUpdate__form__valid__button--disabled' : !newPasswordValid}" type= "button" @click="updateNewPassword" > Valider
             </button>
             <p v-if="error.passwordError">Veuillez saisir au moins 8 caratères, une majuscule, une minuscule, un chiffre et un caractère spécial</p>
         </div>
@@ -37,11 +37,13 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapActions } from 'vuex'
+import { passwordValidationMixin } from '../../../../mixins/passwordValidationMixin'
 import BaseInput from '@/components/Base/BaseInput.vue';
 export default {
     
     name: 'PasswordUpdate',
+    mixins: [passwordValidationMixin],
     components: {
         BaseInput
     },
@@ -51,32 +53,11 @@ export default {
             newPasswordFieldType:"password",
             showOldPassword:false,
             showNewPassword: false,
-            event: {
-                oldPassword: '',
-                newPassword: '',
-            },
-            error: {
-                passwordError: false
-            },
-            pswdReg: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])[0-9a-zA-Z!@#$%^&*]{8,}$/,
-            passwordValid: false
         }
-    },
-    computed: {
-        passwordValidation(){
-            if (this.passwordValid) {
-                return true;
-            }else{
-                return false
-                }
-            },
-            ...mapState({
-                status: 'status',
-                user: 'user'
-        })
     },
     methods: {  
         ...mapActions(['updatePassword']),
+        //Toggle visibilité des mots de passe
         switchVisibilityOld(){
             this.showOldPassword= !this.showOldPassword;
             this.oldPasswordFieldType = this.oldPasswordFieldType === "password" ? "text" : "password";
@@ -85,17 +66,13 @@ export default {
             this.showNewPassword= !this.showNewPassword;
             this.newPasswordFieldType = this.newPasswordFieldType === "password" ? "text" : "password";
         },
-        isPasswordValid() {
-            this.pswdReg.test(this.event.newPassword) 
-            ? (this.passwordValid= true, this.error.passwordError = false) 
-            : (this.passwordValid= false, this.error.passwordError = true);
-        },
+        //Mise à jour du mot de passe
         updateNewPassword(){
             const oldPassword = this.event.oldPassword;
             const newPassword = this.event.newPassword;
             const userId = this.user.userId
             
-            if(this.passwordValid){
+            if(this.oldPasswordValid){
                 this.updatePassword(
                     {userId,oldPassword,newPassword})
                 .then((res => {
@@ -106,7 +83,9 @@ export default {
                     this.event.newPassword='';
                 }))
             } else {
-                window.alert("Erreur mot de passe")
+                window.alert("Erreur: Votre ancien mot de passe est invalide !")
+                this.event.oldPassword='';
+                this.event.newPassword='';
             }         
             }
     }

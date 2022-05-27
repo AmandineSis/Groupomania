@@ -44,16 +44,17 @@
 </template>
 
 <script>
-import {mapState, mapActions, mapGetters} from 'vuex';
+import { mapState, mapActions, mapGetters } from 'vuex';
 import SettingsMenu from '@/components/Home/Nav/SettingsMenu.vue'
 import UserProfile from '@/components/Home/Nav/UserProfile.vue'
 import UpdateMenu from '@/components/Home/Nav/UpdateMenu.vue'
 import DeleteBlock from '@/components/Home/Nav/Update/DeleteBlock.vue'
 import AddPost from '@/components/Home/Posts/AddPost.vue'
 import RecentPosts from '@/components/Home/Posts/RecentPosts.vue'
-
+import { profilePostsMixin } from '../mixins/profilePostsMixin'
 export default {
     name: 'HomeView',
+    mixins: [profilePostsMixin],
     components : {
         SettingsMenu,
         UpdateMenu,
@@ -90,11 +91,7 @@ export default {
         function(){
             this.userIdProfile = parseInt(this.$route.params.userId);
             const userId = this.userIdProfile;
-            this.getPostsByUserId(userId)
-                .then(() => {
-                    console.log("getPostsByUserId dispatch done !")
-                });
-            
+            this.getAllUserPosts(userId)
         },
         
     methods: {
@@ -103,26 +100,18 @@ export default {
         showDeleteBlock(){
             this.deleteBlock = !this.deleteBlock;
         },
+        getUserRecentPosts(){
+            this.mode='recentPosts';
+            const userId = this.$route.params.userId;
+            this.getAllUserPosts(userId)
+        },
         getUserPopularPosts(){
             this.mode = 'popularPosts';
             const userId = this.$route.params.userId;
             console.log(this.mode);
-            this.getPopularPostsByUserId(userId)
-                .then(() => {
-                    console.log("getPopularPostsByUserId dispatch done !")
-                });
+            this.getAllUserPopularPosts(userId)
         },
-        getUserRecentPosts(){
-            this.mode='recentPosts';
-            const userId = this.$route.params.userId;
-            this.getPostsByUserId(userId)
-                .then(() => {
-                    console.log("getPostsByUserId dispatch done !")
-                });
-        },
-        
-        
-  }
+    }
 }
 </script>
 

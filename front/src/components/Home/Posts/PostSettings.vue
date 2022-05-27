@@ -9,7 +9,7 @@
                 @input="event.content = $event.target.value"
             ></textarea>
 
-            <div class="updatePost__form__addedImage test" v-if="postItem.imageUrl && !event.image.name && displayUpload" >
+            <div class="updatePost__form__addedImage test" v-if="postItem.imageUrl && !event.image.name && postUploadExists" >
                 <p class="updatePost__form__addedImage__image" >{{postItem.imageUrl}}</p>
                 <font-awesome-icon class="updatePost__form__addedImage__icon" icon="xmark" @click="deleteUploadedFile" />
             </div>
@@ -19,17 +19,18 @@
             </div>
 
             <div class="updatePost__form__valid">
+                <button class="updatePost__form__btn updatePost__form__btn__delete" v-if=" user.moderator == 1 || user.userId== postItem.userId" @click.stop="postDelete(postItem.postId)" >
+                    Supprimer
+                </button>
+                <button class="updatePost__form__btn updatePost__form__btn__deleteReport" v-if=" user.moderator == 1 && postItem.report>0" @click.prevent="unreportPost(postItem.postId)">
+                    Supprimer le signalement
+                </button>
                 <label for="uploadUpdatedImage" class="updatePost__form__btn updatePost__form__btn__upload"><font-awesome-icon icon="image" /></label>
                 <input id="uploadUpdatedImage" type="file" @change="updateImage">
-                <button
-                    class="updatePost__form__btn updatePost__form__btn__submit"
-                    type="submit"
-                    @click.prevent="updatePostContent(postItem.postId, postItem.content, postItem.imageUrl)">
-                Modifier
+                <button class="updatePost__form__btn updatePost__form__btn__submit" type="submit" @click.prevent="updatePostContent(postItem.postId, postItem.content, postItem.imageUrl)">
+                    Modifier
                 </button> 
-                 <button class="updatePost__form__btn updatePost__form__btn__delete" v-if=" user.moderator == 1 || user.userId== postItem.userId" @click="postDelete(postItem.postId)" >
-                supprimer
-            </button>
+                
             </div>
         </form>
     </div>
@@ -43,9 +44,9 @@ import { mapState, mapActions } from 'vuex';
 export default ({
     name: 'PostSettings',
     props: {
-        'postItem': Object,
-        'currentPage': String,
-        'selectedMode': String
+        postItem: Object,
+        thisPage: String,
+        selectedMode: String
     },
     data(){
         return {
@@ -55,7 +56,7 @@ export default ({
             },
            /* postUpdated:'',
             imageUpdated:'',*/
-            displayUpload: true,
+            postUploadExists: true,
             isReported: '',
             report:''
         }
@@ -69,7 +70,7 @@ export default ({
         })
     },
     methods: {
-        ...mapActions('posts',['deletePost','updatePost', 'getPostsByDate','getPostsByUserId']),
+        ...mapActions('posts',['deletePost','updatePost', 'getPostsByDate','getPostsByUserId', 'removeReport']),
         closeSettings(){
             this.$emit('hidePostSettings')
         },
@@ -77,71 +78,70 @@ export default ({
             this.showUpdateBlock = !this.showUpdateBlock;
         },
         updateImage(e){
-            this.event.image = e.target.files[0];
-         //   this.displayImageName = !this.displayImageName;
-          
+            this.event.image = e.target.files[0];          
         },
         deleteUploadedFile(){
-            this.displayUpload = false;
-        },
-        deleteUpdatedFile(){
-            this.event.image = ''
+            this.postUploadExists = false;
         },
         postDelete(postId) {
-            this.deletePost(postId)
-                .then(() => {
-                    console.log("deletePost dispatch done !");
-                    //si res ok, affichage mis à jour des commentaires du poste
-                    this.getPostsByDate()
-                        .then(() => {
-                            console.log("getPostsByDate dispatch done !");
-                            });
-                }), (err => {
-                    console.log(err)
-                })
+            if (window.confirm('Êtes-vous sûrs de vouloir supprimer ce post ?')){
+                this.deletePost(postId)
+                    .then(() => {
+                        console.log("deletePost dispatch done !");
+                        //si res ok, affichage mis à jour des commentaires de la publication
+                        this.getPostsByDate()
+                            .then(() => {
+                                console.log("getPostsByDate dispatch done !");
+                                });
+                    }), (err => {
+                        console.log(err)
+                    })
+            }else{
+                console.log('default')
+                this.$emit('hidePostSettings')
+            }
+            
+        },
+        isImageUpdated(image){
+            if(!this.postUploadExists){
+                return null
+            }else{
+                return this.event.image ? this.event.image : image
+            }
         },
         updatePostContent(postId,content, image) {
-            let imageUpdate
+            let imageUpdate = this.isImageUpdated(image);
             let contentUpdate = (this.event.content ? this.event.content : content)
-            console.log(postId);
-            console.log(image);
-            console.log(this.currentPage);
-            if(!this.displayUpload){
-                imageUpdate= null
-            }else{
-                imageUpdate = (this.event.image ? this.event.image : image)
-            }
-            console.log(contentUpdate)
-            console.log(imageUpdate)
+    console.log(typeof imageUpdate)
+            console.log('updatePost content --->' + contentUpdate)
+            console.log('updatePost image --->' +imageUpdate)
+            
             const fdUpdatedPost = new FormData();
             if (contentUpdate != "") {
                 fdUpdatedPost.append('content', contentUpdate);
             }
-            /*else{
-                fdUpdatePost.append('updatedContent', this.postUpdated);
-            }*/
             if (imageUpdate != null) {
                 fdUpdatedPost.append('image', imageUpdate, imageUpdate.name);
             }
             if (contentUpdate || imageUpdate) {
                 this.updatePost({postId, fdUpdatedPost})
                     .then(() => {
-                        if(this.currentPage=='homePage'){
-                            console.log(this.currentPage)
-                        this.getPostsByDate()
-                            .then(() => {
-                                console.log("getPostsByDate dispatch done !");
-                                this.showUpdateBlock = false;
-                            });
+                        if(this.thisPage=='homePage'){
+                            this.getPostsByDate()
+                                .then(() => {
+                                    console.log("1---->getPostsByDate dispatch done !");
+                                    this.$emit('hidePostSettings')
+                                });
                         } else {
-                            console.log(this.currentPage)
                             const userId = this.$route.params.userId;
                             this.getPostsByUserId(userId)
                             .then(() => {
-                                console.log("getPostsByDate dispatch done !");
-                                this.showUpdateBlock = false;
                                 this.$emit('hidePostSettings')
-                            });
+                            })
+                            .catch(err=>{
+                                this.$message.error(err.message);
+                                console.log(err);
+                            })
                         }
                     }), (err => {
                         console.log(err)
@@ -179,22 +179,19 @@ export default ({
                 report: 0
             };
             //envoie requête vers store - requête LikePost
-            this.$store
-                .dispatch('removeReport', unreportPost)
+            this.removeReport(unreportPost)
                 .then((res) => {
                     console.log(res)
                     console.log("removeReport dispatch done !")
                     if(this.mode=='homePage'){
-                        this.$store
-                            .dispatch('getPostsByDate')
+                        this.getPostsByDate()
                             .then(() => {
                                 console.log("getPostsByDate dispatch done !");
                                 this.showUpdateBlock = false;
                             });
                         } else {
                             const userId = this.$route.params.userId;
-                            this.$store
-                            .dispatch('getPostsByUserId', userId)
+                            this.getPostsByUserId(userId)
                             .then(() => {
                                 console.log("getPostsByDate dispatch done !");
                                 this.showUpdateBlock = false;
@@ -204,7 +201,7 @@ export default ({
 
                     
                 })
-        }  
+        } 
 
     }
 })
@@ -220,7 +217,8 @@ export default ({
         display: flex;
         flex-direction: column ;
         justify-content: center;
-  
+        position: relative;
+        z-index: 99;
         &__form {
             width:100%;
             height: auto;
@@ -244,7 +242,7 @@ export default ({
                     justify-content: space-between;
                     width: 100%;
                     border: 2px solid #999999;
-                    background-color: #ee7575;
+                    background-color: white;
                 &__image {
                     color: inherit;
                     
@@ -278,15 +276,21 @@ export default ({
         
         color: #ffffff;
         &__delete {
-            border-radius: 0 0 20px 0;
-            border-left: solid 1.5px #ffffff;
+            border-radius: 0 0 0 20px ;
+            border: solid 2px #ee7575;
+            color: #ee7575;
+            background-color: #ffffff;
         }
         &__upload {
             display: flex;
             justify-content: center;
             align-items: center;
-            border-radius: 0 0 0 20px;
             border-right: solid 1.5px #ffffff;
+            border-left: solid 1.5px #ffffff;
+            
+        }
+        &__submit {
+            border-radius: 0 0 20px 0;
         }
         &:hover {
             background-color:  #ffffff;

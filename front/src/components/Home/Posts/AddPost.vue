@@ -54,6 +54,7 @@ export default ({
             this.imageUrl = ''
         },
         addNewPost(){
+            let self = this;
             //Ajout du contenu de la publication 
             const fd = new FormData();
             if (this.post != "") {
@@ -70,18 +71,18 @@ export default ({
                         console.log("createPost dispatch done !");
                         //Reload des publications récentes si utilisateur sur la page d'accueil
                         if(this.mode!='profilePage'){
-                            console.log('pas profile')
-                            this.getPostsByDate()
+                            console.log(self.getPostsByDate)
+                            self.getPostsByDate()
                                 .then(() => {
-                                    console.log("getPostsByDate dispatch done !");
+                                    console.log("getPostsByDate dispatch done 2 !");
                                     this.post= "";
                                     this.imageUrl="";
                                 });
                         //Reload des publications de l'utilisateur si utilisateur sur la page profil
                         } else {
-                            console.log('profile')
                             const userId = this.$route.params.userId;
-                            this.getPostsByUserId(userId)
+                            console.log("userId------>"+userId)
+                            self.getPostsByUserId(userId)
                             .then(() => {
                                 console.log("getPostsByUserId dispatch done !");
                                 this.post= "";

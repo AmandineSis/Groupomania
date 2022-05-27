@@ -30,7 +30,7 @@
 
 
         <div class="userUpdate__form__valid">
-            <button class="userUpdate__form__valid__button" :class="{'userUpdate__form__valid__button--disabled' : !updateValidation}" type="button" @click="updateUserInfos" >Valider</button>
+            <button class="userUpdate__form__valid__button" :class="{'userUpdate__form__valid__button--disabled' : !userDataValidation}" type="button" @click="updateUserInfos" >Valider</button>
         </div>
     </div>
 </template>
@@ -69,7 +69,7 @@ export default {
         }
     },
     computed: {
-        updateValidation(){
+        userDataValidation(){
             if ( this.firstNameValid && this.lastNameValid && this.emailValid) {
                 return true;
             }else{
@@ -107,7 +107,7 @@ export default {
             const firstNameUpdate = (this.event.firstName ? this.event.firstName : this.userLoggedIn.firstName)
             const lastNameUpdate = (this.event.lastName ? this.event.lastName : this.userLoggedIn.lastName)
             const emailUpdate = (this.event.email ? this.event.email : this.userLoggedIn.email)
-            if(!this.updateValidation){
+            if(!this.userDataValidation){
                 return this.status= 'error_update'
             }else{
                 this.updateUser({userId,

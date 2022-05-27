@@ -62,36 +62,15 @@
 
 <script>
 import BaseInput from '@/components/Base/BaseInput.vue'
-import { mapState, mapActions } from 'vuex'
+import { mapActions } from 'vuex'
+import { userValidationMixin } from '../mixins/userValidationMixin'
+import { passwordValidationMixin } from '../mixins/passwordValidationMixin'
+
 export default ({
     name: 'SignupForm',
+    mixins: [userValidationMixin, passwordValidationMixin],
     components: {
         BaseInput
-    },
-    data(){
-        return{
-            mode: 'login',
-            event: {
-                firstName: '',
-                lastName: '',
-                email: '',
-                password: '',
-            },
-            error: {
-                firstNameError:false,
-                lastNameError:false,
-                emailError: false,
-                emailExists: false,
-                passwordError: false
-            },
-            nameReg: /^([a-zA-ZÀ-ÿ]{3,20}(['|s|-]{1}[a-zA-ZÀ-ÿ]{0,20})*)$/,
-            emailReg: /^[a-z0-9]+([_|.|-]{1}[a-zA0-9]+)*@[a-z0-9]+([_|.|-]{1}[a-z0-9]+)*[.]{1}[a-z]{2,6}$/,
-            pswdReg: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])[0-9a-zA-Z!@#$%^&*]{8,}$/,
-            firstNameValid: false,
-            lastNameValid: false,
-            emailValid: false,
-            passwordValid: false
-        }
     },
     computed: {
         //Validation des champs de connexion
@@ -109,38 +88,11 @@ export default ({
             }else{
                 return false
                 }
-            },
-        ...mapState({
-            status:'status',
-            user: 'user'
-            })
+            }
     },
     methods: {
         ...mapActions('auth',['login','createAccount']),
         ...mapActions(['getUserLoggedIn']),
-        //Vérification des données utilisateur
-        isFirstNameValid() {
-            this.nameReg.test(this.event.firstName) 
-            ? (this.firstNameValid= true, this.error.firstNameError = false) 
-            : (this.firstNameValid= false, this.error.firstNameError = true);
-        },
-        isLastNameValid() {
-            this.nameReg.test(this.event.lastName) 
-            ? (this.lastNameValid= true, this.error.lastNameError = false) 
-            : (this.lastNameValid= false, this.error.lastNameError = true);
-        },
-        isEmailValid() {
-            let LowerCaseEmail= this.event.email.toLowerCase();
-            this.emailReg.test(LowerCaseEmail) 
-            ? (this.emailValid= true, this.error.emailError = false) 
-            : (this.emailValid= false, this.error.emailError = true);
-        },
-        isPasswordValid() {
-            this.pswdReg.test(this.event.password) 
-            ? (this.passwordValid= true, this.error.passwordError = false) 
-            : (this.passwordValid= false, this.error.passwordError = true);
-        },
-
         //Toggle entre login et signup
         switchToSignup() {
             this.mode = 'signup';
@@ -148,19 +100,17 @@ export default ({
         switchToLogin() {
             this.mode = 'login';
         },
-
         //Connexion de l'utilisateur
         logUser(){
             if(!this.loginValidation){
-                return this.status = 'error_login'
+                return this.$store.commit('SET_STATUS', 'error_login')
             }else{
                 this.login({
                         email: this.event.email,
                         password: this.event.password})
                     .then((res => {
-                        console.log(res.data.userId)
-                        const userId = res.data.userId;
                         console.log('login dispatch done');
+                        const userId = res.data.userId;
                         this.getUserLoggedIn({userId})
                             .then((() => {
                                 console.log('getUserLoggedIn dispatch done');
@@ -170,7 +120,6 @@ export default ({
                                     this.error.loginError = true;
                                 }))
                     }), (err => {
-                        console.log(err)
                         console.log(err)
                         this.error.loginError = true;
                         }))    

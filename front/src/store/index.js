@@ -144,8 +144,7 @@ export default createStore({
             firstName: userUpdate.firstName,
             lastName: userUpdate.lastName,
             email: userUpdate.email
-          }
-          )
+          })
           .then(function (response) {
             commit('SET_STATUS', 'updated')
             resolve(response)

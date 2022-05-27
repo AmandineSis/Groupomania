@@ -14,7 +14,7 @@ export default {
     .mainHeader {
         width: 100%;
         height: 120px;
-        background-color: #666666;
+        background-color: #4E5166;
         position: relative;
         z-index: -10;
         &__logo {

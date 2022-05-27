@@ -16,24 +16,17 @@
         </header>  
         <div class="posts__container">
             <!--Modification/suprression de la publication -->
-            <div class="posts__content__update" v-if="showPostSettings && user.userId== postItem.userId" >
-                <PostSettings :postItem="postItem" :currentPage="homePage" @hide-post-settings="closeSettings"/>
+            <div class="posts__content__update" v-if="showPostSettings && user.userId== postItem.userId || showPostSettings && user.moderator == 1" >
+                <PostSettings :postItem="postItem" :thisPage="currentPage" @hide-post-settings="closeSettings"/>
             </div>
             <!--Signalement de la publication -->
-            <div class="posts__content__settings" v-if="showPostSettings && user.moderator == 0 && user.userId!= postItem.userId" >
+            <div class="posts__content__settings" v-if="showPostSettings && user.moderator == 0 && user.userId != postItem.userId" >
                 <button class="posts__content__settings__button" @click="postReport(postItem.postId)" >
-                    <span v-if="isReported==1 ">Déjà signalé</span>
-                    <span v-else>Signaler</span>
+                    <span>Signaler</span>
                 </button>
             </div>
-            <!--suprression de la publication/suppression du signalement -->
-            <div class="posts__content__settings" v-if="showPostSettings && user.moderator == 1" >
-                <button class="posts__content__settings__button" v-if=" user.moderator == 1 || user.userId== postItem.userId" @click="postDelete(postItem.postId)" >
-                supprimer
-                </button>
-            </div>
-            <!--contenu de lapublication -->
-            <div class="post__container" v-if="!showPostSettings || showPostSettings && user.moderator == 0 && user.userId!= postItem.userId || showPostSettings && user.moderator == 1">
+            <!--contenu de la publication -->
+            <div class="post__container" v-if="!showPostSettings || showPostSettings && user.moderator == 0 && user.userId!= postItem.userId || !showPostSettings && user.moderator == 1">
                 <div class="posts__content" >
                     <p class="posts__content__text" v-if="postItem.content" >{{postItem.content}}</p>
                     <img class="posts__content__image" v-if="postItem.imageUrl != undefined " :src="postItem.imageUrl" alt="post photo">
@@ -85,9 +78,9 @@ export default ({
         PostComments
     },
     props: {
-        'postItem': Object,
-        'selectedMode': String,
-        'currentPage': String
+        postItem: Object,
+        selectedMode: String,
+        currentPage: String
     },
     data(){
         return {
@@ -181,35 +174,7 @@ export default ({
                     }
                 })
         },
-        unreportPost(postId){
-            const unreportPost = {
-                postId,
-                report: 0
-            };
-            //envoie requête vers store - requête LikePost
-            this.removeReport(unreportPost)
-                .then((res) => {
-                    console.log(res)
-                    console.log("removeReport dispatch done !")
-                    if(this.mode=='homePage'){
-                        this.getPostsByDate()
-                            .then(() => {
-                                console.log("getPostsByDate dispatch done !");
-                                this.showUpdateBlock = false;
-                            });
-                        } else {
-                            const userId = this.$route.params.userId;
-                            this.getPostsByUserId(userId)
-                            .then(() => {
-                                console.log("getPostsByDate dispatch done !");
-                                this.showUpdateBlock = false;
-                            });
-                        }
-                    window.confirm('Signalement enlevé !')
-
-                    
-                })
-        }    
+            
     }
     
 })
@@ -252,7 +217,7 @@ export default ({
             padding-top: 5px;
             border-radius: 20px 20px 0 0 ;
             
-            background-color: grey;
+            background-color: #4E5166;
             
             font-size: 0.7rem;
             text-align: left;
@@ -262,10 +227,11 @@ export default ({
             justify-content: space-between;
             &__date{
                 margin: 0 80px;
+                color: #ffffff;
             }
             &__nav{
                 color: #ffffff;
-                background-color: grey ;
+                background-color: #4E5166 ;
                 font-size: 25px;
                 height: 25px;
                 margin-right: 15px;
@@ -285,6 +251,7 @@ export default ({
     }
     &__content{
         height: auto;
+        
         &__update{
             height: auto;
         }
@@ -306,11 +273,12 @@ export default ({
             }
         }
         &__text{
-            background-color: white;
-            border: 1px 1px 1px 0 solid grey;
+            background-color:white;
+            border: 0 1px 1px 1px solid grey;
             padding: 10px;
             text-align: left;
             margin: 0;
+            word-wrap:break-word
         }
         &__image{
             width: 100%;

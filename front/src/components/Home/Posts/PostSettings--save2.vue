@@ -3,7 +3,8 @@
     <div class="settings">    
             <button class="settings__button" v-if=" user.userId== postItem.userId" @click="openUpdate" @blur="closeSettings" >
                 modifier
-            </button><button class="settings__button" v-if=" user.moderator == 1 || user.userId== postItem.userId" @click="postDelete(postItem.postId)" >
+            </button>
+            <button class="settings__button" v-if=" user.moderator == 1 || user.userId== postItem.userId" @click="postDelete(postItem.postId)" >
                 supprimer
             </button>
             
@@ -59,13 +60,9 @@ export default ({
             this.imageUpdated = e.target.files[0];
             console.log(this.imageUpdated);
             this.displayImageName = !this.displayImageName;
-          
         },
         deleteUploadedFile(){
             this.displayImageName = !this.displayImageName;
-        },
-        deleteUpdatedFile(){
-            this.imageUpdated = ''
         },
         postDelete(postId) {
             this.deletePost(postId)

@@ -110,7 +110,7 @@ exports.getUserPostsByLike = (req, res, next) => {
 
 //req.params.userId
 //results = tous les posts d'un utilisateur du plus récent au plus ancien (max 20)
-exports.getReportedPostsByUserId = (req, res, next) => {
+/*exports.getReportedPostsByUserId = (req, res, next) => {
     const userId = req.params.userId;
     let sql = 'SELECT * FROM report WHERE report.userId=?; '
     db.query(sql, userId, (error, results, fields) => {
@@ -127,7 +127,7 @@ exports.getReportedPostsByUserId = (req, res, next) => {
             res.status(201).json({ results })
         }
     });
-};
+};*/
 
 //création d'un post
 //req.body = { content: String, imageUrl: File }
@@ -135,7 +135,7 @@ exports.getReportedPostsByUserId = (req, res, next) => {
 //result = "nouveau post créé !"
 exports.createPost = (req, res, next) => {
     //Vérification des données de la requête
-    console.log(req.body.imageUrl)
+    console.log(req.token.userId)
     const content = (req.body.content) ? req.body.content : " ";
     const imageUrl = (req.file) ? `${req.protocol}://${req.get('host')}/images/post/${req.file.filename}` : undefined;
 
@@ -178,7 +178,7 @@ exports.updatePost = (req, res, next) => {
             return res.status(404).json({ message: "désolé ! aucun post n'a été trouvé !" });
         }
         //si post.userId !== req.token.userId => utilisateur non authorisé
-        if (postExists.userId !== req.token.userId) {
+        if (postExists.userId !== req.token.userId && req.token.moderator == 0) {
             return res.status(401).json({ message: "utilisateur non authorisé !" });
         }
         let content = (req.body.content) ? req.body.content : " ";
@@ -384,7 +384,6 @@ exports.removeReport = (req, res, next) => {
         if (req.body.userId !== userId) {
             return res.status(401).json({ message: "utilisateur non authorisé !" });
         }
-        console.log("-----> step 1");
 
 
         if (req.body.report == 0 && postReported) {
@@ -395,12 +394,12 @@ exports.removeReport = (req, res, next) => {
                     res.status(200).json({ message: "ce post n'est plus signalé!" });
                     let sqlPost = 'UPDATE posts SET report = 0 WHERE postId =' + db.escape(postId);
                     db.query(sqlPost, postId, (error, results, fields) => {
-                        //if (error) throw ({ error });
-                        res.status(200).json({ message: "vous ne signalez plus ce post !" });
+                        if (error) throw ({ error });
+                        return res.status(200).json({ message: "vous ne signalez plus ce post !" });
                 });
             });
         } else {
-            res.status(500).json({ message: "erreur report !" })
+            return res.status(500).json({ message: "erreur report !" })
         }
                 });
 

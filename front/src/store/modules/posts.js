@@ -75,7 +75,6 @@ export default {
     },
     mutations:{
         POSTS_BY_DATE(state, postsByDate){
-            console.log("commit done")
             state.postsByDate = postsByDate;
         },
         POSTS_BY_LIKE(state, postsByLike){
@@ -125,7 +124,6 @@ export default {
                 .then( function (response) {
                     console.log(response.data.results)
                     commit('POSTS_BY_DATE', response.data.results);
-                    console.log('after instance')
                 })
                 .catch(function () {
             });
@@ -175,7 +173,7 @@ export default {
                 .put(`/posts/${postToUpdate.postId}`, postToUpdate.fdUpdatedPost) //envoi de FORMDATA
                 .then(function (response) {
                     commit('UPDATE_POST', postToUpdate.postId, postToUpdate.fdUpdatedPost.content, postToUpdate.fdUpdatedPost.image);
-                  resolve(response) //retourne "commentaire modifié"
+                    resolve(response) //retourne "commentaire modifié"
                 })
                 .catch(function (error) {
                     commit('SET_STATUS', 'error_updatePost', { root: true })
@@ -227,9 +225,9 @@ export default {
                 });
             });
         },
-        removeReport: ({ commit, state }, removeReport) => {
+        removeReport: ({ commit, rootState }, removeReport) => {
             return new Promise ((resolve, reject) => {
-                let userId = state.user.userId;
+                let userId = rootState.user.userId;
                 let report = removeReport.report;
                 console.log(report);
                 instance

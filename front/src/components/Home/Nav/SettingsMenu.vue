@@ -140,6 +140,7 @@ export default {
         flex-direction: row;
         align-items: center;
         margin-left: 7px;
+        position: absolute;
         &__input {
             width: 140px;
             margin: 0 ;
@@ -153,11 +154,11 @@ export default {
             }
         }
         &__results{
-            position: absolute;
+            position: relative;
             width: 190px;
             height: 100px;
             top: 30px;
-            left: 100px;
+            z-index: 99;
         }
     }
 }
