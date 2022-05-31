@@ -3,7 +3,7 @@ const axios = require('axios');
 
 const instance = axios.create({
     baseURL: 'http://localhost:3000/api/'
-  });
+});
 
 //Initialisation du local storage
 //Ajout du token d'authorisation à l'en-tête des requêtes API
@@ -119,52 +119,66 @@ export default {
             });
         },
         getPostsByDate: ({ commit }) => {
+            commit('SET_STATUS', 'loading', { root: true })
             instance
                 .get(`/posts`)
                 .then( function (response) {
                     console.log(response.data.results)
                     commit('POSTS_BY_DATE', response.data.results);
+                    commit('SET_STATUS', 'posts_by_date_loaded', { root: true })
                 })
                 .catch(function () {
+                    commit('SET_STATUS', 'error_posts_by_date', { root: true })
             });
         },
         getPopularPosts: ({ commit }) => {
+            commit('SET_STATUS', 'loading', { root: true })
             instance
             .get(`/posts/famous`)
             .then( function (response) {
                 commit('POSTS_BY_LIKE', response.data.results);
+                commit('SET_STATUS', 'posts_by_date_loaded', { root: true })
             })
             .catch(function () {
+                commit('SET_STATUS', 'error_popular_posts', { root: true })
             });
         },
         getReportedPosts: ({ commit }) => {
+            commit('SET_STATUS', 'loading', { root: true })
             instance
             .get(`/posts/reported`)
             .then( function (response) {
                 commit('REPORTED_POSTS', response.data.results);
+                commit('SET_STATUS', 'posts_by_date_loaded', { root: true })
             })
             .catch(function () {
+                commit('SET_STATUS', 'error_reported_posts', { root: true })
             });
         },
         getPostsByUserId: ({ commit }, userId) => {
+            commit('SET_STATUS', 'loading', { root: true })
             console.log(userId)
             instance
                 .get(`/posts/${userId}`)
                 .then( function (response) {
                     console.log(response.data)
                 commit('POSTS_BY_USER_ID', response.data.results);
-                console.log('commit done')
+                commit('SET_STATUS', 'posts_by_user_loaded', { root: true })
                 })
                 .catch(function () {
+                    commit('SET_STATUS', 'error_posts_by_user', { root: true })
             });
         },
         getPopularPostsByUserId: ({ commit }, userId) => {
+            commit('SET_STATUS', 'loading', { root: true })
             instance
                 .get(`/posts/${userId}/famous`)
                 .then( function (response) {
                     commit('POSTS_BY_USERID_BY_LIKE', response.data.results);
+                    commit('SET_STATUS', 'popular_posts_by_user_loaded', { root: true })
                 })
                 .catch(function () {
+                    commit('SET_STATUS', 'error_popular_posts_by_user', { root: true })
             });
         },
         updatePost: ({ commit }, postToUpdate)=>{

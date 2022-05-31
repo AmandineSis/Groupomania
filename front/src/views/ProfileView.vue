@@ -4,19 +4,25 @@
         <router-link class="topMenu__home" :to="`/home/`" ><font-awesome-icon icon="house"/></router-link>
     </nav> 
 
-    <UserProfile :profileView="true" :posts="posts"/>
+    <UserProfile :profileView="true"/>
     <button class="button" v-if="user.userId == 1 && userIdProfile !== 1" @click="showDeleteBlock" >Supprimer cet utilisateur</button>
-    <DeleteBlock v-if="deleteBlock"/>
+    <AdminDeleteContainer v-if="deleteBlock"/>
 
     <transition name="bounce">
-        <UpdateMenu v-if="updateMenuIsActive" />
+        <UpdateMenu 
+            v-if="updateMenu" 
+            :current-page="currentPage" 
+            :selected-mode="selectedMode"/>
     </transition>
 
-    <AddPost mode="profilePage" v-once/> 
+    <AddPost 
+        :current-page="currentPage" 
+        :selected-mode="selectedMode" 
+        v-once/> 
 
     <div class="toggle">
-        <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : selected=='recentPosts'}" @click="getUserRecentPosts"> Récents </button>
-        <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : selected=='popularPosts'}" @click="getUserPopularPosts"> Populaires </button>
+        <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : selectedMode=='recentUserPosts'}" @click="getUserRecentPosts"> Récents </button>
+        <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : selectedMode=='popularUserPosts'}" @click="getUserPopularPosts"> Populaires </button>
     </div>
 
     <!--Loader-->
@@ -26,17 +32,27 @@
 
     <main v-else>
         <!------------------------------------POSTS BY DATE------------------------------------------------------------------>
-        <div class="postsContainer" v-if="selected == 'recentPosts' && postLength!=0">  
-            <RecentPosts v-for="postItem in posts" :key="postItem.postId" :postItem="postItem" :selectedMode="profilePage"/>  
+        <div class="postsContainer" v-if="selectedMode == 'recentUserPosts' && postByUserLength!=0">  
+            <RecentPosts 
+                v-for="postItem in postsByUser" 
+                :key="postItem.postId" 
+                :postItem="postItem" 
+                :current-page="currentPage"
+                :selected-mode="selectedMode"/>  
         </div>
-        <div class="noPost" v-if="selected == 'recentPosts' && postLength==0"> 
+        <div class="noPost" v-if="selectedMode == 'recentUserPosts' && postByUserLength==0"> 
             <p class="noPost__text">Il n'existe pas encore de publication !</p>
         </div> 
         <!------------------------------------POSTS BY LIKE------------------------------------------------------------------>
-        <div class="postsContainer" v-if="selected == 'popularPosts'&& popularPostsLength!=0">
-            <RecentPosts v-for="popularPostItem in popularPosts" :key="popularPostItem.postId" :postItem="popularPostItem" :selectedMode="selected"/>   
+        <div class="postsContainer" v-if="selectedMode == 'popularUserPosts'&& popularPostsByUserLength!=0">
+            <RecentPosts 
+                v-for="popularPostItem in popularPostsByUser" 
+                :key="popularPostItem.postId" 
+                :postItem="popularPostItem" 
+                :current-page="currentPage"
+                :selected-mode="selectedMode"/>   
         </div>
-        <div class="noPost" v-if="selected == 'popularPosts' && popularPostsLength==0">
+        <div class="noPost" v-if="selectedMode == 'popularUserPosts' && popularPostsByUserLength==0">
             <p class="noPost__text">Il n'existe pas encore de publication !</p>
         </div>
     </main>
@@ -44,69 +60,73 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapGetters } from 'vuex';
+
+//Components import
+
 import SettingsMenu from '@/components/Home/Nav/SettingsMenu.vue'
 import UserProfile from '@/components/Home/Nav/UserProfile.vue'
 import UpdateMenu from '@/components/Home/Nav/UpdateMenu.vue'
-import DeleteBlock from '@/components/Home/Nav/Update/DeleteBlock.vue'
+import AdminDeleteContainer from '@/components/Home/Nav/AdminDeleteContainer.vue'
 import AddPost from '@/components/Home/Posts/AddPost.vue'
 import RecentPosts from '@/components/Home/Posts/RecentPosts.vue'
+
+//store and mixins import
+import { mapMutations, mapState } from 'vuex';
 import { profilePostsMixin } from '../mixins/profilePostsMixin'
+
+
 export default {
-    name: 'HomeView',
+    name: 'profileView',
     mixins: [profilePostsMixin],
     components : {
         SettingsMenu,
         UpdateMenu,
-        DeleteBlock,
+        AdminDeleteContainer,
         UserProfile,
         AddPost,
         RecentPosts
     },
     data(){
         return{
-            selected: 'recentPosts',
-            updateMenu: false,
+            currentPage: 'profilePage',
+            selectedMode: 'recentUserPosts',
             userIdProfile: '',
             deleteBlock: false
         }
     },
-    computed: {
-        ...mapState({
-            user: 'user'
-        }),
-        ...mapState('posts',{
-            posts: 'postsByUserId',
-            popularPosts: 'postsByUserIdByLike'
-        }),
-        ...mapState('toggle',{
-            updateMenuIsActive: 'updateMenuIsActive'
-        }),
-        ...mapGetters('posts',{
-            postLength: 'postsByUserIdByDateLength',
-            popularPostsLength: 'postsByUserIdByLikeLength'
-        })
-    },
-    beforeMount:
+    beforeMount: 
+        //Loading all recent posts from selected user to display
         function(){
             this.userIdProfile = parseInt(this.$route.params.userId);
             const userId = this.userIdProfile;
-            this.getAllUserPosts(userId)
-        },
-        
+            this.getAllUserPosts(userId)     
+            //Closing updateMenu if previously openend on homePage
+            if(this.updateMenu){
+                this.UPDATE_MENU_TOGGLE()
+            }
+        }, 
+    computed: {
+        ...mapState({
+            status: 'status',
+            user: 'user'
+        }),
+        ...mapState('toggle',{
+            updateMenu: 'updateMenuIsActive'
+        }),
+    },
     methods: {
-        ...mapActions('posts',['getPostsByUserId','getPopularPostsByUserId','getReportedPosts']),
+        ...mapMutations('toggle',['UPDATE_MENU_TOGGLE']),
         //toggle delete block
         showDeleteBlock(){
             this.deleteBlock = !this.deleteBlock;
         },
         getUserRecentPosts(){
-            this.selected='recentPosts';
+            this.selectedMode='recentUserPosts';
             const userId = this.$route.params.userId;
             this.getAllUserPosts(userId)
         },
         getUserPopularPosts(){
-            this.selected = 'popularPosts';
+            this.selectedMode = 'popularUserPosts';
             const userId = this.$route.params.userId;
             console.log(this.mode);
             this.getAllUserPopularPosts(userId)
@@ -118,9 +138,6 @@ export default {
 <style scoped lang="scss">
 
 /************************** TOPNAV ******************* */
-p {
-  color: black;
-}
 
 .topMenu {
         position: absolute;
@@ -255,6 +272,7 @@ font-size: 1em;
     height: 50px;
     margin: 50px auto;
     &__text{
+        color: #2c3e50;
         margin: 15px;
     }
 }

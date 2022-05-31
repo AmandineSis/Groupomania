@@ -6,7 +6,7 @@
                 <font-awesome-icon class="settings__icon" icon="sign-out-alt"  @click="logoutUser"/>
             </router-link>
         </li>
-        <!---------UpadeMenu--------------->
+        <!---------UpdateMenu--------------->
         <li class="settings__list__item">
             <font-awesome-icon class="settings__icon" icon="gear" @click="showUpdate"/>
         </li>
@@ -15,19 +15,21 @@
             <font-awesome-icon class="settings__icon" icon="magnifying-glass" @click="showSearchBar"/>
 
             <transition name="grow">
+                <!---------SearchUser input--------------->
                 <form  v-if="searchBarIsActive" method="POST"> 
                     <div class="settings__searchForm" >  
-                            <BaseInput 
-                                class="settings__searchForm__input" 
-                                v-model="event.userSearch"
-                                type="search" 
-                                name="user" 
-                                label="Rechercher..."
-                                @keyup="getSearchResults"
-                                @blur="closeSearch"
-                                />
+                        <BaseInput 
+                            class="settings__searchForm__input" 
+                            v-model="event.userSearch"
+                            type="search" 
+                            name="user" 
+                            label="Rechercher..."
+                            @keyup="getSearchResults"
+                            @blur="closeSearch"
+                            />
                         <font-awesome-icon class="settings__searchForm__input__delete" icon="xmark" @click="deleteSearch" />
                     </div>
+
                     <!---------SearchUser results--------------->
                     <div class="settings__searchForm__results" v-if="searchResults && event.userSearch != ''">
                         <div class="result" v-for="result in searchResults" :key="result.userId" >
@@ -37,7 +39,9 @@
                             </router-link>
                         </div>
                     </div>
+
                 </form>
+
             </transition>    
         </li>
     </ul>
@@ -73,12 +77,11 @@ export default {
         ...mapMutations(['LOG_OUT', 'CLEAR_SEARCH']),
         ...mapMutations('toggle',['UPDATE_MENU_TOGGLE','SEARCH_BAR_TOGGLE']),
 
-        
         logoutUser(){
             this.LOG_OUT();
             this.$router.push('/');
         },
-        //toggle du menu settings
+        //toggle visibility of updateMenu and searchBar
         showUpdate(){
                 this.UPDATE_MENU_TOGGLE()
             },
@@ -86,7 +89,7 @@ export default {
                 this.SEARCH_BAR_TOGGLE()
                 },
         
-        //Recherche utilisateur
+        //User search
         getSearchResults(){
             let nameSearched = this.event.userSearch;
             this.searchUser({indexName: nameSearched})
@@ -104,8 +107,7 @@ export default {
             console.log('CLEAR_SEARCH dispatch done !')
             this.event.userSearch = "";
         }
-        
-  }
+    }
 }
 </script>
 
@@ -184,7 +186,7 @@ export default {
     width: 140px;
   }
 }
-/********RESULTATS DE LA RECHERCHE****** */ 
+/********SEARCH RESULTS****** */ 
 .result{
     border: 1px solid #dbdbdb;
     background-color: white;

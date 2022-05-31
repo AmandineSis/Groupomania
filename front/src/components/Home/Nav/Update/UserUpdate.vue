@@ -27,8 +27,6 @@
             <p class="userUpdate__form__input__error" v-if="error.emailError">Veuillez saisir un email valide</p>
             <p class="userUpdate__form__input__error" v-if="error.emailExists">Cet email existe déjà</p>
         </form>
-
-
         <div class="userUpdate__form__valid">
             <button class="userUpdate__form__valid__button" :class="{'userUpdate__form__valid__button--disabled' : !userDataValidation}" type="button" @click="updateUserInfos" >Valider</button>
         </div>
@@ -36,18 +34,29 @@
 </template>
 
 <script>
+
+//Components import
 import BaseInput from '@/components/Base/BaseInput.vue';
-import { mapActions, mapState } from 'vuex'
+
+//store and mixins import
+import { mapActions, mapState, mapMutations } from 'vuex'
 import { userValidationMixin } from '@/mixins/userValidationMixin'
 import { homePostsMixin } from '@/mixins/homePostsMixin'
 import { profilePostsMixin } from '@/mixins/profilePostsMixin'
+
+
 export default {
     
     name: 'UserUpdate',
-    mixins: [userValidationMixin,homePostsMixin,profilePostsMixin],
+    mixins: [
+        userValidationMixin, 
+        homePostsMixin, 
+        profilePostsMixin
+    ],
     components: {
         BaseInput
     },
+    //Props from UpdateMenu
     props: {
         selectedPage: String,
         selectedTab: String,
@@ -67,36 +76,37 @@ export default {
         }),
     },
     methods: {
+        ...mapMutations(['SET_STATUS']),
         ...mapActions(['updateUser','getUserLoggedIn']),
         
+        //User data update
         updateUserInfos() {
-            console.log(this.mode);
-            console.log(this.selected)
             const userId = this.user.userId
             const firstNameUpdate = (this.event.firstName ? this.event.firstName : this.userLoggedIn.firstName)
             const lastNameUpdate = (this.event.lastName ? this.event.lastName : this.userLoggedIn.lastName)
             const emailUpdate = (this.event.email ? this.event.email : this.userLoggedIn.email)
 
             if(!this.userDataValidation){
-                return this.$store.commit('SET_STATUS', 'error_update_user')
+                return this.SET_STATUS('error_update_user')
             }else{
                 this.updateUser({userId,
                         firstName: firstNameUpdate,
                         lastName: lastNameUpdate,
                         email: emailUpdate})
-                    .then((res => {
-                        console.log(res);
+                    .then((() => {
                         console.log('updateUser dispatch done');
                         window.alert('Modifications effectuées !');
-                        this.getUserLoggedIn({ userId })
+                        this.getUserLoggedIn(userId)
                             .then(() => {
                                 console.log("getUserLoggedIn dispatch done !");
-                                if(this.selectedPage == "homePage" && this.selectedTab == "recentPosts"){
-                                this.getAllRecentPosts();
-                                }else if(this.selectedPage == "homePage" && this.selectedTab == "popularPosts"){
-                                this.getAllPopularPosts();
-                                } else {
-                                this.getAllReportedPosts();
+                                if(this.selectedPage == "homePage"){
+                                    this.getAllRecentPosts();
+                                    this.getAllPopularPosts();
+                                    this.getAllReportedPosts();
+                                }else if(this.selectedPage == "profilePage"){
+                                    const userId = this.$route.params.userId;
+                                    this.getPostsByUserId(userId);
+                                    this.getPopularPostsByUserId(userId);
                                 }
                         }), (err => {
                             console.log(err)
@@ -127,8 +137,8 @@ export default {
             &__error{
                 font-size: 13px;
                 color: #ee7575;
-        }
             }
+        }
         &__valid{
             width: 100%;
             &__button {

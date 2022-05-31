@@ -1,36 +1,39 @@
 <template>
- 
-        <div class="updateMenu" >
-            <div class="updateMenu__selection">
-                <button class="updateMenu__selection__btn" @click="switchToIdentification">Modifier mes identifiants</button>
-                <button class="updateMenu__selection__btn" @click="switchToPassword">Modifier mot de passe</button>
-                <button class="updateMenu__selection__btn" @click="switchToProfilePicture">Modifier photo de profil</button>
-                <button class="updateMenu__selection__btn updateMenu__selection__btn__delete " v-if="user.userId != 1" @click="switchToDeleteAccount">Supprimer mon compte</button>
-
-            </div>
-            <UserUpdate v-if="menu == 'identification'" :selectedPage='mode' :selectedTab='selected'/>
-            <PasswordUpdate v-if="menu == 'password'"/>
-            <PictureUpdate v-if="menu == 'profilePicture'" :selectedPage='mode' :selectedTab='selected'/>
-            <DeleteAccount v-if="menu == 'deleteAccount'"/>
-           <div class="updateMenu__close" @click="closeUpdate" >
-                <font-awesome-icon class="updateMenu__close__icon" icon="xmark"/>Fermer
-            </div>
+    <div class="updateMenu" >
+        <div class="updateMenu__selection">
+            <button class="updateMenu__selection__btn" @click="switchToIdentification">Modifier mes identifiants</button>
+            <button class="updateMenu__selection__btn" @click="switchToPassword">Modifier mot de passe</button>
+            <button class="updateMenu__selection__btn" @click="switchToProfilePicture">Modifier photo de profil</button>
+            <button class="updateMenu__selection__btn updateMenu__selection__btn__delete " v-if="user.userId != 1" @click="switchToDeleteAccount">Supprimer mon compte</button>
         </div>
+
+        <UserUpdate v-if="menu == 'identification'" :selectedPage='currentPage' :selectedTab='selectedMode'/>
+        <PasswordUpdate v-if="menu == 'password'"/>
+        <PictureUpdate v-if="menu == 'profilePicture'" :selectedPage='currentPage' :selectedTab='selectedMode'/>
+        <DeleteAccount v-if="menu == 'deleteAccount'"/>
         
+        <div class="updateMenu__close" @click="closeUpdate" >
+            <font-awesome-icon class="updateMenu__close__icon" icon="xmark"/>Fermer
+        </div>
+    </div> 
 </template>
 
 <script>
+
+//Components import
 import UserUpdate from '@/components/Home/Nav/Update/UserUpdate.vue';
 import PasswordUpdate from '@/components/Home/Nav/Update/PasswordUpdate.vue';
 import PictureUpdate from '@/components/Home/Nav/Update/PictureUpdate.vue';
 import DeleteAccount from '@/components/Home/Nav/Update/DeleteAccount.vue';
+
+//store import
 import { mapState, mapMutations } from 'vuex';
 export default {
 
     name: 'UpdateMenu',
     props: {
-        mode: String,
-        selected: String,
+        currentPage: String,
+        selectedMode: String,
     },
     components: {
         UserUpdate,
@@ -49,7 +52,7 @@ export default {
         })
     },
     methods: {  
-         ...mapMutations('toggle',['UPDATE_MENU_TOGGLE']),
+        ...mapMutations('toggle',['UPDATE_MENU_TOGGLE']),
         switchToPassword() {
             this.menu = 'password';
         },

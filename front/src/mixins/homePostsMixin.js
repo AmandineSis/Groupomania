@@ -1,9 +1,9 @@
-/********************************************************/
-/*     Objet mixin de récupération des publications     */
-/********************************************************/
-
+/***************************************************************************/
+/*         Mixin object for posts loading                          */
+/***************************************************************************/
 
 import { mapState, mapGetters, mapActions } from 'vuex';
+
 export const homePostsMixin = {
     computed: {
         ...mapState('posts',{

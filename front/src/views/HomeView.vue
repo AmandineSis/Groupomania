@@ -1,63 +1,93 @@
 <template>
+    <!-- Header navigation -->
     <nav class="topMenu" v-once>
         <SettingsMenu class="topMenu__settings" v-once />
-        <!-- <SettingsMenu class="topMenu__settings" @show-update="openUpdateMenu"  v-once /> -->
-        <router-link :to="`/profile/${userLoggedIn.userId}`"><UserProfile/></router-link>
+        <router-link :to="`/profile/${userLoggedIn.userId}`">
+            <UserProfile/>
+        </router-link>
     </nav> 
-    <!--Pop-up update menu-->
+
+    <!-- Pop-up update menu -->
     <transition name="bounce">
-        <UpdateMenu v-if="updateMenu" :selected='selected' :mode='mode'/>
-        <!-- <UpdateMenu v-if="updateMenu" @close-update="closeUpdateMenu" @blur="closeUpdateMenu" tabindex="0"/> -->
+        <UpdateMenu 
+            v-if="updateMenu" 
+            :current-page="currentPage" 
+            :selected-mode="selectedMode"/>
     </transition>
     
-    <AddPost :mode='"homePage"' v-once/>
+    <AddPost 
+        :current-page="currentPage" 
+        :selected-mode="selectedMode" 
+        v-once/>
 
+    <!--Toggle between selectedMode -->
     <div class="toggle">
-        <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : selected=='recentPosts'}" @click="showRecentPosts"> Récents </button>
-        <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : selected=='popularPosts'}" @click="showPopularPosts"> Populaires </button>
-        <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : selected=='reportedPosts'}" @click="showReportedPosts" v-if="user.moderator==1"> Signalés </button>
+        <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : selectedMode=='recentPosts'}" @click="showRecentPosts"> Récents </button>
+        <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : selectedMode=='popularPosts'}" @click="showPopularPosts"> Populaires </button>
+        <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : selectedMode=='reportedPosts'}" @click="showReportedPosts" v-if="user.moderator==1"> Signalés </button>
     </div>
 
-    <!--Loader-->
+    <!-- Loader visible while loading posts -->
     <main class="loaderContainer" v-if="status == 'loading'">
         <div class="lds-ring" ><div></div><div></div><div></div><div></div></div>
     </main>
 
     <main v-else>
         <!------------------------------------POSTS BY DATE------------------------------------------------------------------>
-        <div class="postsContainer" v-if="selected == 'recentPosts' && postLength!=0">  
-            <div v-for="postItem in posts" :key="postItem.postId">
-            <RecentPosts  :postItem="postItem" :currentPage='"homePage"' :selectedMode="mode" />  
+        <div class="postsContainer" v-if="selectedMode == 'recentPosts' && postLength!=0">  
+            <div >
+            <RecentPosts  
+                v-for="postItem in posts" 
+                :key="postItem.postId"
+                :post-item="postItem" 
+                :current-page="currentPage"
+                :selected-mode="selectedMode" />  
         </div>
         </div>
-        <div class="noPost" v-if="selected == 'recentPosts' && postLength==0"> 
+        <div class="noPost" v-if="selectedMode == 'recentPosts' && postLength==0"> 
             <p class="noPost__text">Il n'existe pas encore de publication !</p>
         </div> 
         <!------------------------------------POSTS BY LIKE------------------------------------------------------------------>
-        <div class="postsContainer" v-if="selected == 'popularPosts'&& popularPostsLength!=0">
-            <RecentPosts v-for="popularPostItem in popularPosts" :key="popularPostItem.postId" :postItem="popularPostItem" :selectedMode="mode"/>   
+        <div class="postsContainer" v-if="selectedMode == 'popularPosts'&& popularPostsLength!=0">
+            <RecentPosts 
+                v-for="popularPostItem in popularPosts" 
+                :key="popularPostItem.postId" 
+                :post-item="popularPostItem" 
+                :current-page="currentPage"
+                :selected-mode="selectedMode"/>   
         </div>
-        <div class="noPost" v-if="selected == 'popularPosts' && popularPostsLength==0">
+        <div class="noPost" v-if="selectedMode == 'popularPosts' && popularPostsLength==0">
             <p class="noPost__text">Il n'existe pas encore de publication !</p>
         </div>
         <!------------------------------------POSTS REPORTED------------------------------------------------------------------>
-        <div class="postsContainer" v-if="selected == 'reportedPosts'&& reportedPostsLength!=0">
-            <RecentPosts v-for="reportedPostsItem in reportedPosts" :key="reportedPostsItem.postId" :postItem="reportedPostsItem" :selectedMode="mode"/>   
+        <div class="postsContainer" v-if="selectedMode == 'reportedPosts'&& reportedPostsLength!=0">
+            <RecentPosts 
+            v-for="reportedPostsItem in reportedPosts" 
+            :key="reportedPostsItem.postId" 
+            :post-item="reportedPostsItem" 
+            :current-page="currentPage"
+            :selected-mode="selectedMode"/>   
         </div>
-        <div class="noPost" v-if="selected == 'reportedPosts' && reportedPostsLength==0">
+        <div class="noPost" v-if="selectedMode == 'reportedPosts' && reportedPostsLength==0">
             <p class="noPost__text">Aucune publication n'a été signalée !</p>
         </div>
     </main>
 </template>
 
 <script>
-import  {mapState, mapActions } from 'vuex';
+
+//Components import
 import SettingsMenu from '@/components/Home/Nav/SettingsMenu.vue'
 import UserProfile from '@/components/Home/Nav/UserProfile.vue'
 import UpdateMenu from '@/components/Home/Nav/UpdateMenu.vue'
 import AddPost from '@/components/Home/Posts/AddPost.vue'
 import RecentPosts from '@/components/Home/Posts/RecentPosts.vue'
+
+//store and mixins import
+import { mapState, mapMutations } from 'vuex';
 import { homePostsMixin } from '@/mixins/homePostsMixin'
+
+
 export default {
     name: 'HomeView',
     mixins : [homePostsMixin],
@@ -70,10 +100,24 @@ export default {
     },
     data(){
         return{
-            mode: "homePage",
-            selected: 'recentPosts',
+            currentPage: "homePage",
+            selectedMode: 'recentPosts',
         }
     },
+    beforeMount: 
+        function(){
+            //user redirected to AuthPage if userId = -1
+            if (this.user.userId == -1) {
+            this.$router.push('/');
+            return ;
+            }
+            //Loading all recent posts to display
+            this.getAllRecentPosts()  
+            //Closing updateMenu if previously openend on profilePage   
+            if(this.updateMenu){
+                this.UPDATE_MENU_TOGGLE()
+            }   
+        }, 
     computed: {
         ...mapState({
             status: 'status',
@@ -83,34 +127,20 @@ export default {
         ...mapState('toggle',{
             updateMenu: 'updateMenuIsActive'
         }),
-       
-    },
-    beforeMount: 
-        //Loading user data and posts to display
-        function(){
-            if (this.user.userId == -1) {
-            this.$router.push('/');
-            return ;
-            }
-            this.getUserLoggedIn()
-                .then(() => {
-                    console.log("getUserLoggedIn dispatch done !")
-                    this.getAllRecentPosts()
-                    
-        })},  
+    }, 
     methods: {
-        ...mapActions(['getUserLoggedIn','getUserInfos']),
+        ...mapMutations('toggle',['UPDATE_MENU_TOGGLE']),
         //toggle entre les différentes listes de publication
         showRecentPosts(){
-            this.selected='recentPosts';
+            this.selectedMode='recentPosts';
             this.getAllRecentPosts()
         },    
         showPopularPosts(){
-            this.selected = 'popularPosts';
+            this.selectedMode = 'popularPosts';
             this.getAllPopularPosts()
         },
         showReportedPosts(){
-            this.selected='reportedPosts';
+            this.selectedMode='reportedPosts';
             this.getAllReportedPosts()
         }
     }

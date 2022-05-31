@@ -1,8 +1,9 @@
-/****************************************************************/
-/*         Objet mixin validation du mot de passe utilisateur   */
-/****************************************************************/
+/*****************************************************/
+/*         Mixin object for password validation      */
+/*****************************************************/
 
 import { mapState } from 'vuex'
+
 export const passwordValidationMixin = {
     data(){
         return{
@@ -27,6 +28,7 @@ export const passwordValidationMixin = {
         }),
     },
     methods: {
+        //password validation
         isPasswordValid() {
             this.pswdReg.test(this.event.password) 
             ? (this.passwordValid= true, this.error.passwordError = false) 
@@ -36,7 +38,6 @@ export const passwordValidationMixin = {
             this.pswdReg.test(this.event.newPassword) 
             ? (this.newPasswordValid= true, this.error.passwordError = false) 
             : (this.newPasswordValid= false, this.error.passwordError = true);
-            console.log(this.newPasswordValid)
         },
 
     }

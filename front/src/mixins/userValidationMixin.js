@@ -1,8 +1,9 @@
 /*****************************************************/
-/*         Objet mixin de des données utilisateur    */
+/*         Mixin object for user data validation     */
 /*****************************************************/
 
 import { mapState } from 'vuex'
+
 export const userValidationMixin = {
     data(){
         return{
@@ -27,12 +28,11 @@ export const userValidationMixin = {
     },
     computed: {
         ...mapState({
-            //status: 'status',
             user: 'user',
         }),
     },
     methods: {
-        //Vérification des données utilisateur
+        //User data validation
         isFirstNameValid() {
             this.nameReg.test(this.event.firstName) 
             ? (this.firstNameValid= true, this.error.firstNameError = false) 

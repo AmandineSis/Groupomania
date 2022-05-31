@@ -73,7 +73,7 @@ export default ({
         BaseInput
     },
     computed: {
-        //Validation des champs de connexion
+        //Login fields validation
         loginValidation(){
             if ( this.event.email !== "" && this.event.password !== "") {
                 return true;
@@ -81,7 +81,7 @@ export default ({
                 return false
                 }
             },
-        //Validation des champs d'inscription
+        //Signup fields validation
         signupValidation(){
             if ( this.firstNameValid && this.lastNameValid && this.emailValid && this.passwordValid) {
                 return true;
@@ -93,14 +93,15 @@ export default ({
     methods: {
         ...mapActions('auth',['login','createAccount']),
         ...mapActions(['getUserLoggedIn']),
-        //Toggle entre login et signup
+
+        //Toggle between login and signup
         switchToSignup() {
             this.mode = 'signup';
         },
         switchToLogin() {
             this.mode = 'login';
         },
-        //Connexion de l'utilisateur
+        //User login
         logUser(){
             if(!this.loginValidation){
                 return this.$store.commit('SET_STATUS', 'error_login')
@@ -125,7 +126,7 @@ export default ({
                         }))    
             }   
         },
-        //Inscription de l'utilisateur
+        //User signup
         createUserAccount() {
             const self = this;
             if(!this.signupValidation){

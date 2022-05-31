@@ -47,7 +47,7 @@ export default {
     components: {
         BaseInput
     },
-     data(){
+    data(){
         return{
             oldPasswordFieldType:"password",
             newPasswordFieldType:"password",
@@ -57,7 +57,8 @@ export default {
     },
     methods: {  
         ...mapActions(['updatePassword']),
-        //Toggle visibilité des mots de passe
+
+        //Toggle passwords visibility
         switchVisibilityOld(){
             this.showOldPassword= !this.showOldPassword;
             this.oldPasswordFieldType = this.oldPasswordFieldType === "password" ? "text" : "password";
@@ -66,28 +67,28 @@ export default {
             this.showNewPassword= !this.showNewPassword;
             this.newPasswordFieldType = this.newPasswordFieldType === "password" ? "text" : "password";
         },
-        //Mise à jour du mot de passe
+        
+        //Password update
         updateNewPassword(){
             const oldPassword = this.event.oldPassword;
             const newPassword = this.event.newPassword;
             const userId = this.user.userId
             
-            if(this.oldPasswordValid){
-                this.updatePassword(
-                    {userId,oldPassword,newPassword})
-                .then((res => {
-                    console.log(res);
-                    console.log('updatePassword dispatch done');
-                    window.alert('Modifications effectuées !');
-                    this.event.oldPassword='';
-                    this.event.newPassword='';
-                }))
-            } else {
-                window.alert("Erreur: Votre ancien mot de passe est invalide !")
+            this.updatePassword(
+                {userId,oldPassword,newPassword})
+            .then((res => {
+                console.log(res);
+                console.log('updatePassword dispatch done');
+                window.alert('Modifications effectuées !');
                 this.event.oldPassword='';
                 this.event.newPassword='';
-            }         
-            }
+            }))
+            .catch(() => {
+                window.alert("Erreur: Votre ancien mot de passe est invalide !")
+                    this.event.oldPassword='';
+                    this.event.newPassword='';
+            })
+        }
     }
 }
 </script>
@@ -101,10 +102,10 @@ export default {
         display: flex;
         flex-direction: column;
         width: 90%;
-
         &__container{
             display: flex;
             flex-direction: row;
+            align-items: center;
             width: 100%;
         }
         &__input {
@@ -132,18 +133,19 @@ export default {
                     color: #ffffff;
                 }
                 &--disabled{
-            background-color: grey;
-            &:hover{
-                cursor:not-allowed;
-                background-color:#cecece;
-                border: 2px solid grey;
-                color: white;
-            }
-        }
+                    background-color: grey;
+                    &:hover{
+                        cursor:not-allowed;
+                        background-color:#cecece;
+                        border: 2px solid grey;
+                        color: white;
+                    }
+                }
             }
         }
     } 
     &__button{
+        padding: 10px;
         background-color: white;
     }  
 }    

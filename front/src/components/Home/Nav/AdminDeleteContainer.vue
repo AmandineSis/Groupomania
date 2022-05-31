@@ -10,24 +10,15 @@ import DeleteAccount from '@/components/Home/Nav/Update/DeleteAccount.vue';
 import { mapState } from 'vuex';
 export default {
 
-    name: 'DeleteBlock',
+    name: 'DeleteAccount',
     components: {
-        
         DeleteAccount
-    },
-    data() {
-        return {
-            
-        }
     },
     computed: {
         ...mapState({
             user: 'user'
         })
     },
-    methods: {  
-        
-    }
 }
 </script>
 

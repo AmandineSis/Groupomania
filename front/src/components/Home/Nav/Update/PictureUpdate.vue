@@ -14,12 +14,19 @@
 </template>
 
 <script>
+
+//store and mixins import
 import { mapActions, mapState } from 'vuex'
 import { homePostsMixin } from '@/mixins/homePostsMixin'
 import { profilePostsMixin } from '@/mixins/profilePostsMixin'
+
+
 export default {
     name: 'PictureUpdate',
-    mixins: [homePostsMixin,profilePostsMixin],
+    mixins: [
+        homePostsMixin,
+        profilePostsMixin
+    ],
     props: {
         selectedPage: String,
         selectedTab: String,
@@ -29,9 +36,9 @@ export default {
             profilePic:""      
             }
     },
-
     computed: {
         ...mapState({
+            user: 'user',
             userLoggedIn: 'userLoggedIn',
         })
     },
@@ -49,18 +56,19 @@ export default {
             }
             this.updateUserPicture({userId,fdProfile})
                 .then((() => {
-                    console.log(this.selectedPage);
                     console.log('updateUser dispatch done');
                     window.alert('Modifications effectuées !');
                         this.getUserLoggedIn({ userId })
                             .then(() => {
                                 console.log("getUserLoggedIn dispatch done !");
-                                if(this.selectedPage == "homePage" && this.selectedTab == "recentPosts"){
-                                this.getAllRecentPosts();
-                                }else if(this.selectedPage == "homePage" && this.selectedTab == "popularPosts"){
-                                this.getAllPopularPosts();
-                                } else {
-                                this.getAllReportedPosts();
+                                 if(this.selectedPage == "homePage"){
+                                    this.getAllRecentPosts();
+                                    this.getAllPopularPosts();
+                                    this.getAllReportedPosts();
+                                }else if(this.selectedPage == "profilePage"){
+                                    const userId = this.$route.params.userId;
+                                    this.getPostsByUserId(userId);
+                                    this.getPopularPostsByUserId(userId);
                                 }
                         }), (err => {
                             console.log(err)

@@ -1,10 +1,22 @@
 /***************************************************************************/
-/*         Objet mixin de récupération des publications par utilisateur    */
+/*         Mixin object for posts by user loading                          */
 /***************************************************************************/
 
-import { mapActions } from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex';
+
 export const profilePostsMixin = {
-    ...mapActions('posts',['getPostsByUserId','getPopularPostsByUserId','getReportedPosts']),
+    computed: {
+        ...mapState('posts',{
+            postsByUser: 'postsByUserId',
+            popularPostsByUser: 'postsByUserIdByLike'
+        }),
+        ...mapGetters('posts',{
+            postByUserLength: 'postsByUserIdByDateLength',
+            popularPostsByUserLength: 'postsByUserIdByLikeLength'
+        })
+    },
+    methods: {
+    ...mapActions('posts',['getPostsByUserId','getPopularPostsByUserId']),
     getAllUserPosts(userId){
         this.getPostsByUserId(userId)
             .then(() => {
@@ -22,5 +34,6 @@ export const profilePostsMixin = {
             .catch((err) => {
                 console.log(err);
             })
+    }
     }
 }

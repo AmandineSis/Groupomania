@@ -1,18 +1,19 @@
 <template>
-        <div class="userProfile" v-if="!profileView" >
-            <router-link class="userProfile__link" :to="`/profile/${userLoggedIn.userId}`">
-                <p class="userProfile__fullname">{{ fullNameUserLoggedIn }}</p> 
-                <img class="userProfile__picture" :src="userLoggedIn.profilePicUrl" alt="photo de profil">
-            </router-link>
-        </div>
-        
-        <div class="userProfile" :class="{'userProfile--inBlock' : profileView}" v-else >  
-                <p class="userProfile__fullname" :class="{'userProfile__fullname--black' : profileView}" v-if="profileView && $route.params.userId == userLoggedIn.userId">{{ fullNameUserLoggedIn }}</p> 
-                <p class="userProfile__fullname" :class="{'userProfile__fullname--black' : profileView}" v-if="profileView && $route.params.userId != userLoggedIn.userId">{{ fullNameUser }}</p> 
-                
-                <img class="userProfile__picture" :class="{'userProfile__picture--sizeUp' : profileView}" :src="userLoggedIn.profilePicUrl" alt="photo de profil" v-if="profileView && $route.params.userId == userLoggedIn.userId">
-                <img class="userProfile__picture" :class="{'userProfile__picture--sizeUp' : profileView}" :src="userInfos.profilePicUrl" alt="photo de profil" v-if="profileView && $route.params.userId != userLoggedIn.userId">
-        </div>
+    <!-- UserProfile template on homePage -->
+    <div class="userProfile" v-if="!profileView" >
+        <router-link class="userProfile__link" :to="`/profile/${userLoggedIn.userId}`">
+            <p class="userProfile__fullname">{{ fullNameUserLoggedIn }}</p> 
+            <img class="userProfile__picture" :src="userLoggedIn.profilePicUrl" alt="photo de profil">
+        </router-link>
+    </div>
+    <!-- UserProfile template on profilePage -->
+    <div class="userProfile" :class="{'userProfile--inBlock' : profileView}" v-else >  
+            <p class="userProfile__fullname" :class="{'userProfile__fullname--black' : profileView}" v-if="profileView && $route.params.userId == userLoggedIn.userId">{{ fullNameUserLoggedIn }}</p> 
+            <p class="userProfile__fullname" :class="{'userProfile__fullname--black' : profileView}" v-if="profileView && $route.params.userId != userLoggedIn.userId">{{ fullNameUser }}</p> 
+            
+            <img class="userProfile__picture" :class="{'userProfile__picture--sizeUp' : profileView}" :src="userLoggedIn.profilePicUrl" alt="photo de profil" v-if="profileView && $route.params.userId == userLoggedIn.userId">
+            <img class="userProfile__picture" :class="{'userProfile__picture--sizeUp' : profileView}" :src="userInfos.profilePicUrl" alt="photo de profil" v-if="profileView && $route.params.userId != userLoggedIn.userId">
+    </div>
 </template>
 
 <script>
@@ -20,38 +21,25 @@ import { mapState, mapGetters, mapActions } from 'vuex';
 
 export default {
     name: 'UserProfile',
+    //Props from profileView.vue
     props: {
         profileView: Boolean
-    },
-    data(){
-        return{
-            
-        }
     },
     beforeMount:
         function(){
             if(!this.profileView){
-                const userId = this.user.userId;
-                //Si userId = -1, retour à la page de connexion
-                if(userId == -1){
-                    this.$router.push('/');
-                    return;
-                }
-                this.$store
-                    .dispatch('getUser', userId )
+                this.getUserLoggedIn()
                     .then(() => {
-                        console.log("getUSer dispatch done !")
+                        console.log("getUserLoggedIn dispatch done !")
                     });
             }else{
                 const userId = this.$route.params.userId;
-                this.$store
-                    .dispatch('getUser', userId )
+                this.getUser(userId)
                     .then(() => {
                         console.log("getUSer dispatch done !")
                 });
             }
         },
-    
     computed: {
         ...mapState({
             status: 'status',
@@ -62,7 +50,7 @@ export default {
         ...mapGetters(['fullNameUserLoggedIn','fullNameUser'])
     },
     methods: {
-        ...mapActions(['getUser'])
+        ...mapActions(['getUserLoggedIn', 'getUser'])
     }
 }
 </script>

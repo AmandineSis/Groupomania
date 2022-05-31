@@ -34,8 +34,10 @@ if (!user) {
 const debug = process.env.NODE_ENV !== 'production'
 
 export default createStore({
+  //Enabling the Vuex built-in logger plugin
   strict: debug,
   plugins: debug ? [createLogger()] : [],
+  
   modules: {
     toggle,
     auth,
@@ -80,13 +82,13 @@ export default createStore({
       }
       localStorage.removeItem('user');
     },
-    userLoggedIn(state, userLoggedIn){
+    USER_LOGGED_IN(state, userLoggedIn){
       state.userLoggedIn = userLoggedIn;
     },
-    userInfos(state, userInfos){
+    USER_INFOS(state, userInfos){
       state.userInfos = userInfos;
     },
-    searchResult(state, searchResults){
+    SEARCH_RESULT(state, searchResults){
       state.searchResults = searchResults;
     },
     CLEAR_SEARCH(state){
@@ -122,7 +124,7 @@ export default createStore({
       instance
         .get(`/user/${userId}`)
         .then( function (response) {
-          commit('userLoggedIn', response.data.results[0]);
+          commit('USER_LOGGED_IN', response.data.results[0]);
         })
         .catch(function () {
         });
@@ -131,7 +133,7 @@ export default createStore({
       instance
         .get(`/user/${userId}`)
         .then( function (response) {
-          commit('userInfos', response.data.results[0]);
+          commit('USER_INFOS', response.data.results[0]);
         })
         .catch(function () {
         });
@@ -163,8 +165,7 @@ export default createStore({
           .put(`/user/${password.userId}/password`, {
             oldPswd: password.oldPassword,
             newPswd: password.newPassword
-          }
-          )
+          })
           .then(function (response) {
             commit('SET_STATUS', 'updated')
             resolve(response)
@@ -173,6 +174,7 @@ export default createStore({
           .catch(function (error) {
             commit('SET_STATUS', 'error_update')
             reject(error.response.message)
+            console.log(error.message)
           });
         });
     },
@@ -218,7 +220,7 @@ export default createStore({
       instance
           .post(`/user`, searchName)
           .then( function (response) {
-            commit('searchResult', response.data.results);
+            commit('SEARCH_RESULT', response.data.results);
           })
           .catch(function () {
         });
