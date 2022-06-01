@@ -1,31 +1,39 @@
 <template>
-<!---------------Affichage des publications signalées pour le moderateur uniquement---------------------------->
+<!---------------Reported posts style visible to moderator only---------------------------->
     <div class="posts"  :class="{'posts__reported' : postItem.report>=1 && user.moderator == 1 && selectedMode != 'reportedPosts'} ">
+
         <header class="posts__header"  >
+            <!-----------------Link to user profilePage---------------->
             <router-link class="posts__header__user" :to="`/profile/${postItem.userId}`">
                 <img class="posts__header__user__picture" :src="postItem.profilePicUrl" alt="profile picture">
                 <h2 class="posts__header__user__id">{{postItem.firstName}} {{postItem.lastName}}</h2>
             </router-link>
-            
+            <!------------------------Settings------------------------->
             <div class="posts__header__settings">
-                <p class="posts__header__settings__date" > <span>Publié le {{ new Date(postItem.created).toLocaleString() }}</span></p>
+                <p class="posts__header__settings__date" >
+                    <span>Publié le {{ new Date(postItem.created).toLocaleString() }}</span>
+                </p>
                 <button class="posts__header__settings__nav" @click.stop="openPostSettings(postId)" >
                     <font-awesome-icon icon="ellipsis"  />
                 </button>
             </div>
         </header>  
+
         <div class="posts__container">
-            <!--Modification/suprression de la publication -->
+            <!--Update/Delete post  -->
             <div class="posts__content__update" v-if="showPostSettings && user.userId== postItem.userId || showPostSettings && user.moderator == 1" >
-                <PostSettings :postItem="postItem" :thisPage="currentPage" @hide-post-settings="closeSettings"/>
+                <PostSettings 
+                    :postItem="postItem" 
+                    :thisPage="currentPage" 
+                    @hide-post-settings="closeSettings"/>
             </div>
-            <!--Signalement de la publication -->
+            <!----- Report post ----->
             <div class="posts__content__settings" v-if="showPostSettings && user.moderator == 0 && user.userId != postItem.userId" >
                 <button class="posts__content__settings__button" @click="postReport(postItem.postId)" >
                     <span>Signaler</span>
                 </button>
             </div>
-            <!--contenu de la publication -->
+            <!------ Post content ---->
             <div class="post__container" v-if="!showPostSettings || showPostSettings && user.moderator == 0 && user.userId!= postItem.userId || !showPostSettings && user.moderator == 1">
                 <div class="posts__content" >
                     <p class="posts__content__text" v-if="postItem.content" >{{postItem.content}}</p>
@@ -40,22 +48,22 @@
                             {{ postItem.likes }} 
                         </span>
                         <span class="posts__footer__top__icon">
-                            <font-awesome-icon :icon="['far', 'comment']" v-if="postItem.comments == '' "/>
+                            <font-awesome-icon :icon="['far', 'comment']" v-if="postItem.comments == 0 "/>
                             <font-awesome-icon icon="comment" class="posts__footer__top__icon__full" v-else/>
                             {{postItem.comments}}
                         </span>
                     </div>
 
-                <div class="posts__footer__bottom">
-                    <button class="posts__footer__bottom__icon" @click="addLikePost(postItem.postId)">
-                        <font-awesome-icon class="posts__footer__bottom__icon__like" :icon="['far', 'heart']" />
-                        like
-                    </button>
-                    <button class="posts__footer__bottom__icon" @click="displayComment(postItem.postId)">
-                        <font-awesome-icon class="posts__footer__bottom__icon__comment" :icon="['far', 'comment']" />
-                        comment
-                    </button>
-                </div>            
+                    <div class="posts__footer__bottom">
+                        <button class="posts__footer__bottom__icon" @click="addLikePost(postItem.postId)">
+                            <font-awesome-icon class="posts__footer__bottom__icon__like" :icon="['far', 'heart']" />
+                            like
+                        </button>
+                        <button class="posts__footer__bottom__icon" @click="displayComment(postItem.postId)">
+                            <font-awesome-icon class="posts__footer__bottom__icon__comment" :icon="['far', 'comment']" />
+                            comment
+                        </button>
+                    </div>            
                 </footer>
                 <div class="comment__container" v-if="showComment">
                     <PostComments :postItem="postItem"/> 
@@ -67,33 +75,37 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions  } from 'vuex';
+
+//Components import
 import PostSettings from '@/components/Home/Posts/PostSettings.vue'
 import PostComments from '@/components/Home/Comments/PostComments.vue'
 
+//store and mixins import
+import { mapState, mapGetters, mapActions  } from 'vuex';
+import { homePostsMixin } from '@/mixins/homePostsMixin'
+import { profilePostsMixin } from '@/mixins/profilePostsMixin'
+
 export default ({
     name: 'RecentPosts',
+     mixins: [
+        homePostsMixin, 
+        profilePostsMixin
+    ],
     components: {
         PostSettings,
         PostComments
     },
     props: {
         postItem: Object,
-        selectedMode: String,
-        currentPage: String
+        currentPage: String,
+        selectedMode: String
     },
     data(){
         return {
             showPostSettings: false,
-            showComment: false,
-            
-            likes: '',
-            isLiked: '',
-            //postId:'',
-            //comments: []
+            showComment: false
         }
     },
-    
     computed: {
         ...mapState({
             user: 'user',
@@ -103,43 +115,40 @@ export default ({
         })
     },
     methods: {
-        ...mapActions('posts',['likePost','getPostsByDate','getCommentsByPostId','deletePost','reportPost','removeReport']),
+        ...mapActions('posts',['likePost','deletePost','reportPost','removeReport']),
+        ...mapActions('comments',['getCommentsByPostId']),
         //Toggle post settings
         openPostSettings(){
             this.showPostSettings=!this.showPostSettings
         },
         closeSettings(){
-            console.log('close settings emit')
             this.showPostSettings = false;
         },
         addLikePost(postId){
-            //toggle like value between 0 and 1
-            this.isLiked = !this.isLiked;
-            
-            if( this.isLiked == true){
-                this.likes= 1;
-            }else{
-                this.likes = 0;
-            }
             const postLike = {
                 postId,
-                like: this.likes
+                like: 1
             };
-            //envoie requête LikePost et reload des publications
+            //Add/Remove like from post
             this.likePost(postLike)
                 .then(() => {
                     console.log("likePost dispatch done !")
                     //recentPosts refreshed
-                    this.getPostsByDate()
-                            .then(() => {
-                                console.log("getPostsByDate dispatch done !")
-                            });
+                    if(this.currentPage == "homePage"){
+                        this.getAllRecentPosts();
+                        this.getAllPopularPosts();
+                        this.getAllReportedPosts();
+                    //Reload posts components on profilePage
+                    }else if(this.currentPage == "profilePage"){
+                        const userId = this.$route.params.userId;
+                        this.getPostsByUserId(userId);
+                        this.getPopularPostsByUserId(userId);
+                    }
                 })
         },
         displayComment(postId){ 
             //toggle visibility of comment section         
             this.showComment= !this.showComment;
-            
             if(this.showComment==true){
                 this.getCommentsByPostId(postId)
                     .then(() => {
@@ -150,28 +159,19 @@ export default ({
             }
             
         },
+         /*********************************************************
+         * *****************A modifier****************************
+         *******************************************************/
         postReport(postId) {
-            //toggle like value between 0 and 1
-            this.isReported = !this.isReported;
-            if( this.isReported == true ){
-                this.report= 1;
-            }else{
-                this.report = 0;
-            }
             const postReported = {
                 postId,
-                report: this.report
+                report: 1
             };
             //envoie requête vers store - requête LikePost
             this.reportPost(postReported)
-                .then((res) => {
-                    console.log(res)
+                .then(() => {
                     console.log("reportPost dispatch done !")
-                    if (this.report==1){
                     window.confirm('Vous avez signalé cette publication !')
-                    }else{
-                        window.confirm('Vous ne signalez plus cette publication !')
-                    }
                 })
         },
             

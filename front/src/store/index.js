@@ -43,18 +43,11 @@ export default createStore({
     auth,
     posts
   },
-
   state: {
     status: '',
     user: user,
     userLoggedIn: [],
     userInfos: [],
-
-   
-
-    postComments: [],
-    commentsByPostId: [],
-
     searchResults: []
   },
   getters: {
@@ -74,7 +67,6 @@ export default createStore({
       localStorage.setItem('user', JSON.stringify(user));
       state.user = user;
     },
-    
     LOG_OUT(state) {
       state.user = {
         userId: -1,
@@ -93,32 +85,10 @@ export default createStore({
     },
     CLEAR_SEARCH(state){
       state.searchResults = [];
-    },
-    
-    //COMMENT/////////////////////////////////////////
-    postComments(state, postComments){
-      //state.postComments.push(postComments);
-      state.postComments = postComments;
-    },
-    commentsByPostId(state, postId){
-      let index = state.postComments.findIndex(postComments => postComments.postId == postId);
-      //let selectedComment = state.postComments.splice(index, 1);
-      console.log(index);
-    },
-    deleteComments(state, comId ){
-      let index = state.postComments.findIndex(postComments => postComments.comId == comId);
-      state.postComments.splice(index, 1);
-    },
-    updateComments(state, comId, commentContent, commentImage ){
-      let index = state.postComments.findIndex(postComments => postComments.comId == comId);
-      state.postComments.splice(index, 1, commentContent);
-      state.postsByDate.splice(index, 1, commentImage);
     }
   },
-
   actions: {
-    /**************************** USER ********************** */
-  
+
     getUserLoggedIn: ({ commit, state }) => {
       const userId = state.user.userId;
       instance
@@ -184,7 +154,6 @@ export default createStore({
         instance
           .put(`/user/${newPicture.userId}/profilePic`, 
             newPicture.fdProfile
-          
           )
           .then(function (response) {
             commit('SET_STATUS', 'updated')
@@ -224,96 +193,6 @@ export default createStore({
           })
           .catch(function () {
         });
-    },
-    /**************************** POSTS ********************** */  
-    
-    
-  /*  getReportedPostsByUserId: ({ commit }, userId) => {
-      instance
-        .get(`/posts/${userId}/reported`)
-        .then( function (response) {
-          commit('REPORTED_POSTS_BY_USERID', response.data.results);
-        })
-        .catch(function () {
-      });
-    },*/
-   
-    /*************************LIKE******************************/
-    likePost: ({ commit, state }, postLike) => {
-      return new Promise ((resolve, reject) => {
-        let userId = state.user.userId;
-        let like = postLike.like;
-        console.log(like);
-        instance
-          .post(`/posts/${postLike.postId}/like`, {userId, like})
-          .then(function (response) {
-            commit('SET_STATUS', 'post_liked')
-            resolve(response)
-          })
-          .catch(function (error) {
-            commit('SET_STATUS', 'error_like')
-            reject(error)
-          });
-        });
-    },
-
-    /***********************COMMENTS****************************/
-    //gestion de l'envoi du nouveau commentaire au backend
-    createComment: ({ commit }, newComment ) => {
-      commit('SET_STATUS', 'sending');
-      console.log(newComment.fdComment);
-      return new Promise ((resolve, reject) => {
-        instance
-          .post(`/posts/${newComment.postId}/comment`, newComment.fdComment) //envoi de FORMDATA
-          .then(function (response) {
-            commit('SET_STATUS', 'post_added')
-            resolve(response) //retourne "commentaire ajouté"
-          })
-          .catch(function (error) { //sinon retourne erreur
-            commit('SET_STATUS', 'error_newPost')
-            reject(error)
-          });
-        });
-    },
-    getCommentsByPostId: ({ commit }, postId) => {
-      
-      instance
-        .get(`/posts/${postId}/comment`)
-        .then( function (response) {
-          console.log(response.data.results)
-          commit('postComments', response.data.results);          
-         // commit('commentsByPostId', postId);          
-        })
-        .catch(function () {
-      });
-    },
-    updateComment: ({ commit }, commentToUpdate)=>{
-      return new Promise ((resolve, reject) => {
-      instance
-        .put(`/posts/${commentToUpdate.postId}/${commentToUpdate.comId}`, commentToUpdate.fdUpdatedCom) //envoi de FORMDATA
-        .then(function (response) {
-          commit('updateComments', commentToUpdate.comId, commentToUpdate.fdUpdatedCom.commentContent, commentToUpdate.fdUpdatedCom.image);
-          resolve(response) //retourne "commentaire modifié"
-        })
-        .catch(function (error) {
-          commit('SET_STATUS', 'error_updateComment')
-          reject(error)
-        });
-      });
-    },
-    deleteComment: ({ commit }, commentToDelete)=>{
-      instance
-        .delete(`/posts/${commentToDelete.postId}/${commentToDelete.comId}`)
-        .then(function (response) {
-          commit('deleteComments', commentToDelete.comId);
-          console.log(response)
-        })
-        .catch(function () {
-        });
-
-    },
-  
-    
+    },    
   }
-
 })

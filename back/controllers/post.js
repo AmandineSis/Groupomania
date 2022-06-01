@@ -297,7 +297,7 @@ exports.likePost = (req, res, next) => {
 
                 });
             });
-        } else if (req.body.like == 0 && postLiked) {
+        } else if (req.body.like == 1 && postLiked) {
 
             let sqlPost = 'UPDATE posts SET likes = likes - 1 WHERE postId =' + db.escape(postId);
             db.query(sqlPost, postId, (error, results, fields) => {
@@ -348,7 +348,7 @@ exports.reportPost = (req, res, next) => {
 
                 });
             });
-        } else if (req.body.report == 0 && postReported) {
+        } else if (req.body.report == 1 && postReported) {
 
             let sqlPost = 'UPDATE posts SET report = report - 1 WHERE postId =' + db.escape(postId);
             db.query(sqlPost, postId, (error, results, fields) => {

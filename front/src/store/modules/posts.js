@@ -89,10 +89,7 @@ export default {
         POSTS_BY_USERID_BY_LIKE(state, postsByUserIdByLike){
             state.postsByUserIdByLike = postsByUserIdByLike;
         },
-        REPORTED_POSTS_BY_USERID(state, reportedPostsByUserId){
-            state.reportedPostsByUserId = reportedPostsByUserId;
-        },
-        UPDATE_POST(state, postId, postContent, postImage){
+        UPDATE_POST(state, postsByDate, postId, postContent, postImage){
             let index = state.postsByDate.findIndex(postsByDate => postsByDate.postId == postId);
             state.postsByDate.splice(index, 1, postContent);
             state.postsByDate.splice(index, 1, postImage);
@@ -187,7 +184,7 @@ export default {
                 .put(`/posts/${postToUpdate.postId}`, postToUpdate.fdUpdatedPost) //envoi de FORMDATA
                 .then(function (response) {
                     commit('UPDATE_POST', postToUpdate.postId, postToUpdate.fdUpdatedPost.content, postToUpdate.fdUpdatedPost.image);
-                    resolve(response) //retourne "commentaire modifié"
+                    resolve(response) 
                 })
                 .catch(function (error) {
                     commit('SET_STATUS', 'error_updatePost', { root: true })
@@ -226,7 +223,6 @@ export default {
             return new Promise ((resolve, reject) => {
             let userId = rootState.user.userId;
             let report = postReport.report;
-            console.log(report);
             instance
                 .post(`/posts/${postReport.postId}/report`, {userId, report})
                 .then(function (response) {

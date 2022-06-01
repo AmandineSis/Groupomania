@@ -46,7 +46,14 @@ export default {
         ...mapActions(['updateUserPicture', 'getUserLoggedIn']),
         updloadProfilePicture(e){
             this.profilePic = e.target.files[0];
-            console.log("click ok!");
+            let types = [ "image/jpg", "image/jpeg", "image/png" ];
+            // Check if image.type is valid
+            if (types.includes(this.profilePic.type)) {
+                    console.log("click ok!");
+            }else{
+                window.alert("Ce type de fichier n'est pas autorisé")
+                this.profilePic = ""
+            }
         },
         updatePicture(){
             const userId = this.user.userId
@@ -61,7 +68,7 @@ export default {
                         this.getUserLoggedIn({ userId })
                             .then(() => {
                                 console.log("getUserLoggedIn dispatch done !");
-                                 if(this.selectedPage == "homePage"){
+                                if(this.selectedPage == "homePage"){
                                     this.getAllRecentPosts();
                                     this.getAllPopularPosts();
                                     this.getAllReportedPosts();
@@ -70,6 +77,7 @@ export default {
                                     this.getPostsByUserId(userId);
                                     this.getPopularPostsByUserId(userId);
                                 }
+                                this.profilePic = ""
                         }), (err => {
                             console.log(err)
                         })})) 

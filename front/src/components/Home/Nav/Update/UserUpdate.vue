@@ -99,10 +99,12 @@ export default {
                         this.getUserLoggedIn(userId)
                             .then(() => {
                                 console.log("getUserLoggedIn dispatch done !");
+                                //Reload posts components on homePage
                                 if(this.selectedPage == "homePage"){
                                     this.getAllRecentPosts();
                                     this.getAllPopularPosts();
                                     this.getAllReportedPosts();
+                                //Reload posts components on profilePage
                                 }else if(this.selectedPage == "profilePage"){
                                     const userId = this.$route.params.userId;
                                     this.getPostsByUserId(userId);

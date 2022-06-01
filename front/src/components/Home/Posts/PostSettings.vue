@@ -1,6 +1,7 @@
 <template>
     <div class="updatePost">
         <form class="updatePost__form"  >
+            <!-------------------------------Post content------------------------------------->
             <textarea 
                 class="updatePost__form__input"
                 rows ="5" 
@@ -8,7 +9,7 @@
                 :value="postItem.content"
                 @input="event.content = $event.target.value"
             ></textarea>
-
+            <!------------------------Upload/Update/Delete post image------------------------->
             <div class="updatePost__form__addedImage test" v-if="postItem.imageUrl && !event.image.name && postUploadExists" >
                 <p class="updatePost__form__addedImage__image" >{{postItem.imageUrl}}</p>
                 <font-awesome-icon class="updatePost__form__addedImage__icon" icon="xmark" @click="deleteUploadedFile" />
@@ -17,16 +18,19 @@
                 <p class="updatePost__form__addedImage__image" >{{event.image.name}}</p>
                 <font-awesome-icon class="updatePost__form__addedImage__icon" icon="xmark" @click="deleteUpdatedFile" />
             </div>
-
             <div class="updatePost__form__valid">
+                <!----------------------------Delete post ---------------------------------------->
                 <button class="updatePost__form__btn updatePost__form__btn__delete" v-if=" user.moderator == 1 || user.userId== postItem.userId" @click.stop="postDelete(postItem.postId)" >
                     Supprimer
                 </button>
+                <!-------------------------Remove post report ---------------------------------------->
                 <button class="updatePost__form__btn updatePost__form__btn__deleteReport" v-if=" user.moderator == 1 && postItem.report>0" @click.prevent="unreportPost(postItem.postId)">
                     Supprimer le signalement
                 </button>
+                <!----------------------------Upload post image ---------------------------------------->
                 <label for="uploadUpdatedImage" class="updatePost__form__btn updatePost__form__btn__upload"><font-awesome-icon icon="image" /></label>
-                <input id="uploadUpdatedImage" type="file" @change="updateImage">
+                <input id="uploadUpdatedImage" type="file" accept="image/jpeg, image/png, image/jpg" @change="updateImage">
+                <!----------------------------Valid post update ---------------------------------------->
                 <button class="updatePost__form__btn updatePost__form__btn__submit" type="submit" @click.prevent="updatePostContent(postItem.postId, postItem.content, postItem.imageUrl)">
                     Modifier
                 </button> 
@@ -38,15 +42,20 @@
 </template>
 
 <script>
+//Components import
 import { mapState, mapActions } from 'vuex';
-
+import { homePostsMixin } from '@/mixins/homePostsMixin'
+import { profilePostsMixin } from '@/mixins/profilePostsMixin'
 
 export default ({
     name: 'PostSettings',
+    mixins: [
+        homePostsMixin, 
+        profilePostsMixin
+    ],
     props: {
         postItem: Object,
-        thisPage: String,
-        selectedMode: String
+        thisPage: String
     },
     data(){
         return {
@@ -54,10 +63,7 @@ export default ({
                 content:'',
                 image:''
             },
-           /* postUpdated:'',
-            imageUpdated:'',*/
             postUploadExists: true,
-            isReported: '',
             report:''
         }
     },
@@ -70,7 +76,7 @@ export default ({
         })
     },
     methods: {
-        ...mapActions('posts',['deletePost','updatePost', 'getPostsByDate','getPostsByUserId', 'removeReport']),
+        ...mapActions('posts',['deletePost','updatePost', 'removeReport']),
         closeSettings(){
             this.$emit('hidePostSettings')
         },
@@ -78,21 +84,38 @@ export default ({
             this.showUpdateBlock = !this.showUpdateBlock;
         },
         updateImage(e){
-            this.event.image = e.target.files[0];          
+            this.event.image = e.target.files[0];   
+            let types = [ "image/jpg", "image/jpeg", "image/png" ];
+            // Check if image.type is valid
+            if (types.includes(this.event.image.type)) {
+                    console.log("click ok!");
+            }else{
+                window.alert("Ce type de fichier n'est pas autorisé")
+                this.event.image = ""
+            }       
         },
         deleteUploadedFile(){
             this.postUploadExists = false;
+        },
+        deleteUpdatedFile(){
+            this.event.image = "";
         },
         postDelete(postId) {
             if (window.confirm('Êtes-vous sûrs de vouloir supprimer ce post ?')){
                 this.deletePost(postId)
                     .then(() => {
                         console.log("deletePost dispatch done !");
-                        //si res ok, affichage mis à jour des commentaires de la publication
-                        this.getPostsByDate()
-                            .then(() => {
-                                console.log("getPostsByDate dispatch done !");
-                                });
+                        //Reload posts components on homePage
+                        if(this.thisPage == "homePage"){
+                            this.getAllRecentPosts();
+                            this.getAllPopularPosts();
+                            this.getAllReportedPosts();
+                        //Reload posts components on profilePage
+                        }else if(this.thisPage == "profilePage"){
+                            const userId = this.$route.params.userId;
+                            this.getPostsByUserId(userId);
+                            this.getPopularPostsByUserId(userId);
+                        }
                     }), (err => {
                         console.log(err)
                     })
@@ -112,9 +135,6 @@ export default ({
         updatePostContent(postId,content, image) {
             let imageUpdate = this.isImageUpdated(image);
             let contentUpdate = (this.event.content ? this.event.content : content)
-    console.log(typeof imageUpdate)
-            console.log('updatePost content --->' + contentUpdate)
-            console.log('updatePost image --->' +imageUpdate)
             
             const fdUpdatedPost = new FormData();
             if (contentUpdate != "") {
@@ -126,53 +146,26 @@ export default ({
             if (contentUpdate || imageUpdate) {
                 this.updatePost({postId, fdUpdatedPost})
                     .then(() => {
+                        console.log("updatePost dispatch done !");
                         if(this.thisPage=='homePage'){
-                            this.getPostsByDate()
-                                .then(() => {
-                                    console.log("1---->getPostsByDate dispatch done !");
-                                    this.$emit('hidePostSettings')
-                                });
-                        } else {
+                            this.getAllRecentPosts();
+                            this.getAllPopularPosts();
+                            this.getAllReportedPosts();
+                        }else{
                             const userId = this.$route.params.userId;
-                            this.getPostsByUserId(userId)
-                            .then(() => {
-                                this.$emit('hidePostSettings')
-                            })
-                            .catch(err=>{
-                                this.$message.error(err.message);
-                                console.log(err);
-                            })
+                            this.getPostsByUserId(userId);
+                            this.getPopularPostsByUserId(userId);
                         }
-                    }), (err => {
+                        this.$emit('hidePostSettings')
+                        }   
+                    ), (err => {
                         console.log(err)
                     })
-            }
-        },
-        reportPost(postId) {
-            //toggle like value between 0 and 1
-            this.isReported = !this.isReported;
-            if( this.isReported == true ){
-                this.report= 1;
-            }else{
-                this.report = 0;
-            }
-            const postReported = {
-                postId,
-                report: this.report
-            };
-            //envoie requête vers store - requête LikePost
-            this.$store
-                .dispatch('reportPost', postReported)
-                .then((res) => {
-                    console.log(res)
-                    console.log("reportPost dispatch done !")
-                    if (this.report==1){
-                    window.confirm('Vous avez signalé cette publication !')
-                    }else{
-                        window.confirm('Vous ne signalez plus cette publication !')
-                    }
-                })
-        },
+        }},
+
+        /*********************************************************
+         * *****************A modifier****************************
+         *******************************************************/
         unreportPost(postId){
             const unreportPost = {
                 postId,

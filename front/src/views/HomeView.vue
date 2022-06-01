@@ -113,7 +113,7 @@ export default {
             }
             //Loading all recent posts to display
             this.getAllRecentPosts()  
-            //Closing updateMenu if previously openend on profilePage   
+            //Closing updateMenu if previously opened on profilePage   
             if(this.updateMenu){
                 this.UPDATE_MENU_TOGGLE()
             }   
@@ -130,7 +130,7 @@ export default {
     }, 
     methods: {
         ...mapMutations('toggle',['UPDATE_MENU_TOGGLE']),
-        //toggle entre les différentes listes de publication
+        //toggle between the selected tab
         showRecentPosts(){
             this.selectedMode='recentPosts';
             this.getAllRecentPosts()

@@ -1,3 +1,7 @@
+/***************************************************************************/
+/*                        Global toggle data                               */
+/***************************************************************************/
+
 export default {
     namespaced: true, 
     state:{
@@ -5,10 +9,8 @@ export default {
         updateMenuIsActive:false,
         searchBarIsActive:false,
         deleteUserBlockIsActive: false,
-        
     },
     getters:{
-  
     },
     mutations:{
         //Header Nav
@@ -21,6 +23,5 @@ export default {
         
     },
     actions:{ 
-  
     }
 }

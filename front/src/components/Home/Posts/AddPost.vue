@@ -14,9 +14,8 @@
                 <font-awesome-icon class="form__addedImage__icon" icon="xmark" @click="deleteUpload" />
             </div>
             <div class="form__valid">
-
                 <label for="uploadImage" class="form__btn form__btn__upload"><font-awesome-icon icon="image" /></label>
-                <input id="uploadImage" type="file" @change="uploadImage">
+                <input id="uploadImage" type="file" accept="image/jpeg, image/png, image/jpg" @change="uploadImage">
                 <button
                     class="form__btn form__btn__submit"
                     type="submit"
@@ -31,31 +30,43 @@
 
 <script>
 import { mapActions } from "vuex";
-
+import { homePostsMixin } from '@/mixins/homePostsMixin'
+import { profilePostsMixin } from '@/mixins/profilePostsMixin'
 
 export default ({
     name: 'AddPost',
+    mixins: [
+        homePostsMixin, 
+        profilePostsMixin
+    ],
     props: {
-        mode: String
+        currentPage: String,
+        selectedMode: String,
     },
     data(){
         return {
-                post: "",
-                imageUrl:""
+            post: "",
+            imageUrl:""
         }
     },
     methods: {
         ...mapActions('posts',['createPost', 'getPostsByDate','getPostsByUserId']),
         uploadImage(e){
             this.imageUrl = e.target.files[0];
-            console.log(this.imageUrl);
+            let types = [ "image/jpg", "image/jpeg", "image/png" ];
+            // Check if image.type is valid
+            if (types.includes(this.imageUrl.type)) {
+                    console.log("click ok!");
+            }else{
+                window.alert("Ce type de fichier n'est pas autorisé")
+                this.imageUrl = ""
+            }
         },
         deleteUpload(){
             this.imageUrl = ''
         },
         addNewPost(){
-            let self = this;
-            //Ajout du contenu de la publication 
+            //Add content to post
             const fd = new FormData();
             if (this.post != "") {
                 fd.append('content', this.post);
@@ -64,34 +75,26 @@ export default ({
                 fd.append('image', this.imageUrl, this.imageUrl.name);
             }
             if (this.post || this.imageUrl) {
-                //création de la publication et ajout à la liste des publications 
+                //create new post and add it to the posts list
                 this.createPost(fd)
-                    .then((res => {
-                        console.log(res);
+                    .then(() => {
                         console.log("createPost dispatch done !");
-                        //Reload des publications récentes si utilisateur sur la page d'accueil
-                        if(this.mode!='profilePage'){
-                            console.log(self.getPostsByDate)
-                            self.getPostsByDate()
-                                .then(() => {
-                                    console.log("getPostsByDate dispatch done 2 !");
-                                    this.post= "";
-                                    this.imageUrl="";
-                                });
-                        //Reload des publications de l'utilisateur si utilisateur sur la page profil
-                        } else {
+                        this.post= "";
+                        this.imageUrl="";
+                       //Reload posts components on homePage
+                        if(this.currentPage == "homePage"){
+                            this.getAllRecentPosts();
+                            this.getAllPopularPosts();
+                            this.getAllReportedPosts();
+                        //Reload posts components on profilePage
+                        }else{
                             const userId = this.$route.params.userId;
-                            console.log("userId------>"+userId)
-                            self.getPostsByUserId(userId)
-                            .then(() => {
-                                console.log("getPostsByUserId dispatch done !");
-                                this.post= "";
-                                this.imageUrl="";
-                            });
+                            this.getPostsByUserId(userId);
+                            this.getPopularPostsByUserId(userId);
                         }
                     }), (err => {
                         console.log(err)
-                    }))
+                    })
             }
         }      
     }
@@ -99,6 +102,7 @@ export default ({
 </script>
 
 <style scoped lang="scss">
+    /******NEW POST CONTAINER******* */
     .newPost {
         margin: 30px auto;
         max-width: 500px;
@@ -106,6 +110,7 @@ export default ({
         border-radius: 20px;
         box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
     }
+    /******NEW POST CONTENT********* */
     .form {
         &__input {
             width:100%;
@@ -135,6 +140,7 @@ export default ({
                 padding: 0 4px;
             }
         }
+        /***NEW POST BUTTONS***** */
         &__valid{
             display: flex;
             flex-direction: row;
