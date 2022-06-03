@@ -19,7 +19,7 @@
             </div>
         </header>  
 
-        <div class="posts__container">
+        <div class="posts__container" >
             <!--Update/Delete post  -->
             <div class="posts__content__update" v-if="showPostSettings && user.userId== postItem.userId || showPostSettings && user.moderator == 1" >
                 <PostSettings 
@@ -37,7 +37,11 @@
             <div class="post__container" v-if="!showPostSettings || showPostSettings && user.moderator == 0 && user.userId!= postItem.userId || !showPostSettings && user.moderator == 1">
                 <div class="posts__content" >
                     <p class="posts__content__text" v-if="postItem.content" >{{postItem.content}}</p>
-                    <img class="posts__content__image" v-if="postItem.imageUrl != undefined " :src="postItem.imageUrl" alt="post photo">
+                    <img 
+                        class="posts__content__image" 
+                        :src="postItem.imageUrl" 
+                        alt="post photo"
+                        v-if="postItem.imageUrl != undefined ">
                 </div>
 
                 <footer class="posts__footer">
@@ -48,7 +52,7 @@
                             {{ postItem.likes }} 
                         </span>
                         <span class="posts__footer__top__icon">
-                            <font-awesome-icon :icon="['far', 'comment']" v-if="postItem.comments == 0 "/>
+                            <font-awesome-icon :icon="['far', 'comment']" v-if="postItem.comments == '' "/>
                             <font-awesome-icon icon="comment" class="posts__footer__top__icon__full" v-else/>
                             {{postItem.comments}}
                         </span>
@@ -66,7 +70,7 @@
                     </div>            
                 </footer>
                 <div class="comment__container" v-if="showComment">
-                    <PostComments :postItem="postItem"/> 
+                    <AddComment :postItem="postItem"/> 
                 </div>
             </div>
         </div>
@@ -78,7 +82,7 @@
 
 //Components import
 import PostSettings from '@/components/Home/Posts/PostSettings.vue'
-import PostComments from '@/components/Home/Comments/PostComments.vue'
+import AddComment from '@/components/Home/Comments/AddComment.vue'
 
 //store and mixins import
 import { mapState, mapGetters, mapActions  } from 'vuex';
@@ -86,19 +90,20 @@ import { homePostsMixin } from '@/mixins/homePostsMixin'
 import { profilePostsMixin } from '@/mixins/profilePostsMixin'
 
 export default ({
-    name: 'RecentPosts',
+    name: 'PostItem',
      mixins: [
         homePostsMixin, 
         profilePostsMixin
     ],
     components: {
         PostSettings,
-        PostComments
+        AddComment
     },
     props: {
         postItem: Object,
         currentPage: String,
-        selectedMode: String
+        selectedMode: String,
+        commentsVisible: Boolean
     },
     data(){
         return {
@@ -110,13 +115,16 @@ export default ({
         ...mapState({
             user: 'user',
         }),
+        ...mapState('comments',{
+            CommentItem: 'postComments'
+        }),
         ...mapGetters({
             fullname: 'fullname',
         })
     },
     methods: {
         ...mapActions('posts',['likePost','deletePost','reportPost','removeReport']),
-        ...mapActions('comments',['getCommentsByPostId']),
+        ...mapActions('comments',['getComments']),
         //Toggle post settings
         openPostSettings(){
             this.showPostSettings=!this.showPostSettings
@@ -133,7 +141,7 @@ export default ({
             this.likePost(postLike)
                 .then(() => {
                     console.log("likePost dispatch done !")
-                    //recentPosts refreshed
+                    //PostItem refreshed
                     if(this.currentPage == "homePage"){
                         this.getAllRecentPosts();
                         this.getAllPopularPosts();
@@ -149,12 +157,15 @@ export default ({
         displayComment(postId){ 
             //toggle visibility of comment section         
             this.showComment= !this.showComment;
-            if(this.showComment==true){
-                this.getCommentsByPostId(postId)
-                    .then(() => {
-                        console.log("getCommentsByPostId dispatch done !");
-                    });
-            }else{
+            if(this.showComment){
+                this.getComments(postId)  
+                .then(()=> {
+                    console.log("getComments dispatch done !");
+                })
+                .catch((err) => {
+                    console.log(err);
+                })
+            } else {
                 return;
             }
             
@@ -196,7 +207,6 @@ export default ({
                 margin: 0;
                 text-align: left;
                 height: 25px;
-            
             &__picture{
                 width: 70px;
                 height: 70px;
@@ -210,18 +220,14 @@ export default ({
                 margin: 0;
             }
         }
-        
         &__settings{
             height: 35px;
             margin: 0;
             padding-top: 5px;
             border-radius: 20px 20px 0 0 ;
-            
             background-color: #4E5166;
-            
             font-size: 0.7rem;
             text-align: left;
-            
             display: flex;
             flex-direction: row;
             justify-content: space-between;
@@ -240,11 +246,9 @@ export default ({
                 &:hover {
                     transform: scale(1.2);
                     cursor: pointer;
-                    }
+                }
             }
-            
         }
-        
     }
     &__container{
         position: relative;

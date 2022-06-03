@@ -2,6 +2,7 @@ import { createStore, createLogger } from 'vuex'
 import toggle from './modules/toggle'
 import auth from './modules/auth'
 import posts from './modules/posts'
+import comments from './modules/comments'
 
 const axios = require('axios'); 
 
@@ -41,7 +42,8 @@ export default createStore({
   modules: {
     toggle,
     auth,
-    posts
+    posts,
+    comments
   },
   state: {
     status: '',
@@ -68,6 +70,7 @@ export default createStore({
       state.user = user;
     },
     LOG_OUT(state) {
+      delete instance.defaults.headers.common["Authorization"];
       state.user = {
         userId: -1,
         token: '',

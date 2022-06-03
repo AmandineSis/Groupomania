@@ -33,7 +33,7 @@
     <main v-else>
         <!------------------------------------POSTS BY DATE------------------------------------------------------------------>
         <div class="postsContainer" v-if="selectedMode == 'recentUserPosts' && postByUserLength!=0">  
-            <RecentPosts 
+            <PostItem 
                 v-for="postItem in postsByUser" 
                 :key="postItem.postId" 
                 :postItem="postItem" 
@@ -45,7 +45,7 @@
         </div> 
         <!------------------------------------POSTS BY LIKE------------------------------------------------------------------>
         <div class="postsContainer" v-if="selectedMode == 'popularUserPosts'&& popularPostsByUserLength!=0">
-            <RecentPosts 
+            <PostItem 
                 v-for="popularPostItem in popularPostsByUser" 
                 :key="popularPostItem.postId" 
                 :postItem="popularPostItem" 
@@ -68,7 +68,7 @@ import UserProfile from '@/components/Home/Nav/UserProfile.vue'
 import UpdateMenu from '@/components/Home/Nav/UpdateMenu.vue'
 import AdminDeleteContainer from '@/components/Home/Nav/AdminDeleteContainer.vue'
 import AddPost from '@/components/Home/Posts/AddPost.vue'
-import RecentPosts from '@/components/Home/Posts/RecentPosts.vue'
+import PostItem from '@/components/Home/Posts/PostItem.vue'
 
 //store and mixins import
 import { mapMutations, mapState } from 'vuex';
@@ -84,7 +84,7 @@ export default {
         AdminDeleteContainer,
         UserProfile,
         AddPost,
-        RecentPosts
+        PostItem
     },
     data(){
         return{

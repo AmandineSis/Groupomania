@@ -29,13 +29,12 @@ if (!user) {
 export default {
     namespaced: true, 
     state:{
-        postComments: [],
-        commentsByPostId: [],
+        postComments: []
     },
     getters:{
-        /*postsByDateLength(state){
-            if(state.postsByDate){
-                return state.postsByDate.length
+       /* postCommentsLength(state){
+            if(state.postComments){
+                return state.postComments.length
             }else{
             return 0
             }
@@ -58,36 +57,37 @@ export default {
         UPDATE_COMMENTS(state, comId, commentContent, commentImage ){
             let index = state.postComments.findIndex(postComments => postComments.comId == comId);
             state.postComments.splice(index, 1, commentContent);
-            state.postsByDate.splice(index, 1, commentImage);
+            state.postComments.splice(index, 1, commentImage);
         }
     },
     actions:{ 
         createComment: ({ commit }, newComment ) => {
-            commit('SET_STATUS', 'sending');
+            commit('SET_STATUS', 'sending', { root: true });
             console.log(newComment.fdComment);
             return new Promise ((resolve, reject) => {
                 instance
                     .post(`/posts/${newComment.postId}/comment`, newComment.fdComment) //envoi de FORMDATA
                     .then(function (response) {
-                        commit('SET_STATUS', 'post_added')
+                        commit('SET_STATUS', 'comments_added', { root: true })
                         resolve(response) 
                     })
                     .catch(function (error) {
-                        commit('SET_STATUS', 'error_newPost')
+                        commit('SET_STATUS', 'error_comments', { root: true })
                         reject(error)
                     });
             });
         },
-        getCommentsByPostId: ({ commit }, postId) => {
+        getComments: ({ commit }, postId) => {
             instance
                 .get(`/posts/${postId}/comment`)
                 .then( function (response) {
                     console.log(response.data.results)
-                    commit('POST_COMMENTS', response.data.results);          
+                    commit('POST_COMMENTS', response.data.results);  
+                    commit('SET_STATUS', 'comments_loaded', { root: true })        
                  // commit('COMMENTS_BY_POST_ID', postId);          
                 })
                 .catch(function () {
-                    commit('SET_STATUS', 'error_newPost')
+                    commit('SET_STATUS', 'error_getComments', { root: true })
             });
         },
         updateComment: ({ commit }, commentToUpdate)=>{
@@ -96,10 +96,11 @@ export default {
                 .put(`/posts/${commentToUpdate.postId}/${commentToUpdate.comId}`, commentToUpdate.fdUpdatedCom) //envoi de FORMDATA
                 .then(function (response) {
                     commit('UPDATE_COMMENTS', commentToUpdate.comId, commentToUpdate.fdUpdatedCom.commentContent, commentToUpdate.fdUpdatedCom.image);
+                    commit('SET_STATUS', 'comment_updated', { root: true })
                     resolve(response) //retourne "commentaire modifié"
                 })
                 .catch(function (error) {
-                    commit('SET_STATUS', 'error_updateComment')
+                    commit('SET_STATUS', 'error_updateComment', { root: true })
                     reject(error)
                 });
             });
@@ -109,10 +110,11 @@ export default {
                 .delete(`/posts/${commentToDelete.postId}/${commentToDelete.comId}`)
                 .then(function (response) {
                     commit('DELETE_COMMENTS', commentToDelete.comId);
+                    commit('SET_STATUS', 'comments_deleted', { root: true })
                     console.log(response)
                 })
                 .catch(function () {
-                    commit('SET_STATUS', 'error_updateComment', { root: true })
+                    commit('SET_STATUS', 'error_delete_comment', { root: true })
                 });
         },
     }

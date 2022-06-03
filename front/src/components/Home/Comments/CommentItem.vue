@@ -1,30 +1,38 @@
 <template>
-	<router-link :to="`/profile/${comItem.userId}`"><img class="form__comments__profile" :src="comItem.profilePicUrl" alt=""></router-link>
+<div class="CommentItem">
+	<router-link :to="`/profile/${comItem.userId}`">
+		<img class="form__comments__profile" :src="comItem.profilePicUrl" alt="">
+	</router-link>
 	<div class="form__comments__content">
 		<p class="form__comments__content__user">{{ comItem.firstName }} {{ comItem.lastName }}</p>
-		<div 
-			class="form__comments__input form__comments__input__sent"
-			v-if="comItem.commentContent != ' '"
-			v-text="comItem.commentContent"
-			></div>
-			<!-- <p class="form__comments__input form__comments__input__sent" v-if="comItem.commentContent" :contenteditable="isEditable" @blur="onChange"
-			@keydown.enter="updateComment(comItem.comId, comItem.postId)">{{ comItem.commentContent }}</p> -->
-		<img class="form__comments__image" v-if="comItem.imageUrl != ' '" :src="comItem.imageUrl" :alt="comItem.imageUrl">
+		<div class="form__comments__container">	
+			<div v-if="!showComSettings">
+				<div 
+					class="form__comments__input form__comments__input__sent"
+					v-if="comItem.commentContent != ' '"
+					v-text="comItem.commentContent"
+					>
+				</div>
+				<img 
+				class="form__comments__image" 
+				:src="comItem.imageUrl" 
+				:alt="comItem.imageUrl"
+				v-if="comItem.imageUrl != undefined">
+			</div>
+			<div class="form__comments__popup" v-if="showComSettings">
+				<ComSettings :comItem="comItem" />
+			</div>
+		</div>	
 	</div>
 	<div class="form__comments__settings">    
-		<span class="form__comments__settings__nav" @click="openComSettings" @blur="closeSettings">
-            <font-awesome-icon class="form__comments__settings__navIcon" icon="ellipsis" v-if="user.moderator == 1||user.userId== comItem.userId" />
+		<span class="form__comments__settings__nav" @click="openComSettings" >
+            <font-awesome-icon 
+				class="form__comments__settings__navIcon" 
+				icon="ellipsis" 
+				v-if="user.moderator == 1||user.userId== comItem.userId" />
         </span>
 	</div>   
-	
-	<div class="form__comments__popup">   
-		
-        <ComSettings :comItem="comItem" v-if="showComSettings" />
-			
-    </div>
-	
-
-
+</div>	
 
 </template>
 
@@ -32,7 +40,7 @@
 import { mapGetters, mapState } from 'vuex';
 import ComSettings from '@/components/Home/Comments/ComSettings.vue'
 export default ({
-	name: 'AddedComments',
+	name: 'CommentItem',
 	components: {
 		ComSettings
 	},
@@ -50,12 +58,15 @@ export default ({
 			showComSettings: false
 		}
 	},
+	
 	computed: {
 		...mapState({
 			user: 'user',
-			postComments: 'postComments',
 			userInfos: 'userInfos'
 		}),
+		...mapState('comments',{
+            postComments: 'postComments'
+        }),
 		...mapGetters({
 			fullname: 'fullname',
 		})
@@ -63,31 +74,45 @@ export default ({
 	methods: {
 		openComSettings(){
             this.showComSettings = !this.showComSettings
-        }
+        },
+		closeComSettings(){
+			this.showComSettings = false;
+		}
 	}  
 })
 </script>
 
 <style scoped lang="scss">
 
-.posts__review__comments {
+.CommentItem {
+	display: flex;
+	flex-direction: row;
+	align-content:center ;
+	width: 90%;
 	background-color: white;
 	padding: 10px 0;
-	border-radius: 0 0 20px 20px;
 }
 .form__comments {
 	display: flex;
 	flex-direction: row;
-	&__settings__navIcon{
-		transform: scale(1);
-        transition: transform 200ms;
-        &:hover {
-            transform: scale(1.5);
-            cursor: pointer;
-        }
+	&__container{
+		width: 95%;
+		height: auto;
+	}
+	&__settings{
+		text-align: center;
+		padding-top: 25px;
+		&__navIcon{
+			transform: scale(1);
+			transition: transform 200ms;
+			&:hover {
+				transform: scale(1.5);
+				cursor: pointer;
+			}
+		}
 	}
 	&__popup{
-		position: absolute;
+		position: relative;
 	}
 	&__content {
 		display: flex;
@@ -101,19 +126,19 @@ export default ({
 		}
 	}
 	&__input {
-		width:70%;
-		height: 30px;
+		width:100%;
+		height: 100%;
 		background-color: white;
 		border: 2px solid #999999;
 		resize: none;
-		border-radius:20px;
+		border-radius:10px;
 		padding: 5px 15px;
 		background-color: white;
 		display: inline-block;
 		white-space: normal;
 		color: grey;
 		&__sent{
-			width: 95%;
+			width: 100%;
 			height: auto;
 			text-align: left;
 			overflow-wrap: break-word;

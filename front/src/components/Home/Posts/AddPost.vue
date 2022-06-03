@@ -134,6 +134,8 @@ export default ({
             &__image {
                 text-align: left;
                 margin: 0;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
             &__icon{
                 width: 10px;

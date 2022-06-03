@@ -36,23 +36,25 @@
         <!------------------------------------POSTS BY DATE------------------------------------------------------------------>
         <div class="postsContainer" v-if="selectedMode == 'recentPosts' && postLength!=0">  
             <div >
-            <RecentPosts  
-                v-for="postItem in posts" 
+            <PostItem  
+                v-for="(postItem, index) in posts" 
                 :key="postItem.postId"
                 :post-item="postItem" 
+                :index="index"
                 :current-page="currentPage"
-                :selected-mode="selectedMode" />  
+                :selected-mode="selectedMode"
+                />  
         </div>
         </div>
-        <div class="noPost" v-if="selectedMode == 'recentPosts' && postLength==0"> 
+        <div class="noPost" v-if="selectedMode == 'PostItem' && postLength==0"> 
             <p class="noPost__text">Il n'existe pas encore de publication !</p>
         </div> 
         <!------------------------------------POSTS BY LIKE------------------------------------------------------------------>
         <div class="postsContainer" v-if="selectedMode == 'popularPosts'&& popularPostsLength!=0">
-            <RecentPosts 
+            <PostItem 
                 v-for="popularPostItem in popularPosts" 
                 :key="popularPostItem.postId" 
-                :post-item="popularPostItem" 
+                :post-item="popularPostItem"
                 :current-page="currentPage"
                 :selected-mode="selectedMode"/>   
         </div>
@@ -61,7 +63,7 @@
         </div>
         <!------------------------------------POSTS REPORTED------------------------------------------------------------------>
         <div class="postsContainer" v-if="selectedMode == 'reportedPosts'&& reportedPostsLength!=0">
-            <RecentPosts 
+            <PostItem 
             v-for="reportedPostsItem in reportedPosts" 
             :key="reportedPostsItem.postId" 
             :post-item="reportedPostsItem" 
@@ -81,7 +83,7 @@ import SettingsMenu from '@/components/Home/Nav/SettingsMenu.vue'
 import UserProfile from '@/components/Home/Nav/UserProfile.vue'
 import UpdateMenu from '@/components/Home/Nav/UpdateMenu.vue'
 import AddPost from '@/components/Home/Posts/AddPost.vue'
-import RecentPosts from '@/components/Home/Posts/RecentPosts.vue'
+import PostItem from '@/components/Home/Posts/PostItem.vue'
 
 //store and mixins import
 import { mapState, mapMutations } from 'vuex';
@@ -96,7 +98,7 @@ export default {
         UpdateMenu,
         UserProfile,
         AddPost,
-        RecentPosts
+        PostItem
     },
     data(){
         return{
