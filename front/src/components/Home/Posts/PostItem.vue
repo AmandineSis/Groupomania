@@ -69,8 +69,8 @@
                         </button>
                     </div>            
                 </footer>
-                <div class="comment__container" v-if="showComment">
-                    <AddComment :postItem="postItem"/> 
+                <div class="comment__container" v-if="showComment" >
+                    <AddComment :postItem="postItem" ref="comments"/> 
                 </div>
             </div>
         </div>
@@ -168,7 +168,6 @@ export default ({
             } else {
                 return;
             }
-            
         },
          /*********************************************************
          * *****************A modifier****************************

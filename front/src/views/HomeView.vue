@@ -42,8 +42,7 @@
                 :post-item="postItem" 
                 :index="index"
                 :current-page="currentPage"
-                :selected-mode="selectedMode"
-                />  
+                :selected-mode="selectedMode"/>  
         </div>
         </div>
         <div class="noPost" v-if="selectedMode == 'PostItem' && postLength==0"> 

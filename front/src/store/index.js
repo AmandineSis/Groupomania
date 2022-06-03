@@ -1,20 +1,21 @@
 import { createStore, createLogger } from 'vuex'
+import instance from './axios'
 import toggle from './modules/toggle'
 import auth from './modules/auth'
 import posts from './modules/posts'
 import comments from './modules/comments'
-
+/*
 const axios = require('axios'); 
 
 const instance = axios.create({
     baseURL: 'http://localhost:3000/api/'
-  });
+  });*/
 
 
 
 //Initialisation du local storage
 let user = localStorage.getItem('user');
-if (!user) {
+/*if (!user) {
   user = {
     userId: -1,
     token: '',
@@ -30,7 +31,7 @@ if (!user) {
         moderator: '',
       };
   }
-}
+}*/
 
 const debug = process.env.NODE_ENV !== 'production'
 
