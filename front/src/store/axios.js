@@ -5,6 +5,7 @@ const instance = axios.create({
     timeout: 10000
 })
 let user = localStorage.getItem('user');
+user = JSON.parse(user);
 if (user) {
     instance.defaults.headers.common['Authorization'] = 'Bearer: ' + user.token
 } else {

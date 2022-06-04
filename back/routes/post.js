@@ -13,8 +13,6 @@ const comCtrl = require('../controllers/comment');
 router.get('/', auth, postCtrl.getPostsByDate); //GET /api/posts
 router.get('/famous', auth, postCtrl.getPostsByLike); //GET /api/posts/famous
 router.get('/reported', auth, postCtrl.getReportedPosts); //GET /api/posts/famous
-//router.get('/:userId/reported', auth, postCtrl.getReportedPostsByUserId); //GET /api/posts/famous
-router.post('/:postId/removeReport', auth, postCtrl.removeReport); //GET /api/posts/famous
 router.get('/:userId', auth, postCtrl.getUserPostsByDate); //GET /api/posts/:userId
 router.get('/:userId/famous', auth, postCtrl.getUserPostsByLike); //GET /api/posts/:userId/famous
 router.post('/', auth, multer, postCtrl.createPost);//POST /api/posts
@@ -22,6 +20,7 @@ router.put('/:postId', auth, multer, postCtrl.updatePost);//PUT /api/posts/:post
 router.delete('/:postId', auth, postCtrl.deletePost);//DELETE /api/posts/:postId
 router.post('/:postId/like', auth, postCtrl.likePost);//POST /api/posts/:postId/like
 router.post('/:postId/report', auth, postCtrl.reportPost);//POST /api/posts/:postId/report
+router.delete('/:postId/removeReport', auth, postCtrl.removeReport); //GET /api/posts/famous
 
 router.get('/:postId/comment', auth, comCtrl.getAllComments); //GET /api/comments
 router.post('/:postId/comment', auth, multerCom, comCtrl.createComment);//POST /api/posts

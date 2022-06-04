@@ -65,7 +65,6 @@ exports.getReportedPosts = (req, res, next) => {
 
 
 //Récupération des posts par utilisateur
-
 //req.params.userId
 //results = tous les posts d'un utilisateur du plus récent au plus ancien (max 20)
 exports.getUserPostsByDate = (req, res, next) => {
@@ -108,27 +107,6 @@ exports.getUserPostsByLike = (req, res, next) => {
     });
 };
 
-//req.params.userId
-//results = tous les posts d'un utilisateur du plus récent au plus ancien (max 20)
-/*exports.getReportedPostsByUserId = (req, res, next) => {
-    const userId = req.params.userId;
-    let sql = 'SELECT * FROM report WHERE report.userId=?; '
-    db.query(sql, userId, (error, results, fields) => {
-        if (error) {
-            res.status(500).json({ error })
-        } else {
-
-            let report = results[0];
-            // console.log(results);
-            console.log(report);
-            if (!report) {
-                return res.json({ message: "aucun post n'a été trouvé" });
-            }
-            res.status(201).json({ results })
-        }
-    });
-};*/
-
 //création d'un post
 //req.body = { content: String, imageUrl: File }
 //req.token.userId
@@ -155,9 +133,7 @@ exports.createPost = (req, res, next) => {
     db.query(sql, post, (error, results, fields) => {
         if (error) throw ({ error });
         res.status(201).json({ message: "nouveau post ajouté !" })
-
     });
-
 };
 
 //modification d'un post
@@ -166,7 +142,6 @@ exports.createPost = (req, res, next) => {
 //Modification table like et table comment
 //result = "post modifié !"
 exports.updatePost = (req, res, next) => {
-
     //trouver le post à modifier dans la base de données
     const postId = req.params.postId;
     let sql = 'SELECT * FROM posts WHERE postId =' + db.escape(postId);
@@ -366,7 +341,6 @@ exports.reportPost = (req, res, next) => {
 };
 
 //suppression du signalement
-//req.body { userId: string, report: 0}
 //req.params.postId
 //req.token.userId
 exports.removeReport = (req, res, next) => {
@@ -374,28 +348,23 @@ exports.removeReport = (req, res, next) => {
     let userId = req.token.userId;
 
     let sql = 'SELECT * FROM report WHERE postId = ?';
-    db.query(sql, [postId, userId], (error, results, fields) => {
+    db.query(sql, postId, (error, results, fields) => {
 
         if (error) throw ({ error });
         let postReported = results[0];
-        console.log(postReported);
-
         //si req.body.userId !== req.token.userId => utilisateur non authorisé
-        if (req.body.userId !== userId) {
+        if (req.token.moderator !== 1 ) {
             return res.status(401).json({ message: "utilisateur non authorisé !" });
         }
-
-
-        if (req.body.report == 0 && postReported) {
+        //Si postReported existe, suppression du signalement du post
+        if ( postReported) {
             let sqlDeleteReport = 'DELETE FROM report WHERE reportId =' + db.escape(postReported.reportId);
             db.query(sqlDeleteReport, (error, results, fields) => {
                     if (error) throw ({ error });
-                    console.log("-----> step 2");
-                    res.status(200).json({ message: "ce post n'est plus signalé!" });
                     let sqlPost = 'UPDATE posts SET report = 0 WHERE postId =' + db.escape(postId);
                     db.query(sqlPost, postId, (error, results, fields) => {
                         if (error) throw ({ error });
-                        return res.status(200).json({ message: "vous ne signalez plus ce post !" });
+                        return res.status(200).json({ message: "post mis à jour!" });
                 });
             });
         } else {

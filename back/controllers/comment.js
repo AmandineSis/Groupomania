@@ -90,8 +90,8 @@ exports.updateComment = (req, res, next) => {
         if (!comExists) {
             return res.status(404).json({ message: "désolé ! aucun commentaire n'a été trouvé !" });
         }
-        //si post.userId !== req.token.userId => utilisateur non authorisé
-        if (comExists.userId !== userId || userId == 1) {
+        //si comExists.userId !== req.token.userId => utilisateur non authorisé
+        if (comExists.userId !== userId && req.token.moderator == 0 ) {
             return res.status(401).json({ message: "utilisateur non authorisé !" });
         }
 
@@ -102,19 +102,20 @@ exports.updateComment = (req, res, next) => {
         if (commentContent == " " && imageUrl == " ") {
             return res.status(400).json({ message: "Veuillez ajouter un contenu !" })
         }
+        console.log(comExists.imageUrl);
         ////récupération et suppression de l'image avant modification sur le serveur
-        if (comExists.imageUrl !== undefined) {
+        if (comExists.imageUrl !== null) {
             const filename = comExists.imageUrl.split('/comment/')[1];
             fs.unlink(`images/comment/${filename}`, (error) => {
                 //mise à jour de la BDD
                 const comment = new Comment(
                     req.token.userId,
-                    postId,
+                    comId,
                     commentContent,
                     imageUrl
-                );
-                let sqlUpdate = 'UPDATE comments SET ? WHERE comId =' + db.escape(comId);
-                db.query(sqlUpdate, [comment], (error, results, fields) => {
+                )
+                let sqlUpdate = 'UPDATE comments SET commentContent = ?, imageUrl = ? WHERE comId =' + db.escape(comId);
+                db.query(sqlUpdate, [comment.commentContent, comment.imageUrl], (error, results, fields) => {
                     if (error) throw ({ error });
                     console.log(results);
                     res.status(200).json({ message: "commentaire modifié !" })
@@ -125,11 +126,11 @@ exports.updateComment = (req, res, next) => {
         //mise à jour de la BDD
         const comment = new Comment(
             req.token.userId,
-            postId,
+            comId,
             updatedComment,
             imageUrl
         );
-        let sqlUpdate = 'UPDATE comments SET ? WHERE comId =' + db.escape(comId);
+        let sqlUpdate = 'UPDATE comments SET commentContent = ?, imageUrl = ? WHERE comId =' + db.escape(comId);
         db.query(sqlUpdate, [comment], (error, results, fields) => {
             if (error) throw ({ error });
             console.log(results);

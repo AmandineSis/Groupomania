@@ -3,9 +3,9 @@
         <!-----------Display all comments added-------------->
         <div class="recentComments" v-if="postComments" >
             <CommentItem 
-                v-for="comItem in postComments" 
+                v-for="comItem in postComments " 
                 :key=comItem.comId 
-                :com-item ="comItem"/>
+                :comItem ="comItem"/>
         </div> 
     </div> 
     <div class="posts__review__comments">
@@ -29,7 +29,12 @@
                 </div>
             </div>
             <!--------Add comment------->
-            <button class="form__comments__btn form__comments__btn__submit" type="button" @click="addComment(postItem.postId)"><font-awesome-icon icon="paper-plane" /></button> 
+            <button 
+                class="form__comments__btn form__comments__btn__submit" 
+                type="button" 
+                @click.prevent="addComment(postItem.postId)">
+                <font-awesome-icon icon="paper-plane" />
+            </button> 
         </form>
     </div> 
 </template>
@@ -58,10 +63,8 @@ export default ({
         },
     data(){
         return {
-            //mode: '',
             comment: "",
-            commentImageUrl: "",
-            
+            commentImageUrl: null
         }
     },
     mounted: 
@@ -101,15 +104,17 @@ export default ({
             }
         },
         deleteUpload(){
-            this.commentImageUrl = ''
+            this.commentImageUrl = null
         },
         addComment(postId) {
+            console.log(this.commentImageUrl)
+            console.log(this.comment)
             //création de l'objet FormData
             const fdComment = new FormData();
             if (this.comment != "") {
                 fdComment.append('commentContent', this.comment);
             }
-            if (this.commentImageUrl) {
+            if (this.commentImageUrl != null) {
                 fdComment.append('image', this.commentImageUrl, this.commentImageUrl.name);
             }
             //Si FormData != null 
@@ -118,6 +123,8 @@ export default ({
                 .then(res => {
                     console.log("createComment dispatch done !");
                     console.log(res.data)
+                    this.comment = "";
+                    this.commentImageUrl= ""
                     //si res ok, affichage mis à jour des commentaires du post
                     
                             this.getComments(postId)

@@ -20,7 +20,7 @@
                     class="form__btn form__btn__submit"
                     type="submit"
                     @click.prevent="addNewPost">
-                <font-awesome-icon icon="paper-plane" />
+                    <font-awesome-icon icon="paper-plane" />
                 </button> 
             </div>
         </form>

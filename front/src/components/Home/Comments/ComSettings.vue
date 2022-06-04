@@ -28,7 +28,7 @@
                 <!----------------------------Delete Comment ---------------------------------------->
                 <button 
                     class="updateCom__form__btn updateCom__form__btn__delete" 
-                    @click.stop="deletePostComment(comItem.postId, comItem.comId)" >
+                    @click.prevent="deletePostComment(comItem.postId, comItem.comId)" >
                     supprimer
                 </button>
                 <!----------------------------Upload post image ---------------------------------------->
@@ -38,7 +38,7 @@
                 <button
                     class="updateCom__form__btn updateCom__form__btn__submit"
                     type="submit"
-                    @click="updatePostComment(comItem.postId, comItem.comId, comItem.commentContent, comItem.imageUrl)">
+                    @click.prevent="updatePostComment(comItem.postId, comItem.comId, comItem.commentContent, comItem.imageUrl)">
                     modifier
                 </button> 
             </div>
@@ -104,7 +104,7 @@ export default ({
 				})
             }else{
                 console.log('default')
-                //this.$emit('hide-com-settings')
+                this.$emit('hide-com-settings')
             }
 		},
         isComImageUpdated(image){
@@ -115,13 +115,14 @@ export default ({
             }
         },
         updatePostComment(postId,comId,content,image) {
+            console.log(this.isComImageUpdated)
             let comImageUpdate = this.isComImageUpdated(image);
             let comContentUpdate = (this.event.comContent ? this.event.comContent : content)
+            console.log('comImgupdate-------------->'+comImageUpdate)
             const fdUpdatedCom = new FormData();
             if (comContentUpdate != "") {
                 fdUpdatedCom.append('commentContent', comContentUpdate);
             }
-            
             if (comImageUpdate != null) {
                 fdUpdatedCom.append('image', comImageUpdate, comImageUpdate.name);
             }
@@ -132,7 +133,7 @@ export default ({
                             this.getComments(postId)
                             .then(() => {
                                 console.log("getComments dispatch done !");
-                               //this.$emit('hideComSettings')
+                                this.$emit('hideComSettings')
                                 }),
                         (err => {
                         console.log(err)

@@ -5,7 +5,8 @@
     </nav> 
 
     <UserProfile :profileView="true"/>
-    <button class="button" v-if="user.userId == 1 && userIdProfile !== 1" @click="showDeleteBlock" >Supprimer cet utilisateur</button>
+    <!-----Delete button only visible to moderator and not showing on moderator profile------->
+    <button class="button" v-if="user.moderator == 1 && userIdProfile !== 1" @click="showDeleteBlock" >Supprimer cet utilisateur</button>
     <AdminDeleteContainer v-if="deleteBlock"/>
 
     <transition name="bounce">
@@ -18,6 +19,7 @@
     <AddPost 
         :current-page="currentPage" 
         :selected-mode="selectedMode" 
+        v-if="userIdProfile == user.userId"
         v-once/> 
 
     <div class="toggle">

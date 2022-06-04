@@ -17,10 +17,12 @@
 				class="form__comments__image" 
 				:src="comItem.imageUrl" 
 				:alt="comItem.imageUrl"
-				v-if="comItem.imageUrl != undefined">
+				v-if="comItem.imageUrl != null">
 			</div>
 			<div class="form__comments__popup" v-if="showComSettings">
-				<ComSettings :comItem="comItem" />
+				<ComSettings 
+					:comItem="comItem"
+					@hide-com-settings="closeComSettings"/>
 			</div>
 		</div>	
 	</div>

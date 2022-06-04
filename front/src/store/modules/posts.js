@@ -1,33 +1,5 @@
 import instance from '../axios'
 
-/*const axios = require('axios'); 
-
-const instance = axios.create({
-    baseURL: 'http://localhost:3000/api/'
-});
-
-//Initialisation du local storage
-//Ajout du token d'authorisation à l'en-tête des requêtes API
-let user = localStorage.getItem('user');
-
-if (!user) {
-    user = {
-        userId: -1,
-        token: '',
-    }; 
-} else {
-    try {
-        user = JSON.parse(user);
-        instance.defaults.headers.common = {'Authorization': `bearer ${user.token}`}
-    } catch (ex) {
-        user = {
-            userId: -1,
-            token: '',
-            moderator: '',
-        };
-    }
-}
-*/
 export default {
     namespaced: true, 
     state:{
@@ -222,28 +194,11 @@ export default {
     
         },
         reportPost: ({ commit, rootState }, postReport) => {
-            return new Promise ((resolve, reject) => {
             let userId = rootState.user.userId;
             let report = postReport.report;
-            instance
-                .post(`/posts/${postReport.postId}/report`, {userId, report})
-                .then(function (response) {
-                    commit('SET_STATUS', 'post_reported', { root: true })
-                    resolve(response)
-                })
-                .catch(function (error) {
-                    commit('SET_STATUS', 'error_report', { root: true })
-                    reject(error)
-                });
-            });
-        },
-        removeReport: ({ commit, rootState }, removeReport) => {
             return new Promise ((resolve, reject) => {
-                let userId = rootState.user.userId;
-                let report = removeReport.report;
-                console.log(report);
                 instance
-                    .post(`/posts/${removeReport.postId}/removeReport`, {userId, report})
+                    .post(`/posts/${postReport.postId}/report`, {userId, report})
                     .then(function (response) {
                         commit('SET_STATUS', 'post_reported', { root: true })
                         resolve(response)
@@ -253,6 +208,16 @@ export default {
                         reject(error)
                     });
                 });
+        },
+        removeReport: ({ commit}, postId) => {
+                instance
+                    .delete(`/posts/${postId}/removeReport`)
+                    .then(function () {
+                        commit('SET_STATUS', 'post_reported', { root: true })
+                    })
+                    .catch(function () {
+                        commit('SET_STATUS', 'error_report', { root: true })
+                    });
         },
     }
 }

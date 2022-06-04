@@ -30,7 +30,7 @@ export default {
         background-color: white;
         margin: 30px auto;
         width: 500px;
-        //height: 130px;
+        height: 130px;
         align-items: center;
         border-radius: 20px;
         padding: 10px;

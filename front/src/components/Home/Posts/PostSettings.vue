@@ -184,34 +184,22 @@ export default ({
          * *****************A modifier****************************
          *******************************************************/
         unreportPost(postId){
-            const unreportPost = {
-                postId,
-                report: 0
-            };
+            
             //envoie requête vers store - requête LikePost
-            this.removeReport(unreportPost)
+            this.removeReport(postId)
                 .then((res) => {
                     console.log(res)
                     console.log("removeReport dispatch done !")
-                    if(this.mode=='homePage'){
-                        this.getPostsByDate()
-                            .then(() => {
-                                console.log("getPostsByDate dispatch done !");
-                            });
-                        } else {
-                            const userId = this.$route.params.userId;
-                            this.getPostsByUserId(userId)
-                            .then(() => {
-                                console.log("getPostsByDate dispatch done !");
-                            });
-                        }
+                    if(this.thisPage=='homePage'){
+                        this.getAllRecentPosts();
+                        this.getAllPopularPosts();
+                        this.getAllReportedPosts();
+                    }
+                    this.$emit('hidePostSettings')
                     window.confirm('Signalement enlevé !')
-
-                    
                 })
-        } 
-
-    }
+            } 
+        }   
 })
 </script>
 

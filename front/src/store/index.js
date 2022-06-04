@@ -15,6 +15,7 @@ const instance = axios.create({
 
 //Initialisation du local storage
 let user = localStorage.getItem('user');
+user = JSON.parse(user);
 /*if (!user) {
   user = {
     userId: -1,
@@ -66,7 +67,7 @@ export default createStore({
       state.status = status;
     },
     LOG_USER(state, user){
-      instance.defaults.headers.common = {'Authorization': `bearer ${user.token}`}
+      instance.defaults.headers.common['Authorization'] = 'Bearer: ' + user.token
       localStorage.setItem('user', JSON.stringify(user));
       state.user = user;
     },
