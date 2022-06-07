@@ -1,21 +1,32 @@
 <template>
     <!-- Header navigation -->
-    <nav class="topMenu" v-once>
-        <SettingsMenu class="topMenu__settings" v-once />
-        <router-link :to="`/profile/${userLoggedIn.userId}`">
-            <UserProfile/>
-        </router-link>
-    </nav> 
-
+    <!-- Screen width > 768px -->
+    <div v-if ="mq.current != 'phone'">
+        <nav class="topMenu" v-once>
+            <SettingsMenu class="topMenu__settings" v-once />
+            <router-link :to="`/profile/${userLoggedIn.userId}`">
+                <UserProfile/>
+            </router-link>
+        </nav> 
+    </div>
+    <!-- Screen width < 768px -->
+    <div v-else>
+        <nav class="topMenu" v-once>
+            <SettingsMenu class="topMenu__settings" v-once />
+        </nav> 
+        <UserProfile :phoneView="true"/>
+    </div>
     <!-- Pop-up update menu -->
     <transition name="bounce">
         <UpdateMenu 
             v-if="updateMenu" 
+            :phoneView="mq.current"
             :current-page="currentPage" 
             :selected-mode="selectedMode"/>
     </transition>
     
     <AddPost 
+        :phoneView="mq.current"
         :current-page="currentPage" 
         :selected-mode="selectedMode" 
         v-once/>
@@ -41,11 +52,12 @@
                 :key="postItem.postId"
                 :post-item="postItem" 
                 :index="index"
+                :phoneView="mq.current"
                 :current-page="currentPage"
                 :selected-mode="selectedMode"/>  
         </div>
         </div>
-        <div class="noPost" v-if="selectedMode == 'PostItem' && postLength==0"> 
+        <div class="noPost" v-if="selectedMode == 'recentPosts' && postLength==0"> 
             <p class="noPost__text">Il n'existe pas encore de publication !</p>
         </div> 
         <!------------------------------------POSTS BY LIKE------------------------------------------------------------------>
@@ -90,6 +102,7 @@ import { homePostsMixin } from '@/mixins/homePostsMixin'
 
 
 export default {
+    inject: ["mq"],
     name: 'HomeView',
     mixins : [homePostsMixin],
     components : {
@@ -184,7 +197,7 @@ export default {
 }
 /*******************NAV********************* */
 .toggle {
-    width: 500px;
+    max-width: 500px;
     display: flex;
     flex-direction: row;
     justify-content:  space-between;
@@ -264,5 +277,12 @@ export default {
         margin: 15px;
     }
 }
+/*
+@media screen and (max-width: 768px) {
+
+    .toggle{
+        width: 100%;
+    }
+}*/
 
 </style>

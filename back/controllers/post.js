@@ -141,7 +141,8 @@ exports.createPost = (req, res, next) => {
 //req.token.userId
 //Modification table like et table comment
 //result = "post modifié !"
-exports.updatePost = (req, res, next) => {
+/*exports.updatePost = (req, res, next) => {
+    console.log('----------> req.body.image '+req.body.image)
     //trouver le post à modifier dans la base de données
     const postId = req.params.postId;
     let sql = 'SELECT * FROM posts WHERE postId =' + db.escape(postId);
@@ -152,19 +153,37 @@ exports.updatePost = (req, res, next) => {
         if (!postExists) {
             return res.status(404).json({ message: "désolé ! aucun post n'a été trouvé !" });
         }
+
         //si post.userId !== req.token.userId => utilisateur non authorisé
         if (postExists.userId !== req.token.userId && req.token.moderator == 0) {
             return res.status(401).json({ message: "utilisateur non authorisé !" });
         }
         let content = (req.body.content) ? req.body.content : " ";
-        let imageUrl = (req.file) ? `${req.protocol}://${req.get('host')}/images/post/${req.file.filename}` : null;
+        let imageUrl = (req.file != undefined) ? req.file : req.body.image;
+        
+        if (req.file != undefined && req.body.image == undefined){
+            imageUrl = `${req.protocol}://${req.get('host')}/images/post/${req.file.filename}`
+        } else if (req.file == undefined && req.body.image != undefined){
+            imageUrl = `${req.protocol}://${req.get('host')}/images/post/${req.body.image}`
+        } else {
+            imageUrl = undefined
+        }
+
+        if (imageUrl == req.file){
+            imageUrl = `${req.protocol}://${req.get('host')}/images/post/${req.file.filename}`
+        } else if (imageUrl == req.body.image){
+            imageUrl = `${req.protocol}://${req.get('host')}/images/post/${req.body.image}`
+        } else {
+            imageUrl = null
+        }*/
+      
         //S'il n'y a pas de contenu ET pas d'image => erreur
-        if (content == " " && imageUrl == null) {
+     /*   if (content == " " && imageUrl == undefined) {
             return res.status(400).json({ message: "Veuillez ajouter un contenu !" })
         }
-        console.log(postExists.imageUrl);
+        console.log(postExists.imageUrl)
         ////récupération et suppression de l'image avant modification sur le serveur
-        if (postExists.imageUrl !== null) {
+        if (postExists.imageUrl !== undefined) {
             const filename = postExists.imageUrl.split('/post/')[1];
             fs.unlink(`images/post/${filename}`, (error) => {
                 //mise à jour de la BDD
@@ -194,6 +213,104 @@ exports.updatePost = (req, res, next) => {
                 res.status(200).json({ message: "post modifié !" })
             })
 }});
+};*/
+
+//modification d'un post
+//Either Post as JSON OR { post:String,image: File }
+//req.token.userId
+//Modification table like et table comment
+//result = "post modifié !"
+exports.updatePost = (req, res, next) => {
+    console.log(req.file)
+    console.log(req.body.image)
+    let imageUrl;
+    let imageExists;
+    let newImagePath
+    if(req.file && !req.body.image){
+        console.log("<----------------envoi de req.file------------->")
+        console.log(req.file)
+        newImagePath= `${req.protocol}://${req.get('host')}/images/post/${req.file.filename}`
+        imageUrl = newImagePath;
+    } else if (req.body.image && !req.file  ){
+        console.log("<----------------envoi de req.body.image------------->")
+        console.log(req.body.image)
+        imageUrl = req.body.image
+        imageExists = true
+    } else if (req.body.image && req.body.image == null && !req.file  ){
+        console.log("<----------------envoi de req.body.image == null------------->")
+        imageUrl = null
+    } else if (!req.file && !req.body.image || !req.file && req.body.image == null){
+        console.log("<------------------pas d'image----------->")
+        console.log("undefined")
+        imageUrl = null
+    }
+    const postId = req.params.postId;
+    //trouver le post à modifier dans la base de données
+    let sql = 'SELECT * FROM posts WHERE postId =' + db.escape(postId);
+    db.query(sql, (error, results, fields) => {
+        if (error) throw ({ error });
+        let postExists = results[0];
+        //si post n'existe pas => erreur
+        if (!postExists) {
+            return res.status(404).json({ message: "désolé ! aucun post n'a été trouvé !" });
+        }
+        //si post.userId !== req.token.userId => utilisateur non authorisé
+        if (postExists.userId !== req.token.userId && req.token.moderator == 0) {
+            return res.status(401).json({ message: "utilisateur non authorisé !" });
+        }
+        let content = (req.body.content) ? req.body.content : " ";
+        //let imageUrl = (req.file) ? `${req.protocol}://${req.get('host')}/images/post/${req.file.filename}` : null;
+        
+        //S'il n'y a pas de contenu ET pas d'image => erreur
+        if (content == " " && imageUrl == null) {
+            return res.status(400).json({ message: "Veuillez ajouter un contenu !" })
+        }
+        
+        const post = new Post(
+            req.token.userId,
+            content,
+            imageUrl
+        );
+        console.log(post)
+        ////récupération et suppression de l'image avant modification sur le serveur
+        if (postExists.imageUrl !== null && imageUrl == newImagePath) {
+            const filename = postExists.imageUrl.split('/post/')[1];
+            fs.unlink(`images/post/${filename}`, () => {
+                //mise à jour de la BDD
+                
+                let sqlUpdate = 'UPDATE posts SET content = ?, imageUrl = ?, comments = 0, likes =0 WHERE postId =' + db.escape(postId);
+                db.query(sqlUpdate, [post.content, post.imageUrl], (error, results, fields) => {
+                    if (error) throw ({ error });
+                    console.log(results);
+                    res.status(200).json({ message: "post modifié !" })
+                })
+            });
+        }else if (postExists.imageUrl !== null && imageExists){
+            //mise à jour de la BDD
+            //modification du text uniquement
+            let sqlUpdate = 'UPDATE posts SET content = ?, imageUrl = ?, comments = 0, likes =0 WHERE postId =' + db.escape(postId);
+            db.query(sqlUpdate, [post.content, post.imageUrl], (error, results, fields) => {
+                if (error) throw ({ error });
+                console.log(results);
+                res.status(200).json({ message: "post modifié !" })
+            })
+        } else if (postExists.imageUrl == null && imageUrl == newImagePath){
+            let sqlUpdate = 'UPDATE posts SET content = ?, imageUrl = ?, comments = 0, likes =0 WHERE postId =' + db.escape(postId);
+                db.query(sqlUpdate, [post.content, post.imageUrl], (error, results, fields) => {
+                    if (error) throw ({ error });
+                    console.log(results);
+                    res.status(200).json({ message: "post modifié !" })
+                })
+        } else if (postExists.imageUrl == null && imageUrl == null){
+            console.log('option 4 modif content only')
+            let sqlUpdate = 'UPDATE posts SET content = ?, imageUrl = ?, comments = 0, likes =0 WHERE postId =' + db.escape(postId);
+                db.query(sqlUpdate, [post.content, post.imageUrl], (error, results, fields) => {
+                    if (error) throw ({ error });
+                    console.log(results);
+                    res.status(200).json({ message: "post modifié !" })
+                })
+        }
+});
 };
 
 //suppression d'un post

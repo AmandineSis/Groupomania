@@ -1,11 +1,11 @@
 <template>
-    <div class="pictureUpdate" >
+    <div class="pictureUpdate" :class="{'pictureUpdate--sizeUp' : media == 'phone'}" >
         <form class="pictureUpdate__form">
             <input id="uploadImage" type="file" accept="image/jpeg, image/png, image/jpg" @change="updloadProfilePicture">
             <label for="uploadImage" class="form__btn form__btn__upload">Parcourir...</label>
             <p class="pictureUpdate__form__name">{{this.profilePic.name}}</p>
             <div class="pictureUpdate__form__valid">
-                <button class="pictureUpdate__form__valid__button" type= "button" @click.prevent="updatePicture" > Valider
+                <button class="pictureUpdate__form__valid__button" :class="{'pictureUpdate__form__valid__button--disabled' : !profilePic}" type= "button" @click.prevent="updatePicture" > Valider
                 </button>
             </div>
         </form>
@@ -28,6 +28,7 @@ export default {
         profilePostsMixin
     ],
     props: {
+        media: String,
         selectedPage: String,
         selectedTab: String,
     },
@@ -90,6 +91,10 @@ export default {
     display: flex;
     flex-direction: column;
     width: 50%;
+    &--sizeUp{
+        width: 100%;
+        margin-top: 20px;
+    }
     &__form{
         display: flex;
         flex-direction: column;
@@ -131,6 +136,9 @@ export default {
                 &:hover {
                     background-color: #a71e05;
                     color: #ffffff;
+                }
+                &--disabled{
+                    background-color: grey;
                 }
             }
         }

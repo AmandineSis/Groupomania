@@ -1,20 +1,26 @@
 <template>
-    <div class="updateMenu" >
-        <div class="updateMenu__selection">
-            <button class="updateMenu__selection__btn" @click="switchToIdentification">Modifier mes identifiants</button>
-            <button class="updateMenu__selection__btn" @click="switchToPassword">Modifier mot de passe</button>
-            <button class="updateMenu__selection__btn" @click="switchToProfilePicture">Modifier photo de profil</button>
-            <button class="updateMenu__selection__btn updateMenu__selection__btn__delete " v-if="user.userId != 1" @click="switchToDeleteAccount">Supprimer mon compte</button>
+    
+    
+    <div class="updateMenu" :class="{'updateMenu--sizeUp' : phoneView == 'phone'}">
+        <div class="updateMenu__top">
+            <button class="updateMenu__btn updateMenu__btn--close " :class="{'updateMenu__selection__btn--sizeUp' : phoneView}" v-if="user.userId != 1"  @click="closeUpdate"><font-awesome-icon class="updateMenu__close__icon" icon="xmark"/></button>
         </div>
+        <div class="updateMenu__main" :class="{'updateMenu__main--sizeUp' : phoneView == 'phone'}">
 
-        <UserUpdate v-if="menu == 'identification'" :selectedPage='currentPage' :selectedTab='selectedMode'/>
-        <PasswordUpdate v-if="menu == 'password'"/>
-        <PictureUpdate v-if="menu == 'profilePicture'" :selectedPage='currentPage' :selectedTab='selectedMode'/>
-        <DeleteAccount v-if="menu == 'deleteAccount'"/>
-        
-        <div class="updateMenu__close" @click="closeUpdate" >
-            <font-awesome-icon class="updateMenu__close__icon" icon="xmark"/>Fermer
+            <div class="updateMenu__selection" :class="{'updateMenu__selection--sizeUp' : phoneView == 'phone'}">
+                <button class="updateMenu__btn" :class="{'updateMenu__btn--sizeUp' : phoneView == 'phone'}" @click="switchToIdentification">Modifier mes identifiants</button>
+                <button class="updateMenu__btn" :class="{'updateMenu__btn--sizeUp' : phoneView == 'phone'}" @click="switchToPassword">Modifier mot de passe</button>
+                <button class="updateMenu__btn" :class="{'updateMenu__btn--sizeUp' : phoneView == 'phone'}" @click="switchToProfilePicture">Modifier photo de profil</button>
+                <button class="updateMenu__btn updateMenu__btn--delete " :class="{'updateMenu__selection__btn--sizeUp' : phoneView == 'phone'}" v-if="user.userId != 1" @click="switchToDeleteAccount">Supprimer mon compte</button>
+            </div>
+            <UserUpdate v-if="menu == 'identification'" :media='phoneView' :selectedPage='currentPage' :selectedTab='selectedMode'/>
+            <PasswordUpdate v-if="menu == 'password'" :media='phoneView'/>
+            <PictureUpdate v-if="menu == 'profilePicture'" :media='phoneView' :selectedPage='currentPage' :selectedTab='selectedMode'/>
+            <DeleteAccount v-if="menu == 'deleteAccount'" :media='phoneView'/>
         </div>
+            <!-- <div class="updateMenu__close" @click="closeUpdate" v-if="!phoneView">
+                <font-awesome-icon class="updateMenu__close__icon" icon="xmark"/>Fermer
+            </div> -->
     </div> 
 </template>
 
@@ -32,6 +38,7 @@ export default {
 
     name: 'UpdateMenu',
     props: {
+        phoneView: String,
         currentPage: String,
         selectedMode: String,
     },
@@ -75,73 +82,76 @@ export default {
 
 <style scoped lang="scss">
 
-.popupContainer{
-    width: 100%;
-    height: 210px;
-    position: fixed;
-    top: 120px;
-    left: 0;
-    z-index: 100;
-    background: #ee7575;
-}
-
 .updateMenu {
     max-width: 550px;
     min-height: 150px;
     margin: 30px auto;
-    
     z-index: 1000;
-    display: flex;
-    flex-direction: row;
     background-color: white;
     border: 2px solid #999999;
     align-items: center;
     border-radius: 20px;
     box-shadow: rgba(0, 0, 0, 0.6) 0px 5px 15px;
+    &--sizeUp{
+        border-radius: 0;
+    }
+    &__top{
+        width: 100%;
+        text-align: right;
+    }
+    &__main{
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        margin-bottom: 20px;
+        &--sizeUp{
+            flex-direction: column;
+        }
+    }
     &__selection {
         display: flex;
         flex-direction: column;
         align-items: center;
         width: 50%;
-        margin: 2px;
-        &__btn {
-            font-size: 1em;
-            color: white;
-            width: 80%;
-            height: 25px;
-            margin: 3px auto;
-            border-radius: 5px;
-            background-color: #ee7575;
-            transition: .4s background-color;
-            cursor: pointer;
-    
-            transform: scale(1);
-            transition-property: transform;
-            transition-duration: 400ms;
-    
-            &:hover {
-                transform: scale(1.1);
-                background-color: #a71e05;
-                color: #ffffff;
-            }
-            &__delete{
-                color: #ee7575;
-                background-color: #ffffff;
-                border: 1px solid #ee7575;
-            }
+        //margin: 2px;
+        &--sizeUp{
+            height: auto;
+            width: 100%;
         }
     }
-    &__close{
-        writing-mode: vertical-rl;
-        text-orientation: mixed;    
-        &:hover{
-                cursor: pointer;
-            }
-        &__icon{
-            font-size: 15px;
-            margin: 5px 10px 0 0;
-            
-        
+    &__btn {
+        font-size: 1em;
+        color: white;
+        width: 90%;
+        height: 25px;
+        margin: 3px auto;
+        border-radius: 5px;
+        background-color: #ee7575;
+        transition: .4s background-color;
+        cursor: pointer;
+        transform: scale(1);
+        transition-property: transform;
+        transition-duration: 400ms;
+        &--sizeUp{
+            height: 30px;
+        }
+        &:hover {
+            transform: scale(1.1);
+            background-color: #a71e05;
+            color: #ffffff;
+        }
+        &--delete{
+            color: #ee7575;
+            background-color: #ffffff;
+            border: 1px solid #ee7575;
+        }
+        &--close{
+            width: 25px;
+            border-radius: 90px;
+            margin: 4px;
+        }
+        &--sizeUp {
+            height: 30px;
         }
     }
 }

@@ -56,6 +56,7 @@ export default ({
     props: {'comItem': Object},
     data(){
         return {
+            uploadImg: this.postComments.imageUrl,
             event:{
                 comContent: '',
                 comImage: ''

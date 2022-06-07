@@ -1,16 +1,18 @@
 <template>
-    <div class="userUpdate" >
+    <div class="userUpdate" :class="{'userUpdate--sizeUp' : media == 'phone'}">
         <form class="userUpdate__form">
             <BaseInput
                 class="userUpdate__form__input"
+                :class="{'userUpdate__form__input--sizeUp' : media == 'phone'}"
                 :value="userLoggedIn.firstName"
                 @input="event.firstName = $event.target.value"
                 @change="isFirstNameValid"
                 type="text"
-            />
+            /> 
             <p class="userUpdate__form__input__error" v-if="error.firstNameError">Veuillez saisir au moins 3 caratères alphabétiques</p>
             <BaseInput
                 class="userUpdate__form__input"
+                :class="{'userUpdate__form__input--sizeUp' : media == 'phone'}"
                 :value="userLoggedIn.lastName"
                 @input="event.lastName = $event.target.value"
                 @change="isLastNameValid"
@@ -19,6 +21,7 @@
             <p class="userUpdate__form__input__error" v-if="error.lastNameError">Veuillez saisir au moins 3 caratères alphabétiques</p>
             <BaseInput
                 class="userUpdate__form__input"
+                :class="{'userUpdate__form__input--sizeUp' : media == 'phone'}"
                 :value="userLoggedIn.email"
                 @input="event.email = $event.target.value"
                 @change="isEmailValid"
@@ -46,7 +49,6 @@ import { profilePostsMixin } from '@/mixins/profilePostsMixin'
 
 
 export default {
-    
     name: 'UserUpdate',
     mixins: [
         userValidationMixin, 
@@ -58,6 +60,7 @@ export default {
     },
     //Props from UpdateMenu
     props: {
+        media: String,
         selectedPage: String,
         selectedTab: String,
     },
@@ -124,6 +127,11 @@ export default {
     display: flex;
     flex-direction: column;
     width: 50%;
+    &--sizeUp{
+        width: 100%;
+        height: auto;
+        margin-top: 20px;
+    }
     &__form{
         display: flex;
         flex-direction: column;
@@ -136,6 +144,9 @@ export default {
             height: 25px;
             border-radius: 5px;
             margin: 3px auto;
+            &--sizeUp{
+                height: 30px;
+            }
             &__error{
                 font-size: 13px;
                 color: #ee7575;

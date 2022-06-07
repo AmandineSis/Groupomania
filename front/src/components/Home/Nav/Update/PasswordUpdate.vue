@@ -1,9 +1,10 @@
 <template>
-    <div class="passwordUpdate" >
+    <div class="passwordUpdate"  :class="{'passwordUpdate--sizeUp' : media == 'phone'}">
         <form class="passwordUpdate__form">
             <div class="passwordUpdate__form__container">
                 <BaseInput
                             class="passwordUpdate__form__input"
+                            :class="{'passwordUpdate__form__input--sizeUp' : media == 'phone'}"
                             v-model="event.oldPassword"
                             label="Ancien mot de passe"
                             :type="oldPasswordFieldType"
@@ -16,6 +17,7 @@
             <div class="passwordUpdate__form__container">
                 <BaseInput
                             class="passwordUpdate__form__input"
+                            :class="{'passwordUpdate__form__input--sizeUp' : media == 'phone'}"
                             v-model="event.newPassword"
                             v-on:change="isNewPasswordValid"
                             label="Nouveau mot de passe"
@@ -44,6 +46,9 @@ export default {
     
     name: 'PasswordUpdate',
     mixins: [passwordValidationMixin],
+    props: {
+        media: String
+    },
     components: {
         BaseInput
     },
@@ -98,6 +103,10 @@ export default {
     display: flex;
     flex-direction: column;
     width: 50%;
+    &--sizeUp{
+        width: 100%;
+        margin-top: 20px;
+    }
     &__form{
         display: flex;
         flex-direction: column;
@@ -116,9 +125,13 @@ export default {
             height: 25px;
             border-radius: 5px;
             margin: 3px auto;
+            &--sizeUp{
+                height: 30px;
+            }
             }
         &__valid{
             width: 100%;
+            height: 25px;
             &__button {
                 font-size: 1em;
                 color: white;

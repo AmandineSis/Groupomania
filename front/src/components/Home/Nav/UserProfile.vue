@@ -1,11 +1,20 @@
 <template>
     <!-- UserProfile template on homePage -->
-    <div class="userProfile" v-if="!profileView" >
+    <div class="userProfile" v-if="!profileView && !phoneView" >
         <router-link class="userProfile__link" :to="`/profile/${userLoggedIn.userId}`">
             <p class="userProfile__fullname">{{ fullNameUserLoggedIn }}</p> 
             <img class="userProfile__picture" :src="userLoggedIn.profilePicUrl" alt="photo de profil">
         </router-link>
     </div>
+    <router-link :to="`/profile/${userLoggedIn.userId}`" class="userProfile" :class="{'userProfile--inBlock' : phoneView}" v-if="phoneView" >  
+            <p class="userProfile__fullname" :class="{'userProfile__fullname--black' : phoneView}" >{{ fullNameUserLoggedIn }}</p> 
+            <img class="userProfile__picture" :class="{'userProfile__picture--sizeUp' : phoneView}" :src="userLoggedIn.profilePicUrl" alt="photo de profil" >
+    </router-link>
+
+
+
+
+
     <!-- UserProfile template on profilePage -->
     <div class="userProfile" :class="{'userProfile--inBlock' : profileView}" v-else >  
             <p class="userProfile__fullname" :class="{'userProfile__fullname--black' : profileView}" v-if="profileView && $route.params.userId == userLoggedIn.userId">{{ fullNameUserLoggedIn }}</p> 
@@ -23,7 +32,8 @@ export default {
     name: 'UserProfile',
     //Props from profileView.vue
     props: {
-        profileView: Boolean
+        profileView: Boolean,
+        phoneView: Boolean
     },
     beforeMount:
         function(){

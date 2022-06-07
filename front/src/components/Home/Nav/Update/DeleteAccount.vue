@@ -1,5 +1,5 @@
 <template>
-    <div class="deleteUser" >
+    <div class="deleteUser" :class="{'deleteUser--sizeUp' : media == 'phone'}">
         <p class="deleteUser__text" v-if="updateMenuIsActive">
             Entrez votre mot de passe pour supprimer ce compte :
         </p>
@@ -29,6 +29,9 @@ import BaseInput from '@/components/Base/BaseInput.vue';
 import {  mapState, mapMutations, mapActions } from 'vuex'
 export default {
     name: 'DeleteAccount',
+    props: {
+        media: String
+    },
     components: {
         BaseInput
     },
@@ -88,6 +91,10 @@ export default {
     display: flex;
     flex-direction: column;
     width: 50%;
+    &--sizeUp{
+        width: 100%;
+        margin-top: 20px;
+    }
     &__text{
         width: 90%;
         text-align: left;
@@ -116,7 +123,7 @@ export default {
                 border-radius: 5px;
                 background-color: #ee7575;
                 transition: .4s background-color;
-                 &--disabled{
+                &--disabled{
                     background-color: grey;
                 }
                 

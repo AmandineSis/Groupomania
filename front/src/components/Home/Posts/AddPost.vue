@@ -1,5 +1,5 @@
 <template>
-    <div class="newPost">
+    <div class="newPost" >
         <form class="form">
             <textarea 
                 class="form__input"

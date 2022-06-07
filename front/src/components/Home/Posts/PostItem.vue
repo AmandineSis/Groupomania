@@ -102,6 +102,7 @@ export default ({
     props: {
         postItem: Object,
         currentPage: String,
+        phoneView: String,
         selectedMode: String,
         commentsVisible: Boolean
     },
@@ -194,6 +195,9 @@ export default ({
 .posts {
     margin:  50px auto;
     border-radius: 20px 20px 0 0;
+    &--sizeUp{
+        border-radius: 0;
+    }
     &__reported{
         border: 3px solid #ee7575;
     }
@@ -260,7 +264,7 @@ export default ({
         }
         &__settings{
             position:absolute;
-            left: 400px;
+            right: 0px;
             top: 0;
             z-index: 99;
             width: 100px;

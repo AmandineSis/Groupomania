@@ -1,3 +1,4 @@
+
 <template>
     <nav class="topMenu" v-once>
         <SettingsMenu class="topMenu__settings" v-once />
@@ -12,6 +13,7 @@
     <transition name="bounce">
         <UpdateMenu 
             v-if="updateMenu" 
+            :phoneView="mq.current"
             :current-page="currentPage" 
             :selected-mode="selectedMode"/>
     </transition>
@@ -78,6 +80,7 @@ import { profilePostsMixin } from '../mixins/profilePostsMixin'
 
 
 export default {
+    inject: ["mq"],
     name: 'profileView',
     mixins: [profilePostsMixin],
     components : {
@@ -182,7 +185,7 @@ export default {
 
 /*******************NAV********************* */
 .toggle {
-    width: 500px;
+    max-width: 500px;
     display: flex;
     flex-direction: row;
     justify-content:  space-between;

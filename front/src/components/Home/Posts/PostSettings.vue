@@ -7,10 +7,10 @@
                 rows ="5" 
                 name ="newPost"
                 :value="postItem.content"
-                @input="event.content = $event.target.value"
+                @change="event.content = $event.target.value"
             ></textarea>
             <!------------------------Display/Delete post image------------------------->
-            <div class="updatePost__form__addedImage test" v-if="postItem.imageUrl && !event.image.name && postUploadExists" >
+            <div class="updatePost__form__addedImage" v-if="postItem.imageUrl && !event.image.name && postUploadExists" >
                 <p class="updatePost__form__addedImage__image" >{{postItem.imageUrl}}</p>
                 <font-awesome-icon 
                     class="updatePost__form__addedImage__icon" 
@@ -82,6 +82,7 @@ export default ({
     },
     data(){
         return {
+            imageToSend: '',
             event: {
                 content:'',
                 image:''
@@ -115,7 +116,7 @@ export default ({
             this.postUploadExists = false;
         },
         deleteUpdatedFile(){
-            this.event.image = "";
+            this.event.image = '';
         },
         postDelete(postId) {
             if (window.confirm('Êtes-vous sûrs de vouloir supprimer ce post ?')){
@@ -142,25 +143,40 @@ export default ({
             }
             
         },
-        isImageUpdated(image){
-            if(!this.postUploadExists){
-                return null
-            }else{
-                return this.event.image ? this.event.image : image
+isImageUpdated(image){
+            if(this.postUploadExists && !this.event.image){
+                return image
+            }else if (!this.postUploadExists && !this.event.image){
+                return undefined
+            }else {
+                return this.event.image
             }
         },
+
         updatePostContent(postId,content, image) {
+            console.log(content)
+            console.log(this.event.content)
             let imageUpdate = this.isImageUpdated(image);
-            let contentUpdate = (this.event.content ? this.event.content : content)
-            
+            let contentUpdate = (this.event.content) ? this.event.content : content;
+            console.log('contentupdate------> '+ contentUpdate)
             const fdUpdatedPost = new FormData();
             if (contentUpdate != "") {
                 fdUpdatedPost.append('content', contentUpdate);
             }
-            if (imageUpdate != null) {
+            
+            console.log('imageUpdate---> '+imageUpdate)// nothing
+            console.log('image---> '+image) //http://localhost:3000/images
+            console.log('event.image---> '+this.event.image)// nothing
+
+            //image || undefined || this.event.image
+            if (imageUpdate == this.event.image) {
                 fdUpdatedPost.append('image', imageUpdate, imageUpdate.name);
-            }
-            if (contentUpdate || imageUpdate) {
+            } else if (imageUpdate == image && imageUpdate !== null){
+                fdUpdatedPost.append('image', imageUpdate)
+            } 
+
+            fdUpdatedPost.get('image');
+            if (contentUpdate || imageUpdate ) {
                 this.updatePost({postId, fdUpdatedPost})
                     .then(() => {
                         console.log("updatePost dispatch done !");
@@ -178,7 +194,8 @@ export default ({
                     ), (err => {
                         console.log(err)
                     })
-        }},
+        }
+            },
 
         /*********************************************************
          * *****************A modifier****************************

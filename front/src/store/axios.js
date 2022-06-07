@@ -2,7 +2,7 @@ import axios from 'axios'
 
 const instance = axios.create({
     baseURL: 'http://localhost:3000/api/',
-    timeout: 10000
+    timeout: 20000
 })
 let user = localStorage.getItem('user');
 user = JSON.parse(user);
