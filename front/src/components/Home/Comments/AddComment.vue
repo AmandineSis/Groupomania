@@ -60,11 +60,12 @@ export default ({
     //props from PostItem
     props: {
         postItem: Object,
+        page: String
         },
     data(){
         return {
             comment: "",
-            commentImageUrl: null
+            commentImageUrl: ""
         }
     },
     mounted: 
@@ -104,19 +105,20 @@ export default ({
             }
         },
         deleteUpload(){
-            this.commentImageUrl = null
+            this.commentImageUrl = ''
         },
         addComment(postId) {
-            console.log(this.commentImageUrl)
-            console.log(this.comment)
             //création de l'objet FormData
             const fdComment = new FormData();
             if (this.comment != "") {
                 fdComment.append('commentContent', this.comment);
             }
-            if (this.commentImageUrl != null) {
+            if (this.commentImageUrl != "") {
                 fdComment.append('image', this.commentImageUrl, this.commentImageUrl.name);
             }
+            console.log(this.comment)
+            console.log(this.commentImageUrl)
+
             //Si FormData != null 
             if (this.comment || this.commentImageUrl) {
             this.createComment({postId,fdComment})
@@ -126,11 +128,10 @@ export default ({
                     this.comment = "";
                     this.commentImageUrl= ""
                     //si res ok, affichage mis à jour des commentaires du post
-                    
-                            this.getComments(postId)
+                        this.getComments(postId)
                             .then(() => {
                                 console.log("getComments dispatch done !");
-                              //  this.$emit('hidePostSettings')
+                                //this.$emit('closeComments')
                                 }),
                         (err => {
                         console.log(err)

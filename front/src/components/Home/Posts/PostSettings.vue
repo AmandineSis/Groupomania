@@ -6,7 +6,7 @@
                 class="updatePost__form__input"
                 rows ="5" 
                 name ="newPost"
-                :value="postItem.content"
+                :value="event.content=postItem.content"
                 @change="event.content = $event.target.value"
             ></textarea>
             <!------------------------Display/Delete post image------------------------->
@@ -54,7 +54,7 @@
                 <button 
                     class="updatePost__form__btn updatePost__form__btn__submit" 
                     type="submit" 
-                    @click.prevent="updatePostContent(postItem.postId, postItem.content, postItem.imageUrl)">
+                    @click.prevent="updatePostContent(postItem.postId, event.content, postItem.imageUrl)">
                     Modifier
                 </button> 
             </div>
@@ -143,7 +143,7 @@ export default ({
             }
             
         },
-isImageUpdated(image){
+        isImageUpdated(image){
             if(this.postUploadExists && !this.event.image){
                 return image
             }else if (!this.postUploadExists && !this.event.image){
@@ -153,30 +153,22 @@ isImageUpdated(image){
             }
         },
 
-        updatePostContent(postId,content, image) {
-            console.log(content)
-            console.log(this.event.content)
+        updatePostContent(postId, content, image) {
+        
             let imageUpdate = this.isImageUpdated(image);
-            let contentUpdate = (this.event.content) ? this.event.content : content;
-            console.log('contentupdate------> '+ contentUpdate)
+
             const fdUpdatedPost = new FormData();
-            if (contentUpdate != "") {
-                fdUpdatedPost.append('content', contentUpdate);
+            if (content != "") {
+                fdUpdatedPost.append('content', content);
             }
             
-            console.log('imageUpdate---> '+imageUpdate)// nothing
-            console.log('image---> '+image) //http://localhost:3000/images
-            console.log('event.image---> '+this.event.image)// nothing
-
-            //image || undefined || this.event.image
             if (imageUpdate == this.event.image) {
                 fdUpdatedPost.append('image', imageUpdate, imageUpdate.name);
             } else if (imageUpdate == image && imageUpdate !== null){
                 fdUpdatedPost.append('image', imageUpdate)
             } 
 
-            fdUpdatedPost.get('image');
-            if (contentUpdate || imageUpdate ) {
+            if (content || imageUpdate ) {
                 this.updatePost({postId, fdUpdatedPost})
                     .then(() => {
                         console.log("updatePost dispatch done !");
@@ -194,14 +186,10 @@ isImageUpdated(image){
                     ), (err => {
                         console.log(err)
                     })
-        }
+                }
             },
 
-        /*********************************************************
-         * *****************A modifier****************************
-         *******************************************************/
         unreportPost(postId){
-            
             //envoie requête vers store - requête LikePost
             this.removeReport(postId)
                 .then((res) => {

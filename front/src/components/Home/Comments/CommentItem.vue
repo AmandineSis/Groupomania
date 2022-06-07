@@ -6,6 +6,11 @@
 	<div class="form__comments__content">
 		<p class="form__comments__content__user">{{ comItem.firstName }} {{ comItem.lastName }}</p>
 		<div class="form__comments__container">	
+			<div class="form__comments__popup" v-if="showComSettings && comItem">
+				<ComSettings 
+					:comItem="comItem"
+					@hide-com-settings="closeComSettings"/>
+			</div>
 			<div v-if="!showComSettings">
 				<div 
 					class="form__comments__input form__comments__input__sent"
@@ -14,15 +19,10 @@
 					>
 				</div>
 				<img 
-				class="form__comments__image" 
-				:src="comItem.imageUrl" 
-				:alt="comItem.imageUrl"
-				v-if="comItem.imageUrl != null">
-			</div>
-			<div class="form__comments__popup" v-if="showComSettings">
-				<ComSettings 
-					:comItem="comItem"
-					@hide-com-settings="closeComSettings"/>
+					class="form__comments__image" 
+					:src="comItem.imageUrl" 
+					alt="comment photo"
+					v-if="comItem.imageUrl != null ">
 			</div>
 		</div>	
 	</div>
@@ -100,6 +100,7 @@ export default ({
 	&__container{
 		width: 95%;
 		height: auto;
+		position: relative;
 	}
 	&__settings{
 		text-align: center;

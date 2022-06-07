@@ -70,7 +70,7 @@
                     </div>            
                 </footer>
                 <div class="comment__container" v-if="showComment" >
-                    <AddComment :postItem="postItem" /> 
+                    <AddComment :page="currentPage" :postItem="postItem"  /> 
                 </div>
             </div>
         </div>
@@ -170,20 +170,23 @@ export default ({
                 return;
             }
         },
-         /*********************************************************
-         * *****************A modifier****************************
-         *******************************************************/
         postReport(postId) {
+            const self = this;
             const postReported = {
                 postId,
                 report: 1
             };
-            //envoie requête vers store - requête LikePost
-            this.reportPost(postReported)
-                .then(() => {
-                    console.log("reportPost dispatch done !")
-                    window.confirm('Vous avez signalé cette publication !')
-                })
+            if (window.confirm(`Êtes-vous sûr de vouloir signaler cette publication ?`)){
+                //envoie requête vers store - requête LikePost
+                this.reportPost(postReported)
+                    .then(() => {
+                        console.log("reportPost dispatch done !")
+                        window.alert('Vous avez signalé cette publication !')
+                        self.closeSettings()
+                    })
+            }else{
+                self.closeSettings()
+            }
         },
             
     }

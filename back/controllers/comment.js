@@ -40,12 +40,12 @@ exports.getAllComments = (req, res, next) => {
 exports.createComment = (req, res, next) => {
     //Vérification des données de la requête
     const commentContent = (req.body.commentContent) ? req.body.commentContent : " ";
-    const imageUrl = (req.file) ? `${req.protocol}://${req.get('host')}/images/comment/${req.file.filename}` : "";
+    const imageUrl = (req.file) ? `${req.protocol}://${req.get('host')}/images/comment/${req.file.filename}` : undefined;
     const postId = req.params.postId;
     console.log(commentContent);
-    console.log(imageUrl);
+    console.log("----->" + imageUrl);
     //S'il n'y a pas de contenu ET pas d'image => erreur
-    if (commentContent == "" && imageUrl == "") {
+    if (commentContent == "" && imageUrl == undefined) {
         return res.status(400).json({ message: "Ce post est vide, impossible d'accéder à la requête !" })
     }
 
@@ -77,15 +77,30 @@ exports.createComment = (req, res, next) => {
 //req.params.comId
 //result = "commentaire modifié !"
 exports.updateComment = (req, res, next) => {
+    
+    let imageUrl;
+    let imageExists;
+    let newImagePath
+    if(req.file && !req.body.image){
+        newImagePath= `${req.protocol}://${req.get('host')}/images/comment/${req.file.filename}`
+        imageUrl = newImagePath;
+    } else if (req.body.image && !req.file  ){
+        imageUrl = req.body.image
+        imageExists = true
+    } else if (req.body.image && req.body.image == null && !req.file  ){
+        imageUrl = null
+    } else if (!req.file && !req.body.image || !req.file && req.body.image == null){
+        imageUrl = null
+    }
+    
     //trouver le commentaire à modifier dans la base de données
-    const postId = req.params.postId;
     const comId = req.params.comId;
     const userId = req.token.userId;
+    
     let sql = 'SELECT * FROM comments WHERE comId =' + db.escape(comId);
     db.query(sql, (error, results, fields) => {
         if (error) throw ({ error });
         let comExists = results[0];
-        console.log(comExists);
         //si post n'existe pas => erreur
         if (!comExists) {
             return res.status(404).json({ message: "désolé ! aucun commentaire n'a été trouvé !" });
@@ -96,15 +111,62 @@ exports.updateComment = (req, res, next) => {
         }
 
         let commentContent = (req.body.commentContent) ? req.body.commentContent : " ";
-        let imageUrl = (req.file) ? `${req.protocol}://${req.get('host')}/images/comment/${req.file.filename}` : " ";
         
         //S'il n'y a pas de contenu ET pas d'image => erreur
-        if (commentContent == " " && imageUrl == " ") {
+        if (commentContent == " " && imageUrl == null) {
             return res.status(400).json({ message: "Veuillez ajouter un contenu !" })
         }
-        console.log(comExists.imageUrl);
+       
+        const comment = new Comment(
+            req.token.userId,
+            comId,
+            commentContent,
+            imageUrl
+        );
+
         ////récupération et suppression de l'image avant modification sur le serveur
-        if (comExists.imageUrl !== null) {
+        if (comExists.imageUrl !== null && imageUrl == newImagePath) {
+            const filename = comExists.imageUrl.split('/comment/')[1];
+            fs.unlink(`images/comment/${filename}`, () => {
+                //mise à jour de la BDD
+                
+                let sqlUpdate = 'UPDATE comments SET commentContent = ?, imageUrl = ? WHERE comId =' + db.escape(comId);
+                db.query(sqlUpdate, [comment.commentContent, comment.imageUrl], (error, results, fields) => {
+                    if (error) throw ({ error });
+                    console.log(results);
+                    res.status(200).json({ message: "commentaire modifié !" })
+                })
+            });
+        }else if (comExists.imageUrl !== null && imageExists){
+            //mise à jour de la BDD
+            //modification du text uniquement
+            const filename = comExists.imageUrl.split('/comment/')[1];
+            fs.unlink(`images/comment/${filename}`, () => {
+                //mise à jour de la BDD
+                
+                let sqlUpdate = 'UPDATE comments SET commentContent = ?, imageUrl = ? WHERE comId =' + db.escape(comId);
+                db.query(sqlUpdate, [comment.commentContent, comment.imageUrl], (error, results, fields) => {
+                    if (error) throw ({ error });
+                    console.log(results);
+                    res.status(200).json({ message: "commentaire modifié !" })
+                })
+            });
+        } else if (comExists.imageUrl == null && imageUrl == newImagePath){
+            let sqlUpdate = 'UPDATE comments SET commentContent = ?, imageUrl = ? WHERE comId =' + db.escape(comId);
+                db.query(sqlUpdate, [comment.commentContent, comment.imageUrl], (error, results, fields) => {
+                    if (error) throw ({ error });
+                    console.log(results);
+                    res.status(200).json({ message: "post modifié !" })
+                })
+            } else if (comExists.imageUrl == null && imageUrl == null){
+                let sqlUpdate = 'UPDATE comments SET commentContent = ?, imageUrl = ? WHERE comId =' + db.escape(comId);
+                    db.query(sqlUpdate, [comment.commentContent, comment.imageUrl], (error, results, fields) => {
+                        if (error) throw ({ error });
+                        console.log(results);
+                        res.status(200).json({ message: "commentaire modifié !" })
+                    })
+            }
+        /* if (comExists.imageUrl !== null) {
             const filename = comExists.imageUrl.split('/comment/')[1];
             fs.unlink(`images/comment/${filename}`, (error) => {
                 //mise à jour de la BDD
@@ -124,18 +186,13 @@ exports.updateComment = (req, res, next) => {
         }else{
             
         //mise à jour de la BDD
-        const comment = new Comment(
-            req.token.userId,
-            comId,
-            updatedComment,
-            imageUrl
-        );
+       
         let sqlUpdate = 'UPDATE comments SET commentContent = ?, imageUrl = ? WHERE comId =' + db.escape(comId);
         db.query(sqlUpdate, [comment], (error, results, fields) => {
             if (error) throw ({ error });
             console.log(results);
             res.status(200).json({ message: "commentaire modifié !" })
-        })}
+        })}*/
     });
 };
 
@@ -146,10 +203,10 @@ exports.updateComment = (req, res, next) => {
 //result = "post supprimé !"
 exports.deleteComment = (req, res, next) => {
    //trouver le commentaire à modifier dans la base de données
-   const postId = req.params.postId;
-   const comId = req.params.comId;
-   const userId = req.token.userId;
-   let sql = 'SELECT * FROM comments WHERE comId =' + db.escape(comId);
+    const postId = req.params.postId;
+    const comId = req.params.comId;
+    const userId = req.token.userId;
+    let sql = 'SELECT * FROM comments WHERE comId =' + db.escape(comId);
     db.query(sql, (error, results, fields) => {
         if (error) throw ({ error });
         let comExists = results[0];
@@ -162,7 +219,7 @@ exports.deleteComment = (req, res, next) => {
             return res.status(401).json({ message: "utilisateur non authorisé !" });
         }
         //récupération et suppression de l'image avant modification sur le serveur s'il y en a une
-        if (comExists.imageUrl !== undefined) {
+        if (comExists.imageUrl !== null) {
             const filename = comExists.imageUrl.split('/comment/')[1];
             fs.unlink(`images/comment/${filename}`, (error) => {
                 //mise à jour de la BDD

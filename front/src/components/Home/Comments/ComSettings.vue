@@ -6,8 +6,8 @@
                 class="updateCom__form__input"
                 rows ="5" 
                 name ="newPost"
-                :value="comItem.commentContent"
-                @input="event.comContent = $event.target.value"
+                :value="event.comContent = comItem.commentContent"
+                @change="event.comContent = $event.target.value"
             ></textarea>
             <!------------------------Display/Delete comment image------------------------->
             <div class="updateCom__form__addedImage" v-if="comItem.imageUrl && !event.comImage.name && comUploadExists" >
@@ -38,7 +38,7 @@
                 <button
                     class="updateCom__form__btn updateCom__form__btn__submit"
                     type="submit"
-                    @click.prevent="updatePostComment(comItem.postId, comItem.comId, comItem.commentContent, comItem.imageUrl)">
+                    @click.prevent="updatePostComment(comItem.postId, comItem.comId, event.comContent, comItem.imageUrl)">
                     modifier
                 </button> 
             </div>
@@ -56,7 +56,6 @@ export default ({
     props: {'comItem': Object},
     data(){
         return {
-            uploadImg: this.postComments.imageUrl,
             event:{
                 comContent: '',
                 comImage: ''
@@ -109,28 +108,32 @@ export default ({
             }
 		},
         isComImageUpdated(image){
-            if(!this.comUploadExists){
-                return null
+            if(this.comUploadExists && !this.event.comImage){
+                return image
+            }else if (!this.comUploadExists && !this.event.comImage){
+                return undefined
             }else{
-                return this.event.comImage ? this.event.comImage : image
+                return this.event.comImage
             }
         },
         updatePostComment(postId,comId,content,image) {
-            console.log(this.isComImageUpdated)
             let comImageUpdate = this.isComImageUpdated(image);
-            let comContentUpdate = (this.event.comContent ? this.event.comContent : content)
-            console.log('comImgupdate-------------->'+comImageUpdate)
+
             const fdUpdatedCom = new FormData();
-            if (comContentUpdate != "") {
-                fdUpdatedCom.append('commentContent', comContentUpdate);
+            if (content != "") {
+                fdUpdatedCom.append('commentContent', content);
             }
-            if (comImageUpdate != null) {
+
+            if (comImageUpdate == this.event.comImage) {
                 fdUpdatedCom.append('image', comImageUpdate, comImageUpdate.name);
+            } else if (comImageUpdate == image && comImageUpdate !== null){
+                fdUpdatedCom.append('image', comImageUpdate)
             }
-            if (comContentUpdate || comImageUpdate) {
+
+            if (content || comImageUpdate) {
                 this.updateComment({postId,comId, fdUpdatedCom})
                     .then(() => {
-                        console.log("updateComment dispatch done 222 !");
+                        console.log("updateComment dispatch done !");
                             this.getComments(postId)
                             .then(() => {
                                 console.log("getComments dispatch done !");
@@ -154,8 +157,8 @@ export default ({
         display: flex;
         flex-direction: column ;
         justify-content: center;
-        position: relative;
-        z-index: 99;
+       // position: relative;
+       // z-index: 99;
         &__form {
             width:100%;
             height: auto;
