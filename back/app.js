@@ -11,11 +11,13 @@ const app = express();
 const path = require('path');
 require('dotenv').config();
 /******************************************************************************************** */
-/**Connexion à la base de donnée Groupomania                                                      */
+/**Connexion à la base de donnée Groupomania                                                  */
+/******************************************************************************************** */
+
 const db = require('./config/DBconnection');
 
 /******************************************************************************************** */
-/**CORS - Paramètrage des en-têtes                                                                                      */
+/**CORS - Paramètrage des en-têtes                                                            */
 /******************************************************************************************** */
 
 app.use((req, res, next) => {

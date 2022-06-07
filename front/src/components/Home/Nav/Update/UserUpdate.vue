@@ -1,3 +1,7 @@
+<!------------------------------------------------------------------------------------>
+<!--                 COMPOSANT MODIFICATION DES DONNEES UTILISATEUR                 -->
+<!------------------------------------------------------------------------------------>
+
 <template>
     <div class="userUpdate" :class="{'userUpdate--sizeUp' : media == 'phone'}">
         <form class="userUpdate__form">
@@ -38,10 +42,10 @@
 
 <script>
 
-//Components import
+//Composant
 import BaseInput from '@/components/Base/BaseInput.vue';
 
-//store and mixins import
+//store et mixins
 import { mapActions, mapState, mapMutations } from 'vuex'
 import { userValidationMixin } from '@/mixins/userValidationMixin'
 import { homePostsMixin } from '@/mixins/homePostsMixin'
@@ -58,13 +62,12 @@ export default {
     components: {
         BaseInput
     },
-    //Props from UpdateMenu
+    //props provenant d'UpdateMenu
     props: {
         media: String,
         selectedPage: String,
         selectedTab: String,
     },
-    
     computed: {
         userDataValidation(){
             if ( this.userLoggedIn.firstName || this.firstNameValid && this.userLoggedIn.lastName || this.lastNameValid && this.userLoggedIn.email || this.emailValid) {
@@ -82,13 +85,13 @@ export default {
         ...mapMutations(['SET_STATUS']),
         ...mapActions(['updateUser','getUserLoggedIn']),
         
-        //User data update
+        //Mise à jour des données utilisateurs
         updateUserInfos() {
             const userId = this.user.userId
             const firstNameUpdate = (this.event.firstName ? this.event.firstName : this.userLoggedIn.firstName)
             const lastNameUpdate = (this.event.lastName ? this.event.lastName : this.userLoggedIn.lastName)
             const emailUpdate = (this.event.email ? this.event.email : this.userLoggedIn.email)
-
+            //si données invalides => erreur
             if(!this.userDataValidation){
                 return this.SET_STATUS('error_update_user')
             }else{
@@ -102,12 +105,11 @@ export default {
                         this.getUserLoggedIn(userId)
                             .then(() => {
                                 console.log("getUserLoggedIn dispatch done !");
-                                //Reload posts components on homePage
+                                //mise à jour des publications
                                 if(this.selectedPage == "homePage"){
                                     this.getAllRecentPosts();
                                     this.getAllPopularPosts();
                                     this.getAllReportedPosts();
-                                //Reload posts components on profilePage
                                 }else if(this.selectedPage == "profilePage"){
                                     const userId = this.$route.params.userId;
                                     this.getPostsByUserId(userId);

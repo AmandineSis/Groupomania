@@ -9,9 +9,7 @@ class Comment {
         this.commentContent = commentContent,
         this.imageUrl = imageUrl
     }
-  
 }
-
 
 /******************************************************************************************** */
 /**Exportation du router                                                                      */

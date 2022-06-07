@@ -1,3 +1,7 @@
+<!------------------------------------------------------------------------------------>
+<!--                 COMPOSANT LOGOUT/SETTINGS/RECHERCHE                            -->
+<!------------------------------------------------------------------------------------>
+
 <template>
     <ul class="settings__list">
         <!-----------Logout--------------->
@@ -6,16 +10,16 @@
                 <font-awesome-icon class="settings__icon" icon="sign-out-alt"  @click="logoutUser"/>
             </router-link>
         </li>
-        <!---------UpdateMenu--------------->
+        <!---------UpdateMenu toggle--------------->
         <li class="settings__list__item">
             <font-awesome-icon class="settings__icon" icon="gear" @click="showUpdate"/>
         </li>
         <!---------SearchUser--------------->
         <li class="settings__list__item">
             <font-awesome-icon class="settings__icon" icon="magnifying-glass" @click="showSearchBar"/>
-
+            
             <transition name="grow">
-                <!---------SearchUser input--------------->
+                <!---------champ de recherche utilisateur--------------->
                 <form  v-if="searchBarIsActive" method="POST"> 
                     <div class="settings__searchForm" >  
                         <BaseInput 
@@ -30,7 +34,7 @@
                         <font-awesome-icon class="settings__searchForm__input__delete" icon="xmark" @click="deleteSearch" />
                     </div>
 
-                    <!---------SearchUser results--------------->
+                    <!---------Résultat de la recherche --------------->
                     <div class="settings__searchForm__results" v-if="searchResults && event.userSearch != ''">
                         <div class="result" v-for="result in searchResults" :key="result.userId" >
                             <router-link  class="result__link" :to="{ name: 'Profile', params: { userId: result.userId }}" :key="$route.params">
@@ -39,17 +43,19 @@
                             </router-link>
                         </div>
                     </div>
-
                 </form>
-
             </transition>    
         </li>
     </ul>
 </template>
 
 <script>
+//composant
 import BaseInput from '@/components/Base/BaseInput.vue'
+
+//store et mixins
 import { mapState, mapActions, mapMutations  } from 'vuex';
+
 export default {
     name: 'SettingsMenuu',
     components: {
@@ -81,7 +87,7 @@ export default {
             this.LOG_OUT();
             this.$router.push('/');
         },
-        //toggle visibility of updateMenu and searchBar
+        //toggle visibilité d'updateMenu et barre de recherche
         showUpdate(){
                 this.UPDATE_MENU_TOGGLE()
                 this.DELETE_USER_CLOSE()
@@ -167,25 +173,25 @@ export default {
 }
 /**********SEARCHBAR ANIMATION********* */  
 .grow-enter-active {
-  animation: bounce-in .8s ease;
+    animation: bounce-in .8s ease;
 }
 .grow-leave-active {
-  animation: bounce-in .8s ease reverse;
+    animation: bounce-in .8s ease reverse;
 }
 
 @keyframes bounce-in {
-  0% {
-    transform: scale(0);
-    width: 0;
-  }
-  70% {
-    transform: scale(1.05);
-    width: 50px;
-  }
-  100% {
-    transform: scale(1);
-    width: 140px;
-  }
+    0% {
+        transform: scale(0);
+        width: 0;
+    }
+    70% {
+        transform: scale(1.05);
+        width: 50px;
+    }
+    100% {
+        transform: scale(1);
+        width: 140px;
+    }
 }
 /********SEARCH RESULTS****** */ 
 .result{

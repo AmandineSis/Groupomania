@@ -1,5 +1,8 @@
+<!------------------------------------------------------------------------------------>
+<!--                 MODFICATION/SUPPRESSION DES COMMENTAIRES                       -->
+<!------------------------------------------------------------------------------------>
+
 <template>
-    <!----------------------------------Post settings-------------------------------------------------->
     <div class="updateCom"  >
         <form class="updateCom__form"  >
             <textarea 
@@ -9,7 +12,7 @@
                 :value="event.comContent = comItem.commentContent"
                 @change="event.comContent = $event.target.value"
             ></textarea>
-            <!------------------------Display/Delete comment image------------------------->
+            <!------------------------Affichage/modification de l'image------------------------->
             <div class="updateCom__form__addedImage" v-if="comItem.imageUrl && !event.comImage.name && comUploadExists" >
                 <p class="updateCom__form__addedImage__name" >{{comItem.imageUrl}}</p>
                 <font-awesome-icon 
@@ -25,16 +28,16 @@
                     @click="deleteUpdatedFile" />
             </div>
             <div class="updateCom__form__valid">
-                <!----------------------------Delete Comment ---------------------------------------->
+                <!----------------------------Suppression du commentaire---------------------------------------->
                 <button 
                     class="updateCom__form__btn updateCom__form__btn__delete" 
                     @click.prevent="deletePostComment(comItem.postId, comItem.comId)" >
                     supprimer
                 </button>
-                <!----------------------------Upload post image ---------------------------------------->
+                <!----------------------------Ajout d'une nouvelle image ---------------------------------------->
                 <label for="uploadUpdatedImage" class="updateCom__form__btn updateCom__form__btn__upload"><font-awesome-icon icon="image" /></label>
                 <input id="uploadUpdatedImage" type="file" @change="updateComImage">
-                <!----------------------------Valid comment update ---------------------------------------->
+                <!----------------------------Validation du commentaire ---------------------------------------->
                 <button
                     class="updateCom__form__btn updateCom__form__btn__submit"
                     type="submit"
@@ -48,7 +51,7 @@
 
 <script>
 
-//store and mixins import
+//store et mixins 
 import { mapState, mapActions } from 'vuex';
 
 export default ({
@@ -157,8 +160,6 @@ export default ({
         display: flex;
         flex-direction: column ;
         justify-content: center;
-       // position: relative;
-       // z-index: 99;
         &__form {
             width:100%;
             height: auto;

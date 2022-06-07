@@ -1,6 +1,10 @@
+<!------------------------------------------------------------------------------------>
+<!--                  COMPOSANT AFFICHAGE/AJOUT DES COMMENTAIRES                    -->
+<!------------------------------------------------------------------------------------>
+
 <template>
     <div class="posts__review__comments__added">   
-        <!-----------Display all comments added-------------->
+        <!-----------Affichage des commentaire de la publication-------------->
         <div class="recentComments" v-if="postComments" >
             <CommentItem 
                 v-for="comItem in postComments " 
@@ -9,12 +13,12 @@
         </div> 
     </div> 
     <div class="posts__review__comments">
-        <!------------- Comments form  -------------->
+        <!------------- Ajout d'un commentaire  -------------->
         <form class="form__comments" >
-            <!-----Comment image upload----->
+            <!-----Upload nouvelle image----->
             <label for="uploadCommentImage" class="form__comments__btn form__comments__btn__upload"><font-awesome-icon icon="image" /></label>
             <input id="uploadCommentImage" type="file" accept="image/jpeg, image/png, image/jpg" @change="addCommentImage" >
-            <!--------Comment content------->
+            <!--------contenu du commentaire------->
             <div class="form__comments__content">
                 <textarea 
                     class="form__comments__input"
@@ -28,7 +32,7 @@
                 <font-awesome-icon class="form__comments__image__icon" icon="xmark" @click="deleteUpload" />
                 </div>
             </div>
-            <!--------Add comment------->
+            <!--------Validation------->
             <button 
                 class="form__comments__btn form__comments__btn__submit" 
                 type="button" 
@@ -40,10 +44,10 @@
 </template>
 
 <script>
-//Components import
+//Composant
 import CommentItem from '@/components/Home/Comments/CommentItem.vue'
 
-//store and mixins import
+//store et  mixins
 import { mapState, mapGetters, mapActions } from 'vuex';
 import { homePostsMixin } from '@/mixins/homePostsMixin'
 import { profilePostsMixin } from '@/mixins/profilePostsMixin'
@@ -70,7 +74,6 @@ export default ({
     },
     mounted: 
         function(){
-			console.log(this.postItem.postId)
             //Loading all recent comments to display
             this.getComments(this.postItem.postId)  
                 .then(()=> {
@@ -93,6 +96,7 @@ export default ({
     },
     methods: {
         ...mapActions('comments',['createComment', 'getComments']),
+        //ajout d'une image au commentaire
         addCommentImage(e){
             this.commentImageUrl = e.target.files[0];
             let types = [ "image/jpg", "image/jpeg", "image/png" ];
@@ -104,9 +108,11 @@ export default ({
                 this.commentImageUrl = ""
             }
         },
+        //supression de l'image uploadée
         deleteUpload(){
             this.commentImageUrl = ''
         },
+        //Ajout d'un commentaire
         addComment(postId) {
             //création de l'objet FormData
             const fdComment = new FormData();
@@ -116,22 +122,18 @@ export default ({
             if (this.commentImageUrl != "") {
                 fdComment.append('image', this.commentImageUrl, this.commentImageUrl.name);
             }
-            console.log(this.comment)
-            console.log(this.commentImageUrl)
 
-            //Si FormData != null 
+            //Si FormData != null => création du commentaire
             if (this.comment || this.commentImageUrl) {
             this.createComment({postId,fdComment})
-                .then(res => {
+                .then(() => {
                     console.log("createComment dispatch done !");
-                    console.log(res.data)
                     this.comment = "";
                     this.commentImageUrl= ""
                     //si res ok, affichage mis à jour des commentaires du post
                         this.getComments(postId)
                             .then(() => {
                                 console.log("getComments dispatch done !");
-                                //this.$emit('closeComments')
                                 }),
                         (err => {
                         console.log(err)
@@ -145,9 +147,9 @@ export default ({
 
 <style scoped lang="scss">
 .recentComments{
-display: flex;
-flex-direction: column;
-margin: 5px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
 }
 .posts__review__comments {
     background-color: #4E5166;
@@ -210,24 +212,20 @@ margin: 5px;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 text-align: left;
+        }
     }
-    }
-    
     &__btn {
         padding: 0px;
-        
         border-radius: 100px;
         height: 30px;
         background-color: #FFFFFF;
         border: solid 1.5px #ee7575;
         color: #ee7575;
-        
         &__upload {
             width: 30px;
             display: flex;
             justify-content: center;
             align-items: center;
-           
         }
         &__submit{
             width: 70px;
@@ -244,10 +242,10 @@ margin: 5px;
 }
 
 #uploadCommentImage {
-       opacity: 0;
-       position: absolute;
-       z-index: -1;
-    }
+    opacity: 0;
+    position: absolute;
+    z-index: -1;
+}
 
     
 </style>

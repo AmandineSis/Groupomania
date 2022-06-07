@@ -61,7 +61,10 @@
 </template>
 
 <script>
+//composant
 import BaseInput from '@/components/Base/BaseInput.vue'
+
+//store et mixins
 import { mapActions } from 'vuex'
 import { userValidationMixin } from '../mixins/userValidationMixin'
 import { passwordValidationMixin } from '@/mixins/passwordValidationMixin'

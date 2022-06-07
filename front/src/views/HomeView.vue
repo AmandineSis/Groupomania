@@ -31,14 +31,14 @@
         :selected-mode="selectedMode" 
         v-once/>
 
-    <!--Toggle between selectedMode -->
+    <!--Toggle entre selectedMode -->
     <div class="toggle">
         <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : selectedMode=='recentPosts'}" @click="showRecentPosts"> Récents </button>
         <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : selectedMode=='popularPosts'}" @click="showPopularPosts"> Populaires </button>
         <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : selectedMode=='reportedPosts'}" @click="showReportedPosts" v-if="user.moderator==1"> Signalés </button>
     </div>
 
-    <!-- Loader visible while loading posts -->
+    <!-- Loader visible pendant le chargement des publications  -->
     <main class="loaderContainer" v-if="status == 'loading'">
         <div class="lds-ring" ><div></div><div></div><div></div><div></div></div>
     </main>
@@ -102,6 +102,7 @@ import { homePostsMixin } from '@/mixins/homePostsMixin'
 
 
 export default {
+    //ajout de mediaqueries
     inject: ["mq"],
     name: 'HomeView',
     mixins : [homePostsMixin],

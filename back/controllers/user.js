@@ -244,13 +244,11 @@ exports.updateUserPicture = (req, res) => {
           return res.status(401).json({ message: "utilisateur non authorisé !" });
         }
 
-        //récupération et suppression de l'image enregistée avant modification sur le serveur
         const defaultPic = `${req.protocol}://${req.get('host')}/images/user/profilePicDefault.jpg`;
         if (userExists.profilePicUrl !== defaultPic) {
-
+        //récupération et suppression de l'image enregistée avant modification sur le serveur
         const filename = userExists.profilePicUrl.split('/user/')[1];
-        
-          fs.unlink(`images/user/${filename}`, () => {
+        fs.unlink(`images/user/${filename}`, () => {
               //mise à jour de la BDD
               profilePicUrl = `${req.protocol}://${req.get('host')}/images/user/${req.file.filename}`;
               let sqlUpdate = 'UPDATE users SET profilePicUrl = ? WHERE userId =' + db.escape(userId);

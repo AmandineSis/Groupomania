@@ -1,5 +1,9 @@
+<!------------------------------------------------------------------------------------>
+<!--                 COMPOSANT AFFICHAGE NOM ET PHOTO DE L'UTILISATEUR              -->
+<!------------------------------------------------------------------------------------>
+
 <template>
-    <!-- UserProfile template on homePage -->
+    <!-- UserProfile sur page d'accueil -->
     <div class="userProfile" v-if="!profileView && !phoneView" >
         <router-link class="userProfile__link" :to="`/profile/${userLoggedIn.userId}`">
             <p class="userProfile__fullname">{{ fullNameUserLoggedIn }}</p> 
@@ -11,11 +15,7 @@
             <img class="userProfile__picture" :class="{'userProfile__picture--sizeUp' : phoneView}" :src="userLoggedIn.profilePicUrl" alt="photo de profil" >
     </router-link>
 
-
-
-
-
-    <!-- UserProfile template on profilePage -->
+    <!-- UserProfile sur page profil -->
     <div class="userProfile" :class="{'userProfile--inBlock' : profileView}" v-else >  
             <p class="userProfile__fullname" :class="{'userProfile__fullname--black' : profileView}" v-if="profileView && $route.params.userId == userLoggedIn.userId">{{ fullNameUserLoggedIn }}</p> 
             <p class="userProfile__fullname" :class="{'userProfile__fullname--black' : profileView}" v-if="profileView && $route.params.userId != userLoggedIn.userId">{{ fullNameUser }}</p> 
@@ -26,6 +26,7 @@
 </template>
 
 <script>
+////store et mixins
 import { mapState, mapGetters, mapActions } from 'vuex';
 
 export default {

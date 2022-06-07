@@ -1,3 +1,7 @@
+<!------------------------------------------------------------------------------------>
+<!--                     COMPOSANT AJOUT D'UNE PUBLICATION                                  -->
+<!------------------------------------------------------------------------------------>
+
 <template>
     <div class="newPost" >
         <form class="form">
@@ -29,6 +33,8 @@
 
 
 <script>
+
+//store et mixins
 import { mapActions } from "vuex";
 import { homePostsMixin } from '@/mixins/homePostsMixin'
 import { profilePostsMixin } from '@/mixins/profilePostsMixin'

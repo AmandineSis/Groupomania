@@ -18,7 +18,6 @@ require('dotenv').config();
 //Récupération de tous les commentaires d'un post
 exports.getAllComments = (req, res, next) => {
     let postId = req.params.postId; 
-    //let sql = 'SELECT * FROM comments ORDER BY comId ASC LIMIT 20';
     let sql = 'SELECT * FROM `comments` JOIN users WHERE comments.postId =' + db.escape(postId) + ' AND comments.userId = users.userId ORDER BY comId ASC LIMIT 20; ';
     db.query(sql, postId, (error, results, fields) => {
         if (error) {
@@ -42,13 +41,10 @@ exports.createComment = (req, res, next) => {
     const commentContent = (req.body.commentContent) ? req.body.commentContent : " ";
     const imageUrl = (req.file) ? `${req.protocol}://${req.get('host')}/images/comment/${req.file.filename}` : undefined;
     const postId = req.params.postId;
-    console.log(commentContent);
-    console.log("----->" + imageUrl);
     //S'il n'y a pas de contenu ET pas d'image => erreur
     if (commentContent == "" && imageUrl == undefined) {
         return res.status(400).json({ message: "Ce post est vide, impossible d'accéder à la requête !" })
     }
-
     //création de l'objet post
     const comment = new Comment(
         req.token.userId,
@@ -61,12 +57,10 @@ exports.createComment = (req, res, next) => {
     db.query(sql, comment, (error, results, fields) => {
         if (error) throw ({ error });
             let sqlPost = 'UPDATE posts SET comments = comments + 1 WHERE postId =' + db.escape(postId);
-
             db.query(sqlPost, postId, (error, results, fields) => {
                 if (error) throw ({ error });
                 res.status(201).json({ message: "nouveau commentaire ajouté !" })
             });
-        
     });
 };
 
@@ -77,26 +71,27 @@ exports.createComment = (req, res, next) => {
 //req.params.comId
 //result = "commentaire modifié !"
 exports.updateComment = (req, res, next) => {
-    
     let imageUrl;
     let imageExists;
-    let newImagePath
+    let newImagePath;
+    //Si envoi d'une nouvelle image => modification de l'URL de l'image
     if(req.file && !req.body.image){
         newImagePath= `${req.protocol}://${req.get('host')}/images/comment/${req.file.filename}`
         imageUrl = newImagePath;
+    //Si envoi de l'image déjà présente dans la BDD => récupération de l'URL de l'image existante
     } else if (req.body.image && !req.file  ){
         imageUrl = req.body.image
         imageExists = true
+    //Si pas d'image envoyée
     } else if (req.body.image && req.body.image == null && !req.file  ){
         imageUrl = null
     } else if (!req.file && !req.body.image || !req.file && req.body.image == null){
         imageUrl = null
     }
     
-    //trouver le commentaire à modifier dans la base de données
     const comId = req.params.comId;
     const userId = req.token.userId;
-    
+    //trouver le commentaire à modifier dans la base de données
     let sql = 'SELECT * FROM comments WHERE comId =' + db.escape(comId);
     db.query(sql, (error, results, fields) => {
         if (error) throw ({ error });
@@ -109,14 +104,14 @@ exports.updateComment = (req, res, next) => {
         if (comExists.userId !== userId && req.token.moderator == 0 ) {
             return res.status(401).json({ message: "utilisateur non authorisé !" });
         }
-
+        //Récupération du contenu mis à jour
         let commentContent = (req.body.commentContent) ? req.body.commentContent : " ";
         
         //S'il n'y a pas de contenu ET pas d'image => erreur
         if (commentContent == " " && imageUrl == null) {
             return res.status(400).json({ message: "Veuillez ajouter un contenu !" })
         }
-       
+
         const comment = new Comment(
             req.token.userId,
             comId,
@@ -124,12 +119,11 @@ exports.updateComment = (req, res, next) => {
             imageUrl
         );
 
-        ////récupération et suppression de l'image avant modification sur le serveur
         if (comExists.imageUrl !== null && imageUrl == newImagePath) {
+            ////récupération et suppression de l'image avant modification sur le serveur
             const filename = comExists.imageUrl.split('/comment/')[1];
             fs.unlink(`images/comment/${filename}`, () => {
                 //mise à jour de la BDD
-                
                 let sqlUpdate = 'UPDATE comments SET commentContent = ?, imageUrl = ? WHERE comId =' + db.escape(comId);
                 db.query(sqlUpdate, [comment.commentContent, comment.imageUrl], (error, results, fields) => {
                     if (error) throw ({ error });
@@ -138,12 +132,10 @@ exports.updateComment = (req, res, next) => {
                 })
             });
         }else if (comExists.imageUrl !== null && imageExists){
-            //mise à jour de la BDD
-            //modification du text uniquement
+            //récupération et suppression de l'image avant modification sur le serveur
             const filename = comExists.imageUrl.split('/comment/')[1];
             fs.unlink(`images/comment/${filename}`, () => {
                 //mise à jour de la BDD
-                
                 let sqlUpdate = 'UPDATE comments SET commentContent = ?, imageUrl = ? WHERE comId =' + db.escape(comId);
                 db.query(sqlUpdate, [comment.commentContent, comment.imageUrl], (error, results, fields) => {
                     if (error) throw ({ error });
@@ -152,47 +144,22 @@ exports.updateComment = (req, res, next) => {
                 })
             });
         } else if (comExists.imageUrl == null && imageUrl == newImagePath){
+            //mise à jour de la BDD
             let sqlUpdate = 'UPDATE comments SET commentContent = ?, imageUrl = ? WHERE comId =' + db.escape(comId);
-                db.query(sqlUpdate, [comment.commentContent, comment.imageUrl], (error, results, fields) => {
-                    if (error) throw ({ error });
-                    console.log(results);
-                    res.status(200).json({ message: "post modifié !" })
-                })
-            } else if (comExists.imageUrl == null && imageUrl == null){
-                let sqlUpdate = 'UPDATE comments SET commentContent = ?, imageUrl = ? WHERE comId =' + db.escape(comId);
-                    db.query(sqlUpdate, [comment.commentContent, comment.imageUrl], (error, results, fields) => {
-                        if (error) throw ({ error });
-                        console.log(results);
-                        res.status(200).json({ message: "commentaire modifié !" })
-                    })
-            }
-        /* if (comExists.imageUrl !== null) {
-            const filename = comExists.imageUrl.split('/comment/')[1];
-            fs.unlink(`images/comment/${filename}`, (error) => {
-                //mise à jour de la BDD
-                const comment = new Comment(
-                    req.token.userId,
-                    comId,
-                    commentContent,
-                    imageUrl
-                )
-                let sqlUpdate = 'UPDATE comments SET commentContent = ?, imageUrl = ? WHERE comId =' + db.escape(comId);
-                db.query(sqlUpdate, [comment.commentContent, comment.imageUrl], (error, results, fields) => {
-                    if (error) throw ({ error });
-                    console.log(results);
-                    res.status(200).json({ message: "commentaire modifié !" })
-                })
-            });
-        }else{
-            
-        //mise à jour de la BDD
-       
-        let sqlUpdate = 'UPDATE comments SET commentContent = ?, imageUrl = ? WHERE comId =' + db.escape(comId);
-        db.query(sqlUpdate, [comment], (error, results, fields) => {
-            if (error) throw ({ error });
-            console.log(results);
-            res.status(200).json({ message: "commentaire modifié !" })
-        })}*/
+            db.query(sqlUpdate, [comment.commentContent, comment.imageUrl], (error, results, fields) => {
+                if (error) throw ({ error });
+                console.log(results);
+                res.status(200).json({ message: "commentaire modifié !" })
+            })
+        } else if (comExists.imageUrl == null && imageUrl == null){
+            //mise à jour de la BDD
+            let sqlUpdate = 'UPDATE comments SET commentContent = ?, imageUrl = ? WHERE comId =' + db.escape(comId);
+            db.query(sqlUpdate, [comment.commentContent, comment.imageUrl], (error, results, fields) => {
+                if (error) throw ({ error });
+                console.log(results);
+                res.status(200).json({ message: "commentaire modifié !" })
+            })
+        }
     });
 };
 
@@ -202,10 +169,10 @@ exports.updateComment = (req, res, next) => {
 //req.params.comId
 //result = "post supprimé !"
 exports.deleteComment = (req, res, next) => {
-   //trouver le commentaire à modifier dans la base de données
     const postId = req.params.postId;
     const comId = req.params.comId;
     const userId = req.token.userId;
+    //trouver le commentaire à modifier dans la base de données
     let sql = 'SELECT * FROM comments WHERE comId =' + db.escape(comId);
     db.query(sql, (error, results, fields) => {
         if (error) throw ({ error });
@@ -227,12 +194,11 @@ exports.deleteComment = (req, res, next) => {
                 db.query(sqlDelete, (error, results, fields) => {
                     if (error) throw ({ error });
                     let sqlPost = 'UPDATE posts SET comments = comments - 1 WHERE postId =' + db.escape(postId);
-           
-                db.query(sqlPost, (error, results, fields) => {
-                    if (error) throw ({ error });
-                    res.status(201).json({ message: "commentaire supprimé !" })
+                    db.query(sqlPost, (error, results, fields) => {
+                        if (error) throw ({ error });
+                        res.status(201).json({ message: "commentaire supprimé !" })
+                    });
                 });
-        });
             });
         }else{
         //mise à jour de la BDD
@@ -240,7 +206,6 @@ exports.deleteComment = (req, res, next) => {
         db.query(sqlDelete, (error, results, fields) => {
             if (error) throw ({ error });
             let sqlPost = 'UPDATE posts SET comments = comments - 1 WHERE postId =' + db.escape(postId);
-           
             db.query(sqlPost, (error, results, fields) => {
                 if (error) throw ({ error });
                 res.status(201).json({ message: "commentaire supprimé !" })

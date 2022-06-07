@@ -1,3 +1,7 @@
+<!------------------------------------------------------------------------------------>
+<!--                 COMPOSANT SUPPRESSION DE L'UTILISATEUR                         -->
+<!------------------------------------------------------------------------------------>
+
 <template>
     <div class="deleteUser" :class="{'deleteUser--sizeUp' : media == 'phone'}">
         <p class="deleteUser__text" v-if="updateMenuIsActive">
@@ -13,11 +17,13 @@
             <p v-if="error.passwordError">Mot de passe invalide</p>
         </form>
 
-
         <div class="deleteUser__form__valid">
-            <button class="deleteUser__form__valid__button" :class="{'deleteUser__form__valid__button--disabled' : !event.password}" type= "button" @click="deleteAccount" > Valider
-                <!-- <span v-if="status == 'loading'">Modification en cours...</span>
-                <span v-else>Modifié</span> -->
+            <button 
+                class="deleteUser__form__valid__button" 
+                :class="{'deleteUser__form__valid__button--disabled' : !event.password}" 
+                type= "button" 
+                @click="deleteAccount" >
+                Valider
             </button>
     
         </div>
@@ -25,10 +31,15 @@
 </template>
 
 <script>
+//composant
 import BaseInput from '@/components/Base/BaseInput.vue';
+
+//store et mixins
 import {  mapState, mapMutations, mapActions } from 'vuex'
+
 export default {
     name: 'DeleteAccount',
+    //props provenant d'UpdateMenu
     props: {
         media: String
     },
@@ -80,7 +91,6 @@ export default {
             }else{
                 window.alert('Veuillez entrer un mot de passe !');
             }
-            
         }           
     }
 }
@@ -126,7 +136,6 @@ export default {
                 &--disabled{
                     background-color: grey;
                 }
-                
             }
         }
     }   

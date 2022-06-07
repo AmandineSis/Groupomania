@@ -1,3 +1,7 @@
+<!------------------------------------------------------------------------------------>
+<!--                 COMPOSANT MODIFICATION DE LA PHOTO DE PROFILE                  -->
+<!------------------------------------------------------------------------------------>
+
 <template>
     <div class="pictureUpdate" :class="{'pictureUpdate--sizeUp' : media == 'phone'}" >
         <form class="pictureUpdate__form">
@@ -27,6 +31,7 @@ export default {
         homePostsMixin,
         profilePostsMixin
     ],
+    //props provenant d'UpdateMenu
     props: {
         media: String,
         selectedPage: String,
@@ -69,6 +74,7 @@ export default {
                         this.getUserLoggedIn({ userId })
                             .then(() => {
                                 console.log("getUserLoggedIn dispatch done !");
+                                //mise à jour des publications
                                 if(this.selectedPage == "homePage"){
                                     this.getAllRecentPosts();
                                     this.getAllPopularPosts();
@@ -146,20 +152,20 @@ export default {
 }
 .form__btn{
     display: block;
-        font-size: 1em;
-                color: white;
-                width: 90%;
-                height: 25px;
-                margin: 3px auto;
-                border-radius: 5px;
-                background-color: #ee7575;
-                transition: .4s background-color;
-                text-align: center;
-                padding: 4px;
-                &:hover {
-                    background-color: #a71e05;
-                    color: #ffffff;
-                }    
+    font-size: 1em;
+    color: white;
+    width: 90%;
+    height: 25px;
+    margin: 3px auto;
+    border-radius: 5px;
+    background-color: #ee7575;
+    transition: .4s background-color;
+    text-align: center;
+    padding: 4px;
+    &:hover {
+        background-color: #a71e05;
+        color: #ffffff;
+    }    
 }
 
 #uploadImage {

@@ -6,13 +6,6 @@ export default {
         postComments: []
     },
     getters:{
-       /* postCommentsLength(state){
-            if(state.postComments){
-                return state.postComments.length
-            }else{
-            return 0
-            }
-        },*/
     },
     mutations:{
         POST_COMMENTS(state, postComments){

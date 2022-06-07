@@ -1,3 +1,7 @@
+<!------------------------------------------------------------------------------------>
+<!--                 COMPOSANT MODIFICATION MOT DE PASSE                            -->
+<!------------------------------------------------------------------------------------>
+
 <template>
     <div class="passwordUpdate"  :class="{'passwordUpdate--sizeUp' : media == 'phone'}">
         <form class="passwordUpdate__form">
@@ -30,6 +34,7 @@
                 </button>
             </div>
         </form>
+        <!--------------Validation du mot de passe---------------->
         <div class="passwordUpdate__form__valid">
             <button class="passwordUpdate__form__valid__button" :class="{'passwordUpdate__form__valid__button--disabled' : !newPasswordValid}" type= "button" @click="updateNewPassword" > Valider
             </button>
@@ -39,13 +44,18 @@
 </template>
 
 <script>
+//composant
+import BaseInput from '@/components/Base/BaseInput.vue';
+
+//store et mixins
 import { mapActions } from 'vuex'
 import { passwordValidationMixin } from '@/mixins/passwordValidationMixin'
-import BaseInput from '@/components/Base/BaseInput.vue';
+
 export default {
     
     name: 'PasswordUpdate',
     mixins: [passwordValidationMixin],
+    //props provenant d'UpdateMenu
     props: {
         media: String
     },
@@ -63,7 +73,7 @@ export default {
     methods: {  
         ...mapActions(['updatePassword']),
 
-        //Toggle passwords visibility
+        //Toggle visibilité du mot de passe
         switchVisibilityOld(){
             this.showOldPassword= !this.showOldPassword;
             this.oldPasswordFieldType = this.oldPasswordFieldType === "password" ? "text" : "password";
@@ -73,7 +83,7 @@ export default {
             this.newPasswordFieldType = this.newPasswordFieldType === "password" ? "text" : "password";
         },
         
-        //Password update
+        //Mise à jour du mot de passe
         updateNewPassword(){
             const oldPassword = this.event.oldPassword;
             const newPassword = this.event.newPassword;

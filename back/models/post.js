@@ -8,9 +8,7 @@ class Post {
         this.content = content,
         this.imageUrl = imageUrl
     }
-  
 }
-
 
 /******************************************************************************************** */
 /**Exportation du router                                                                      */

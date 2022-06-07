@@ -1,3 +1,7 @@
+<!------------------------------------------------------------------------------------>
+<!--                     COMPOSANT PUBLICATIONS                                     -->
+<!------------------------------------------------------------------------------------>
+
 <template>
 <!---------------Reported posts style visible to moderator only---------------------------->
     <div class="posts"  :class="{'posts__reported' : postItem.report>=1 && user.moderator == 1 && selectedMode != 'reportedPosts'} ">
@@ -101,6 +105,7 @@ export default ({
         PostSettings,
         AddComment
     },
+    //props provenant de HomeView/ProfileView
     props: {
         postItem: Object,
         currentPage: String,
@@ -140,16 +145,16 @@ export default ({
                 postId,
                 like: 1
             };
-            //Add/Remove like from post
+            //Ajout/Suppression d'un like
             this.likePost(postLike)
                 .then(() => {
                     console.log("likePost dispatch done !")
-                    //PostItem refreshed
+                    //Mise à jour des publications sur la page d'acceuil
                     if(this.currentPage == "homePage"){
                         this.getAllRecentPosts();
                         this.getAllPopularPosts();
                         this.getAllReportedPosts();
-                    //Reload posts components on profilePage
+                    //Mise à jour des publications sur la page profil
                     }else if(this.currentPage == "profilePage"){
                         const userId = this.$route.params.userId;
                         this.getPostsByUserId(userId);
@@ -158,7 +163,7 @@ export default ({
                 })
         },
         displayComment(postId){ 
-            //toggle visibility of comment section         
+            //toggle visibilité des commentaires         
             this.showComment= !this.showComment;
             if(this.showComment){
                 this.getComments(postId)  
@@ -263,7 +268,7 @@ export default ({
     }
     &__content{
         height: auto;
-        
+        box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
         &__update{
             height: auto;
         }

@@ -1,6 +1,8 @@
+<!------------------------------------------------------------------------------------>
+<!--                         COMPOSANT MENU UPDATE                                  -->
+<!------------------------------------------------------------------------------------>
+
 <template>
-    
-    
     <div class="updateMenu" :class="{'updateMenu--sizeUp' : phoneView == 'phone'}">
         <div class="updateMenu__top">
             <button class="updateMenu__btn updateMenu__btn--close " :class="{'updateMenu__selection__btn--sizeUp' : phoneView}" v-if="user.userId != 1"  @click="closeUpdate"><font-awesome-icon class="updateMenu__close__icon" icon="xmark"/></button>
@@ -18,25 +20,24 @@
             <PictureUpdate v-if="menu == 'profilePicture'" :media='phoneView' :selectedPage='currentPage' :selectedTab='selectedMode'/>
             <DeleteAccount v-if="menu == 'deleteAccount'" :media='phoneView'/>
         </div>
-            <!-- <div class="updateMenu__close" @click="closeUpdate" v-if="!phoneView">
-                <font-awesome-icon class="updateMenu__close__icon" icon="xmark"/>Fermer
-            </div> -->
     </div> 
 </template>
 
 <script>
 
-//Components import
+//Composant
 import UserUpdate from '@/components/Home/Nav/Update/UserUpdate.vue';
 import PasswordUpdate from '@/components/Home/Nav/Update/PasswordUpdate.vue';
 import PictureUpdate from '@/components/Home/Nav/Update/PictureUpdate.vue';
 import DeleteAccount from '@/components/Home/Nav/Update/DeleteAccount.vue';
 
-//store import
+//store et mixins
 import { mapState, mapMutations } from 'vuex';
+
 export default {
 
     name: 'UpdateMenu',
+    //props provenant de HomeView
     props: {
         phoneView: String,
         currentPage: String,

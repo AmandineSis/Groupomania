@@ -1,12 +1,12 @@
 <template>
     <header class="mainHeader" v-once>
-         <img class="mainHeader__logo" alt="logo groupomania" src="@/assets/images/logo.png">
+        <img class="mainHeader__logo" alt="logo groupomania" src="@/assets/images/logo.png">
     </header>
 </template>
 
 <script>
 export default {
-  name: 'MainHeader'
+    name: 'MainHeader'
 }
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->

@@ -1,13 +1,20 @@
+<!------------------------------------------------------------------------------------>
+<!--                            COMPOSANT COMMENTAIRES                              -->
+<!------------------------------------------------------------------------------------>
+
 <template>
+
 <div class="CommentItem">
+	<!----Affichage de la photo de profil visible sur tablette et desktop ----->
 	<router-link :to="`/profile/${comItem.userId}`" v-if="mq.current != 'phone'">
 		<img class="form__comments__profile" :src="comItem.profilePicUrl" alt="" v-if="mq.current != 'phone'">
 	</router-link>
-	
+	<!----Affichage du nom de l'utilisateur ----->
 	<div class="form__comments__content">
 		<router-link :to="`/profile/${comItem.userId}`" v-if="mq.current == 'phone'">
 			<p class="form__comments__content__user" >{{ comItem.firstName }} {{ comItem.lastName }}</p>
 		</router-link>
+		<!----Contenu du commentaire----->
 		<div class="form__comments__container">	
 			<div class="form__comments__popup" v-if="showComSettings && comItem">
 				<ComSettings 
@@ -29,6 +36,7 @@
 			</div>
 		</div>	
 	</div>
+	<!----Settings visibles uniquement par le propriétaire du commentaire ou le modérateur ----->
 	<div class="form__comments__settings">    
 		<span class="form__comments__settings__nav" @click="openComSettings" >
             <font-awesome-icon 
@@ -42,9 +50,14 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex';
+//Composant
 import ComSettings from '@/components/Home/Comments/ComSettings.vue'
+
+//store et mixins
+import { mapGetters, mapState } from 'vuex';
+
 export default ({
+	//ajout de mediaqueries
     inject: ["mq"],
 	name: 'CommentItem',
 	components: {
@@ -58,13 +71,11 @@ export default ({
 			//mode: '',
 			comment: "",
 			commentImageUrl: "",
-
 			updatedComContent:'',
 			updatedComImage:'',
 			showComSettings: false
 		}
 	},
-	
 	computed: {
 		...mapState({
 			user: 'user',
@@ -190,15 +201,9 @@ export default ({
 		}
 	}
 }
-.recentComments{
-display: flex;
-margin: 5px;
-}
 #uploadCommentImage {
 	opacity: 0;
     position: absolute;
     z-index: -1;
-	}
-
-
+}
 </style>

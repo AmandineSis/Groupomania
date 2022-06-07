@@ -20,17 +20,19 @@
     </transition>
 
     <AddPost 
+        :phoneView="mq.current"
         :current-page="currentPage" 
         :selected-mode="selectedMode" 
         v-if="userIdProfile == user.userId"
         v-once/> 
-
+        
+    <!--Toggle entre selectedMode -->
     <div class="toggle">
         <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : selectedMode=='recentUserPosts'}" @click="getUserRecentPosts"> Récents </button>
         <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : selectedMode=='popularUserPosts'}" @click="getUserPopularPosts"> Populaires </button>
     </div>
 
-    <!--Loader-->
+    <!-- Loader visible pendant le chargement des publications -->
     <main class="loaderContainer" v-if="status == 'loading'">
         <div class="lds-ring" ><div></div><div></div><div></div><div></div></div>
     </main>
@@ -81,6 +83,7 @@ import { profilePostsMixin } from '../mixins/profilePostsMixin'
 
 
 export default {
+    //ajout de mediaqueries
     inject: ["mq"],
     name: 'profileView',
     mixins: [profilePostsMixin],
