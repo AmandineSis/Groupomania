@@ -1,15 +1,18 @@
 <template>
 <div class="CommentItem">
-	<router-link :to="`/profile/${comItem.userId}`">
-		<img class="form__comments__profile" :src="comItem.profilePicUrl" alt="">
+	<router-link :to="`/profile/${comItem.userId}`" v-if="mq.current != 'phone'">
+		<img class="form__comments__profile" :src="comItem.profilePicUrl" alt="" v-if="mq.current != 'phone'">
 	</router-link>
+	
 	<div class="form__comments__content">
-		<p class="form__comments__content__user">{{ comItem.firstName }} {{ comItem.lastName }}</p>
+		<router-link :to="`/profile/${comItem.userId}`" v-if="mq.current == 'phone'">
+			<p class="form__comments__content__user" >{{ comItem.firstName }} {{ comItem.lastName }}</p>
+		</router-link>
 		<div class="form__comments__container">	
 			<div class="form__comments__popup" v-if="showComSettings && comItem">
 				<ComSettings 
 					:comItem="comItem"
-					@hide-com-settings="closeComSettings"/>
+					@hideComSettings="closeComSettings"/>
 			</div>
 			<div v-if="!showComSettings">
 				<div 
@@ -42,6 +45,7 @@
 import { mapGetters, mapState } from 'vuex';
 import ComSettings from '@/components/Home/Comments/ComSettings.vue'
 export default ({
+    inject: ["mq"],
 	name: 'CommentItem',
 	components: {
 		ComSettings

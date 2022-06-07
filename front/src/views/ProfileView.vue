@@ -8,8 +8,9 @@
     <UserProfile :profileView="true"/>
     <!-----Delete button only visible to moderator and not showing on moderator profile------->
     <button class="button" v-if="user.moderator == 1 && userIdProfile !== 1" @click="showDeleteBlock" >Supprimer cet utilisateur</button>
-    <AdminDeleteContainer v-if="deleteBlock"/>
-
+    <transition name="bounce">
+        <AdminDeleteContainer v-if="deleteUserMenu"/>
+    </transition>
     <transition name="bounce">
         <UpdateMenu 
             v-if="updateMenu" 
@@ -116,14 +117,17 @@ export default {
             user: 'user'
         }),
         ...mapState('toggle',{
-            updateMenu: 'updateMenuIsActive'
+            updateMenu: 'updateMenuIsActive',
+            deleteUserMenu: 'deleteUserBlockIsActive'
         }),
     },
     methods: {
-        ...mapMutations('toggle',['UPDATE_MENU_TOGGLE']),
+        ...mapMutations('toggle',['UPDATE_MENU_TOGGLE','UPDATE_MENU_CLOSE','DELETE_USER_CLOSE', 'DELETE_USER_TOGGLE']),
         //toggle delete block
         showDeleteBlock(){
-            this.deleteBlock = !this.deleteBlock;
+            //this.deleteBlock = !this.deleteBlock;
+            this.UPDATE_MENU_CLOSE()
+            this.DELETE_USER_TOGGLE()
         },
         getUserRecentPosts(){
             this.selectedMode='recentUserPosts';
@@ -136,7 +140,15 @@ export default {
             console.log(this.mode);
             this.getAllUserPopularPosts(userId)
         },
-    }
+    },
+
+    beforeUnmount:
+        function(){
+            this.UPDATE_MENU_CLOSE();
+            this.DELETE_USER_CLOSE();
+        }
+
+    
 }
 </script>
 

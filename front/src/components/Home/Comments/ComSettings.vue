@@ -78,7 +78,7 @@ export default ({
             let types = [ "image/jpg", "image/jpeg", "image/png" ];
             // Check if image.type is valid
             if (types.includes(this.event.comImage.type)) {
-                    console.log("click ok!");
+                    console.log("fichier autorisé!");
             }else{
                 window.alert("Ce type de fichier n'est pas autorisé")
                 this.event.comImage = ""

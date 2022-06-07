@@ -70,7 +70,9 @@
                     </div>            
                 </footer>
                 <div class="comment__container" v-if="showComment" >
-                    <AddComment :page="currentPage" :postItem="postItem"  /> 
+                    <AddComment 
+                        :page="currentPage" 
+                        :postItem="postItem" /> 
                 </div>
             </div>
         </div>

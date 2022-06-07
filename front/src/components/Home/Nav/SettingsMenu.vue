@@ -75,7 +75,7 @@ export default {
     methods: {
         ...mapActions(['searchUser']),
         ...mapMutations(['LOG_OUT', 'CLEAR_SEARCH']),
-        ...mapMutations('toggle',['UPDATE_MENU_TOGGLE','SEARCH_BAR_TOGGLE']),
+        ...mapMutations('toggle',['UPDATE_MENU_TOGGLE','SEARCH_BAR_TOGGLE', 'DELETE_USER_CLOSE']),
 
         logoutUser(){
             this.LOG_OUT();
@@ -84,6 +84,7 @@ export default {
         //toggle visibility of updateMenu and searchBar
         showUpdate(){
                 this.UPDATE_MENU_TOGGLE()
+                this.DELETE_USER_CLOSE()
             },
         showSearchBar(){
                 this.SEARCH_BAR_TOGGLE()

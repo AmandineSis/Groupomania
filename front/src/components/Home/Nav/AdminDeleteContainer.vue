@@ -10,7 +10,7 @@ import DeleteAccount from '@/components/Home/Nav/Update/DeleteAccount.vue';
 import { mapState } from 'vuex';
 export default {
 
-    name: 'DeleteAccount',
+    name: 'AdminDeleteContainer',
     components: {
         DeleteAccount
     },
@@ -29,7 +29,7 @@ export default {
     border: 2px solid #999999;
         background-color: white;
         margin: 30px auto;
-        width: 500px;
+        max-width: 500px;
         height: 130px;
         align-items: center;
         border-radius: 20px;
