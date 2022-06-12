@@ -180,50 +180,40 @@ exports.updatePost = (req, res, next) => {
             content,
             imageUrl
         );
-        
+        let sqlUpdate = 'UPDATE posts SET content = ?, imageUrl = ?, comments = 0, likes =0 WHERE postId =' + db.escape(postId);
+        let sqlLike = 'DELETE FROM likes WHERE postId =' + db.escape(postId);
+        let sqlCom = 'DELETE FROM comments WHERE postId =' + db.escape(postId);
+
         if (postExists.imageUrl !== null && imageUrl == newImagePath) {
             ////récupération et suppression de l'image avant modification sur le serveur
             const filename = postExists.imageUrl.split('/post/')[1];
             fs.unlink(`images/post/${filename}`, () => {
                 //mise à jour de la BDD
-                let sqlUpdate = 'UPDATE posts SET content = ?, imageUrl = ?, comments = 0, likes =0 WHERE postId =' + db.escape(postId);
                 db.query(sqlUpdate, [post.content, post.imageUrl], (error, results, fields) => {
                     if (error) throw ({ error });
-                    console.log(results);
-                    res.status(200).json({ message: "post modifié !" })
+                    db.query(sqlLike, (error, results, fields) => {
+                        if (error) throw ({ error });
+                        db.query(sqlCom, (error, results, fields) => {
+                            if (error) throw ({ error });
+                            res.status(200).json({ message: "post modifié !" });
+                        });
+                    });
                 })
             });
-        }else if (postExists.imageUrl !== null && imageExists){
-            ////récupération et suppression de l'image avant modification sur le serveur
-            const filename = postExists.imageUrl.split('/post/')[1];
-            fs.unlink(`images/post/${filename}`, () => {
-                //mise à jour de la BDD
-                let sqlUpdate = 'UPDATE posts SET content = ?, imageUrl = ?, comments = 0, likes =0 WHERE postId =' + db.escape(postId);
+        } else {
                 db.query(sqlUpdate, [post.content, post.imageUrl], (error, results, fields) => {
                     if (error) throw ({ error });
-                    console.log(results);
-                    res.status(200).json({ message: "post modifié !" })
-                })
-            });
-        } else if (postExists.imageUrl == null && imageUrl == newImagePath){
-            //mise à jour de la BDD
-            let sqlUpdate = 'UPDATE posts SET content = ?, imageUrl = ?, comments = 0, likes =0 WHERE postId =' + db.escape(postId);
-                db.query(sqlUpdate, [post.content, post.imageUrl], (error, results, fields) => {
-                    if (error) throw ({ error });
-                    console.log(results);
-                    res.status(200).json({ message: "post modifié !" })
-                })
-        } else if (postExists.imageUrl == null && imageUrl == null){
-            //mise à jour de la BDD
-            let sqlUpdate = 'UPDATE posts SET content = ?, imageUrl = ?, comments = 0, likes =0 WHERE postId =' + db.escape(postId);
-                db.query(sqlUpdate, [post.content, post.imageUrl], (error, results, fields) => {
-                    if (error) throw ({ error });
-                    console.log(results);
-                    res.status(200).json({ message: "post modifié !" })
+                    db.query(sqlLike, (error, results, fields) => {
+                        if (error) throw ({ error });
+                        db.query(sqlCom, (error, results, fields) => {
+                            if (error) throw ({ error });
+                            res.status(200).json({ message: "post modifié !" });
+                        });
+                    });
                 })
         }
-});
-};
+
+})};
 
 //suppression d'un post
 //req.token.userId

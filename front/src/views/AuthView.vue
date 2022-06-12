@@ -15,6 +15,7 @@
                 v-on:change="isFirstNameValid"
                 label="Prénom"
                 type="text"
+                required
             />
             <p class="form__input__error" v-if="mode == 'signup' && error.firstNameError">Veuillez saisir au moins 3 caratères alphabétiques</p>
             <BaseInput
@@ -24,6 +25,7 @@
                 v-on:change="isLastNameValid"
                 label="Nom"
                 type="text"
+                required
             />
             <p class="form__input__error" v-if="mode == 'signup' && error.lastNameError">Veuillez saisir au moins 3 caratères alphabétiques</p>
             <BaseInput
@@ -32,6 +34,7 @@
                 v-on:change="isEmailValid"
                 label="Email"
                 type="email"
+                required
             />
             <p class="form__input__error" v-if="mode == 'signup' && error.emailError">Veuillez saisir un email valide</p>
             <p class="form__input__error" v-if="mode == 'signup' && error.emailExists">Cet email existe déjà</p>
@@ -41,6 +44,7 @@
                 v-on:change="isPasswordValid"
                 label="Mot de passe"
                 type="password"
+                required
             />
             <p class="form__input__error" v-if="mode == 'signup' && error.passwordError">Veuillez saisir au moins 8 caratères, une majuscule, une minuscule, un chiffre et un caractère spécial</p>
             <p class="form__input__error" v-if="mode == 'login' && status == 'error_login'">identifiants de connexion incorrects</p>

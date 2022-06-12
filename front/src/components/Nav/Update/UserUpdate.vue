@@ -8,27 +8,27 @@
             <BaseInput
                 class="userUpdate__form__input"
                 :class="{'userUpdate__form__input--sizeUp' : media == 'phone'}"
-                :value="userLoggedIn.firstName"
-                @input="event.firstName = $event.target.value"
+                :value="event.firstName = userLoggedIn.firstName"
                 @change="isFirstNameValid"
+                @input="event.firstName = $event.target.value"
                 type="text"
             /> 
             <p class="userUpdate__form__input__error" v-if="error.firstNameError">Veuillez saisir au moins 3 caratères alphabétiques</p>
             <BaseInput
                 class="userUpdate__form__input"
                 :class="{'userUpdate__form__input--sizeUp' : media == 'phone'}"
-                :value="userLoggedIn.lastName"
-                @input="event.lastName = $event.target.value"
+                :value="event.lastName = userLoggedIn.lastName"
                 @change="isLastNameValid"
+                @input="event.lastName = $event.target.value "
                 type="text"
             />
             <p class="userUpdate__form__input__error" v-if="error.lastNameError">Veuillez saisir au moins 3 caratères alphabétiques</p>
             <BaseInput
                 class="userUpdate__form__input"
                 :class="{'userUpdate__form__input--sizeUp' : media == 'phone'}"
-                :value="userLoggedIn.email"
-                @input="event.email = $event.target.value"
+                :value="event.email = userLoggedIn.email"
                 @change="isEmailValid"
+                @input="event.email = $event.target.value "
                 type="email"
             />
             <p class="userUpdate__form__input__error" v-if="error.emailError">Veuillez saisir un email valide</p>
@@ -68,12 +68,13 @@ export default {
         selectedPage: String,
         selectedTab: String,
     },
+    
     computed: {
         userDataValidation(){
-            if ( this.userLoggedIn.firstName || this.firstNameValid && this.userLoggedIn.lastName || this.lastNameValid && this.userLoggedIn.email || this.emailValid) {
+            if ( this.firstNameUpdateValid &&  this.lastNameUpdateValid && this.emailUpdateValid) {
                 return true;
             }else{
-                return false
+                return false;
             }
         },
         ...mapState({
@@ -88,17 +89,18 @@ export default {
         //Mise à jour des données utilisateurs
         updateUserInfos() {
             const userId = this.user.userId
-            const firstNameUpdate = (this.event.firstName ? this.event.firstName : this.userLoggedIn.firstName)
-            const lastNameUpdate = (this.event.lastName ? this.event.lastName : this.userLoggedIn.lastName)
-            const emailUpdate = (this.event.email ? this.event.email : this.userLoggedIn.email)
-            //si données invalides => erreur
+            this.firstNameUpdate = (this.event.firstName !== this.userLoggedIn.firstName) ? this.event.firstName : this.userLoggedIn.firstName;
+            this.lastNameUpdate = (this.event.lastName !== this.userLoggedIn.lastName) ? this.event.lastName : this.userLoggedIn.lastName;
+            this.emailUpdate = (this.event.email !==  this.userLoggedIn.email)? this.event.email : this.userLoggedIn.email;
+            
+            //si données invalides => erreur*/
             if(!this.userDataValidation){
                 return this.SET_STATUS('error_update_user')
             }else{
                 this.updateUser({userId,
-                        firstName: firstNameUpdate,
-                        lastName: lastNameUpdate,
-                        email: emailUpdate})
+                        firstName: this.event.firstName,
+                        lastName: this.event.lastName,
+                        email: this.event.email})
                     .then((() => {
                         console.log('updateUser dispatch done');
                         window.alert('Modifications effectuées !');

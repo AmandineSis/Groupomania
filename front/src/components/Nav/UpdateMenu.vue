@@ -5,7 +5,7 @@
 <template>
     <div class="updateMenu" :class="{'updateMenu--sizeUp' : phoneView == 'phone'}">
         <div class="updateMenu__top">
-            <button class="updateMenu__btn updateMenu__btn--close " :class="{'updateMenu__selection__btn--sizeUp' : phoneView}" v-if="user.userId != 1"  @click="closeUpdate"><font-awesome-icon class="updateMenu__close__icon" icon="xmark"/></button>
+            <button class="updateMenu__btn updateMenu__btn--close " :class="{'updateMenu__selection__btn--sizeUp' : phoneView}" @click="closeUpdate"><font-awesome-icon class="updateMenu__close__icon" icon="xmark"/></button>
         </div>
         <div class="updateMenu__main" :class="{'updateMenu__main--sizeUp' : phoneView == 'phone'}">
 
@@ -26,10 +26,10 @@
 <script>
 
 //Composant
-import UserUpdate from '@/components/Home/Nav/Update/UserUpdate.vue';
-import PasswordUpdate from '@/components/Home/Nav/Update/PasswordUpdate.vue';
-import PictureUpdate from '@/components/Home/Nav/Update/PictureUpdate.vue';
-import DeleteAccount from '@/components/Home/Nav/Update/DeleteAccount.vue';
+import UserUpdate from '@/components//Nav/Update/UserUpdate.vue';
+import PasswordUpdate from '@/components//Nav/Update/PasswordUpdate.vue';
+import PictureUpdate from '@/components//Nav/Update/PictureUpdate.vue';
+import DeleteAccount from '@/components//Nav/Update/DeleteAccount.vue';
 
 //store et mixins
 import { mapState, mapMutations } from 'vuex';

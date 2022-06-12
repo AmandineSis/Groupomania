@@ -10,7 +10,7 @@
 
 <script>
 //composant
-import DeleteAccount from '@/components/Home/Nav/Update/DeleteAccount.vue';
+import DeleteAccount from '@/components//Nav/Update/DeleteAccount.vue';
 
 ////store et mixins
 import { mapState } from 'vuex';

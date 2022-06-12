@@ -68,6 +68,10 @@ export default {
             state.postsByDate.splice(index, 1, postContent);
             state.postsByDate.splice(index, 1, postImage);
         },
+       /* UPDATE_COMMENTS__NUMBER(state, postByDate, postId){
+            let index = state.postsByDate.findIndex(postsByDate => postsByDate.postId == postId);
+            state.postByDate[index].likes += 1;
+        },*/
         DELETE_POST(state, postId ){
             let index = state.postsByDate.findIndex(postsByDate => postsByDate.postId == postId);
             state.postsByDate.splice(index, 1);

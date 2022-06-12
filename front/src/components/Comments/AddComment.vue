@@ -45,7 +45,7 @@
 
 <script>
 //Composant
-import CommentItem from '@/components/Home/Comments/CommentItem.vue'
+import CommentItem from '@/components//Comments/CommentItem.vue'
 
 //store et  mixins
 import { mapState, mapGetters, mapActions } from 'vuex';

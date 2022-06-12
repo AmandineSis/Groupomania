@@ -90,11 +90,11 @@
 <script>
 
 //Components import
-import SettingsMenu from '@/components/Home/Nav/SettingsMenu.vue'
-import UserProfile from '@/components/Home/Nav/UserProfile.vue'
-import UpdateMenu from '@/components/Home/Nav/UpdateMenu.vue'
-import AddPost from '@/components/Home/Posts/AddPost.vue'
-import PostItem from '@/components/Home/Posts/PostItem.vue'
+import SettingsMenu from '@/components//Nav/SettingsMenu.vue'
+import UserProfile from '@/components//Nav/UserProfile.vue'
+import UpdateMenu from '@/components//Nav/UpdateMenu.vue'
+import AddPost from '@/components//Posts/AddPost.vue'
+import PostItem from '@/components//Posts/PostItem.vue'
 
 //store and mixins import
 import { mapState, mapMutations } from 'vuex';

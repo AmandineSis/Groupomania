@@ -4,7 +4,7 @@
 
 <template>
 <!---------------Reported posts style visible to moderator only---------------------------->
-    <div class="posts"  :class="{'posts__reported' : postItem.report>=1 && user.moderator == 1 && selectedMode != 'reportedPosts'} ">
+    <div class="posts"  :class="{'posts__reported' : postItem.report>=1 && user.moderator == 1 && selectedMode != 'reportedPosts'}" ref="postItem.postId">
 
         <header class="posts__header"  >
             <!-----------------Link to user profilePage---------------->
@@ -87,8 +87,8 @@
 <script>
 
 //Components import
-import PostSettings from '@/components/Home/Posts/PostSettings.vue'
-import AddComment from '@/components/Home/Comments/AddComment.vue'
+import PostSettings from '@/components//Posts/PostSettings.vue'
+import AddComment from '@/components//Comments/AddComment.vue'
 
 //store and mixins import
 import { mapState, mapGetters, mapActions  } from 'vuex';
@@ -108,6 +108,7 @@ export default ({
     //props provenant de HomeView/ProfileView
     props: {
         postItem: Object,
+        index: Number,
         currentPage: String,
         phoneView: String,
         selectedMode: String,
@@ -123,12 +124,12 @@ export default ({
         ...mapState({
             user: 'user',
         }),
-        ...mapState('comments',{
-            CommentItem: 'postComments'
-        }),
         ...mapGetters({
-            fullname: 'fullname',
-        })
+            fullname: 'fullname'
+        }),
+        ...mapGetters('comments', {
+            commentLength: 'postCommentsLength'
+            })
     },
     methods: {
         ...mapActions('posts',['likePost','deletePost','reportPost','removeReport']),
@@ -140,11 +141,20 @@ export default ({
         closeSettings(){
             this.showPostSettings = false;
         },
+        scrollToElement() {
+            const el = this.$refs.scrollToMe;
+            if (el) {
+                // Use el.scrollIntoView() to instantly scroll to the element
+                el.scrollIntoView({behavior: 'smooth'});
+            }
+        },
         addLikePost(postId){
             const postLike = {
                 postId,
                 like: 1
             };
+           // let element;
+           // let top;
             //Ajout/Suppression d'un like
             this.likePost(postLike)
                 .then(() => {
@@ -154,11 +164,19 @@ export default ({
                         this.getAllRecentPosts();
                         this.getAllPopularPosts();
                         this.getAllReportedPosts();
+                        //this.scrollToElement();
+                      /*  top = this.$refs[postId].offsetTop;
+
+                        window.scrollTo(0, top);*/
                     //Mise à jour des publications sur la page profil
                     }else if(this.currentPage == "profilePage"){
                         const userId = this.$route.params.userId;
                         this.getPostsByUserId(userId);
                         this.getPopularPostsByUserId(userId);
+                       // element = this.$refs[postId];
+                       // top = element.offsetTop;
+
+                       // window.scrollTo(0, top);
                     }
                 })
         },

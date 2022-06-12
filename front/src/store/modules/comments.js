@@ -6,6 +6,13 @@ export default {
         postComments: []
     },
     getters:{
+        postCommentsLength(state){
+            if(state.postComments){
+                return state.postComments.length
+            }else{
+            return 0
+            }
+        }
     },
     mutations:{
         POST_COMMENTS(state, postComments){
@@ -36,7 +43,7 @@ export default {
                     .post(`/posts/${newComment.postId}/comment`, newComment.fdComment) //envoi de FORMDATA
                     .then(function (response) {
                         commit('SET_STATUS', 'comments_added', { root: true })
-                        commit('posts/UPDATE_COMMENTS__NUMBER', newComment.postId, { root: true })
+                        //commit('posts/UPDATE_COMMENTS__NUMBER', newComment.postId, { root: true })
                         resolve(response) 
                     })
                     .catch(function (error) {

@@ -51,7 +51,7 @@
 
 <script>
 //Composant
-import ComSettings from '@/components/Home/Comments/ComSettings.vue'
+import ComSettings from '@/components//Comments/ComSettings.vue'
 
 //store et mixins
 import { mapGetters, mapState } from 'vuex';
@@ -119,7 +119,7 @@ export default ({
 	}
 	&__settings{
 		text-align: center;
-		padding-top: 25px;
+		padding-top: 7px;
 		&__navIcon{
 			transform: scale(1);
 			transition: transform 200ms;
