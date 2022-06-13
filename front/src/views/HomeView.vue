@@ -48,7 +48,7 @@
         <div class="postsContainer" v-if="selectedMode == 'recentPosts' && postLength!=0">  
             <div >
             <PostItem  
-                v-for="(postItem, index) in posts" 
+                v-for="(postItem, index) in postByDateLoaded" 
                 :key="postItem.postId"
                 :post-item="postItem" 
                 :index="index"
@@ -63,7 +63,7 @@
         <!------------------------------------POSTS BY LIKE------------------------------------------------------------------>
         <div class="postsContainer" v-if="selectedMode == 'popularPosts'&& popularPostsLength!=0">
             <PostItem 
-                v-for="popularPostItem in popularPosts" 
+                v-for="popularPostItem in popularPostLoaded" 
                 :key="popularPostItem.postId" 
                 :post-item="popularPostItem"
                 :current-page="currentPage"
@@ -75,7 +75,7 @@
         <!------------------------------------POSTS REPORTED------------------------------------------------------------------>
         <div class="postsContainer" v-if="selectedMode == 'reportedPosts'&& reportedPostsLength!=0">
             <PostItem 
-            v-for="reportedPostsItem in reportedPosts" 
+            v-for="reportedPostsItem in reportedPostLoaded" 
             :key="reportedPostsItem.postId" 
             :post-item="reportedPostsItem" 
             :current-page="currentPage"
@@ -84,19 +84,26 @@
         <div class="noPost" v-if="selectedMode == 'reportedPosts' && reportedPostsLength==0">
             <p class="noPost__text">Aucune publication n'a été signalée !</p>
         </div>
+        <!----Affiche plus de publications---->
+        
     </main>
+    <button class="loadButton" @click="loadMore()" v-if="selectedMode == 'recentPosts' && postDisplay < postLength">Afficher plus...</button>
+    <button class="loadButton" @click="loadMore()" v-if="selectedMode == 'popularPosts' && popularPostDisplay < popularPostsLength">Afficher plus...</button>
+    <button class="loadButton" @click="loadMore()" v-if="selectedMode == 'reportedPosts'&& reportedPostDisplay < reportedPostsLength">Afficher plus...</button>
+    <MainFooter/>
 </template>
 
 <script>
 
-//Components import
+//Composants
 import SettingsMenu from '@/components//Nav/SettingsMenu.vue'
 import UserProfile from '@/components//Nav/UserProfile.vue'
 import UpdateMenu from '@/components//Nav/UpdateMenu.vue'
 import AddPost from '@/components//Posts/AddPost.vue'
 import PostItem from '@/components//Posts/PostItem.vue'
+import MainFooter from '@/components/Base/TheFooter.vue'
 
-//store and mixins import
+//store et mixins
 import { mapState, mapMutations } from 'vuex';
 import { homePostsMixin } from '@/mixins/homePostsMixin'
 
@@ -111,29 +118,42 @@ export default {
         UpdateMenu,
         UserProfile,
         AddPost,
-        PostItem
+        PostItem,
+        MainFooter
     },
     data(){
         return{
             currentPage: "homePage",
             selectedMode: 'recentPosts',
+            postDisplay: 2,
+            popularPostDisplay: 2,
+            reportedPostDisplay: 2
         }
     },
     beforeMount: 
         function(){
-            //user redirected to AuthPage if userId = -1
+            //redirection utilisateur vers page d'authentification si erreur
             if (this.user.userId == -1) {
             this.$router.push('/');
             return ;
             }
-            //Loading all recent posts to display
+            //Chargement des publications
             this.getAllRecentPosts()  
-            //Closing updateMenu if previously opened on profilePage   
+            //Fermeture d'updateMenu si précedemment ouvert sur page profil 
             if(this.updateMenu){
                 this.UPDATE_MENU_TOGGLE()
             }   
         }, 
     computed: {
+        postByDateLoaded() {
+            return this.posts.slice(0, this.postDisplay);
+        },
+        popularPostLoaded() {
+            return this.popularPosts.slice(0, this.popularPostDisplay);
+        },
+        reportedPostLoaded() {
+            return this.reportedPosts.slice(0, this.reportedPostDisplay);
+        },
         ...mapState({
             status: 'status',
             user: 'user',
@@ -145,7 +165,7 @@ export default {
     }, 
     methods: {
         ...mapMutations('toggle',['UPDATE_MENU_TOGGLE']),
-        //toggle between the selected tab
+        //toggle entre les différents onglets
         showRecentPosts(){
             this.selectedMode='recentPosts';
             this.getAllRecentPosts()
@@ -157,7 +177,19 @@ export default {
         showReportedPosts(){
             this.selectedMode='reportedPosts';
             this.getAllReportedPosts()
-        }
+        },
+        loadMore() {
+            if(this.selectedMode == 'recentPosts'){
+                if (this.postDisplay > this.postLength) return;
+                this.postDisplay = this.postDisplay + 3;
+            } else if (this.selectedMode == 'popularPosts') {
+                if (this.popularPostDisplay > this.popularPostsLength) return;
+                this.popularPostDisplay = this.popularPostDisplay + 3;
+            } else {
+                if (this.reportedPostDisplay > this.reportedPostsLength) return;
+                this.reportedPostDisplay = this.reportedPostDisplay + 3;
+            }
+        },
     }
 }
 </script>
@@ -278,12 +310,18 @@ export default {
         margin: 15px;
     }
 }
-/*
-@media screen and (max-width: 768px) {
-
-    .toggle{
-        width: 100%;
-    }
-}*/
+.loadButton{
+    width: 25%;
+    margin: 0 0 20px ;
+    border-radius: 100px;
+    height: 40px;
+    background-color: #ee7575;
+    color: #ffffff;
+        &:hover {
+            background-color:  #ffffff;
+            color:#ee7575;
+            border: solid 1.5px #ee7575;
+        }
+}
 
 </style>

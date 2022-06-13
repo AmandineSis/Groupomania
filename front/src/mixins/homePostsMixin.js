@@ -1,5 +1,5 @@
 /***************************************************************************/
-/*         Mixin object for posts loading                          */
+/*         Mixin pour chargement des publications                          */
 /***************************************************************************/
 
 import { mapState, mapGetters, mapActions } from 'vuex';

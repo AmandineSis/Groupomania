@@ -41,7 +41,7 @@
         <!------------------------------------POSTS BY DATE------------------------------------------------------------------>
         <div class="postsContainer" v-if="selectedMode == 'recentUserPosts' && postByUserLength!=0">  
             <PostItem 
-                v-for="postItem in postsByUser" 
+                v-for="postItem in postByDateByUserLoaded" 
                 :key="postItem.postId" 
                 :postItem="postItem" 
                 :current-page="currentPage"
@@ -53,7 +53,7 @@
         <!------------------------------------POSTS BY LIKE------------------------------------------------------------------>
         <div class="postsContainer" v-if="selectedMode == 'popularUserPosts'&& popularPostsByUserLength!=0">
             <PostItem 
-                v-for="popularPostItem in popularPostsByUser" 
+                v-for="popularPostItem in popularPostByUserLoaded" 
                 :key="popularPostItem.postId" 
                 :postItem="popularPostItem" 
                 :current-page="currentPage"
@@ -63,7 +63,9 @@
             <p class="noPost__text">Il n'existe pas encore de publication !</p>
         </div>
     </main>
-
+    <button class="loadButton" @click="loadMore()" v-if="selectedMode == 'recentUserPosts' && postDisplay < postByUserLength">Afficher plus...</button>
+    <button class="loadButton" @click="loadMore()" v-if="selectedMode == 'popularUserPosts' && popularPostDisplay < popularPostsByUserLength">Afficher plus...</button>
+    <MainFooter/>
 </template>
 
 <script>
@@ -76,6 +78,7 @@ import UpdateMenu from '@/components//Nav/UpdateMenu.vue'
 import AdminDeleteContainer from '@/components//Nav/AdminDeleteContainer.vue'
 import AddPost from '@/components//Posts/AddPost.vue'
 import PostItem from '@/components//Posts/PostItem.vue'
+import MainFooter from '@/components/Base/TheFooter.vue'
 
 //store and mixins import
 import { mapMutations, mapState } from 'vuex';
@@ -93,14 +96,18 @@ export default {
         AdminDeleteContainer,
         UserProfile,
         AddPost,
-        PostItem
+        PostItem,
+        MainFooter
     },
     data(){
         return{
             currentPage: 'profilePage',
             selectedMode: 'recentUserPosts',
             userIdProfile: '',
-            deleteBlock: false
+            deleteBlock: false,
+            postDisplay: 2,
+            popularPostDisplay: 2,
+            reportedPostDisplay: 2
         }
     },
     beforeMount: 
@@ -115,6 +122,12 @@ export default {
             }
         }, 
     computed: {
+        postByDateByUserLoaded() {
+            return this.postsByUser.slice(0, this.postDisplay);
+        },
+        popularPostByUserLoaded() {
+            return this.popularPostsByUser.slice(0, this.popularPostDisplay);
+        },
         ...mapState({
             status: 'status',
             user: 'user'
@@ -142,6 +155,15 @@ export default {
             const userId = this.$route.params.userId;
             console.log(this.mode);
             this.getAllUserPopularPosts(userId)
+        },
+        loadMore() {
+            if(this.selectedMode == 'recentUserPosts'){
+                if (this.postDisplay > this.postByUserLength) return;
+                this.postDisplay = this.postDisplay + 3;
+            } else {
+                if (this.popularPostDisplay > this.popularPostsByUserLength) return;
+                this.popularPostDisplay = this.popularPostDisplay + 3;
+            }
         },
     },
 
@@ -295,6 +317,20 @@ font-size: 1em;
         color: #2c3e50;
         margin: 15px;
     }
+}
+
+.loadButton{
+    width: 25%;
+    margin: 0 0 20px ;
+    border-radius: 100px;
+    height: 40px;
+    background-color: #ee7575;
+    color: #ffffff;
+        &:hover {
+            background-color:  #ffffff;
+            color:#ee7575;
+            border: solid 1.5px #ee7575;
+        }
 }
 
 </style>

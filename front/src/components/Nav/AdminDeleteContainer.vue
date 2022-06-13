@@ -12,7 +12,7 @@
 //composant
 import DeleteAccount from '@/components//Nav/Update/DeleteAccount.vue';
 
-////store et mixins
+//store et mixins
 import { mapState } from 'vuex';
 
 export default {

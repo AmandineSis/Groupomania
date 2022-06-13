@@ -1,13 +1,14 @@
 <template>
-  <TheHeader/>
+  <MainHeader/>
   <router-view :key="$route.path"/>
 </template>
 
 <script>
-import TheHeader from '@/components/Base/TheHeader.vue'
+import MainHeader from '@/components/Base/TheHeader.vue'
+
 export default ({
   components: {
-    TheHeader
+    MainHeader,
   }
 })
 </script>
@@ -43,6 +44,7 @@ export default ({
 /******************************* */
 #app {
   max-width: 100%;
+  height: 100%;
   font-family: Lato, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

@@ -134,6 +134,7 @@ export default ({
                         this.getComments(postId)
                             .then(() => {
                                 console.log("getComments dispatch done !");
+                                this.getAllRecentPosts();
                                 }),
                         (err => {
                         console.log(err)
