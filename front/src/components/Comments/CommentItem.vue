@@ -19,7 +19,8 @@
 			<div class="form__comments__popup" v-if="showComSettings && comItem">
 				<ComSettings 
 					:comItem="comItem"
-					@hideComSettings="closeComSettings"/>
+					@hideComSettings="closeComSettings"
+					:mode="selectedMode"/>
 			</div>
 			<div v-if="!showComSettings">
 				<div 
@@ -64,7 +65,8 @@ export default ({
 		ComSettings
 	},
 	props: {
-		comItem: Object
+		comItem: Object,
+		selectedMode: String
 	},
 	data(){
 		return {

@@ -37,13 +37,13 @@ export default {
     actions:{ 
         createComment: ({ commit }, newComment ) => {
             commit('SET_STATUS', 'sending', { root: true });
-            console.log(newComment.fdComment);
+            const mode = newComment.mode
             return new Promise ((resolve, reject) => {
                 instance
                     .post(`/posts/${newComment.postId}/comment`, newComment.fdComment) //envoi de FORMDATA
                     .then(function (response) {
                         commit('SET_STATUS', 'comments_added', { root: true })
-                        //commit('posts/UPDATE_COMMENTS__NUMBER', newComment.postId, { root: true })
+                        commit('posts/INCREASE_COMMENT_NUMBER', {postId:newComment.postId, mode: mode} , { root: true })
                         resolve(response) 
                     })
                     .catch(function (error) {
@@ -58,8 +58,7 @@ export default {
                 .then( function (response) {
                     console.log(response.data.results)
                     commit('POST_COMMENTS', response.data.results);  
-                    commit('SET_STATUS', 'comments_loaded', { root: true })        
-                 // commit('COMMENTS_BY_POST_ID', postId);          
+                    commit('SET_STATUS', 'comments_loaded', { root: true }) 
                 })
                 .catch(function () {
                     commit('SET_STATUS', 'error_getComments', { root: true })
@@ -85,6 +84,7 @@ export default {
                 .delete(`/posts/${commentToDelete.postId}/${commentToDelete.comId}`)
                 .then(function (response) {
                     commit('DELETE_COMMENTS', commentToDelete.comId);
+                    commit('posts/DECREASE_COMMENT_NUMBER', {postId:commentToDelete.postId, mode:commentToDelete.mode} , { root: true })
                     commit('SET_STATUS', 'comments_deleted', { root: true })
                     console.log(response)
                 })

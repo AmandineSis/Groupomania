@@ -9,7 +9,8 @@
             <CommentItem 
                 v-for="comItem in postComments " 
                 :key=comItem.comId 
-                :comItem ="comItem"/>
+                :comItem ="comItem"
+                :selectedMode="mode"/>
         </div> 
     </div> 
     <div class="posts__review__comments">
@@ -64,7 +65,7 @@ export default ({
     //props from PostItem
     props: {
         postItem: Object,
-        page: String
+        mode: String
         },
     data(){
         return {
@@ -114,6 +115,7 @@ export default ({
         },
         //Ajout d'un commentaire
         addComment(postId) {
+            const mode = this.mode;
             //création de l'objet FormData
             const fdComment = new FormData();
             if (this.comment != "") {
@@ -125,7 +127,7 @@ export default ({
 
             //Si FormData != null => création du commentaire
             if (this.comment || this.commentImageUrl) {
-            this.createComment({postId,fdComment})
+            this.createComment({postId,fdComment, mode})
                 .then(() => {
                     console.log("createComment dispatch done !");
                     this.comment = "";
@@ -134,7 +136,6 @@ export default ({
                         this.getComments(postId)
                             .then(() => {
                                 console.log("getComments dispatch done !");
-                                this.getAllRecentPosts();
                                 }),
                         (err => {
                         console.log(err)

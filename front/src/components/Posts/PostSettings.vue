@@ -82,7 +82,8 @@ export default ({
     ],
     props: {
         postItem: Object,
-        thisPage: String
+        thisPage: String,
+        mode: String
     },
     data(){
         return {
@@ -158,7 +159,8 @@ export default ({
         },
 
         updatePostContent(postId, content, image) {
-        
+            let mode = this.mode
+            console.log(mode)
             let imageUpdate = this.isImageUpdated(image);
 
             const fdUpdatedPost = new FormData();
@@ -173,18 +175,12 @@ export default ({
             } 
 
             if (content || imageUpdate ) {
-                this.updatePost({postId, fdUpdatedPost})
+                this.updatePost({
+                        postId:postId,
+                        postUpdate: fdUpdatedPost, 
+                        mode: mode})
                     .then(() => {
                         console.log("updatePost dispatch done !");
-                        if(this.thisPage=='homePage'){
-                            this.getAllRecentPosts();
-                            this.getAllPopularPosts();
-                            this.getAllReportedPosts();
-                        }else{
-                            const userId = this.$route.params.userId;
-                            this.getPostsByUserId(userId);
-                            this.getPopularPostsByUserId(userId);
-                        }
                         this.$emit('hidePostSettings')
                         }   
                     ), (err => {

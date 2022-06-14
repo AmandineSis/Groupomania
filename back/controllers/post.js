@@ -46,7 +46,6 @@ exports.getPostsByLike = (req, res, next) => {
     });
 };
 
-
 //Récupération de tous les posts
 //results = tous les posts du plus récent au plus ancien (max 20)
 exports.getReportedPosts = (req, res, next) => {
@@ -195,7 +194,8 @@ exports.updatePost = (req, res, next) => {
                         if (error) throw ({ error });
                         db.query(sqlCom, (error, results, fields) => {
                             if (error) throw ({ error });
-                            res.status(200).json({ message: "post modifié !" });
+                            //post modifié : retourne post modifié
+                            res.status(200).json({ results: post});
                         });
                     });
                 })
@@ -207,7 +207,8 @@ exports.updatePost = (req, res, next) => {
                         if (error) throw ({ error });
                         db.query(sqlCom, (error, results, fields) => {
                             if (error) throw ({ error });
-                            res.status(200).json({ message: "post modifié !" });
+                            //post modifié : retourne post modifié
+                            res.status(200).json({ results: post});
                         });
                     });
                 })
@@ -258,7 +259,7 @@ exports.deletePost = (req, res, next) => {
 };
 
 //like d'un post
-//req.body { userId: string, like: INT(0/1)}
+//req.body { userId: number, like: INT(0/1)}
 //req.params.postId
 //req.token.userId
 exports.likePost = (req, res, next) => {
@@ -284,7 +285,9 @@ exports.likePost = (req, res, next) => {
                 let sqlLike = 'INSERT INTO likes SET userId = ?, postId = ?';
                 db.query(sqlLike, [userId, postId], (error, results, fields) => {
                     if (error) throw ({ error });
-                    res.status(200).json({ message: "Vous aimez ce post !" });
+                    //result : like = 1 => vous aimez ce post
+                    let like = 1;
+                    res.status(200).json({ like });
 
                 });
             });
@@ -295,7 +298,9 @@ exports.likePost = (req, res, next) => {
                 let sqlLike = 'DELETE FROM likes WHERE likeId =' + db.escape(postLiked.likeId);
                 db.query(sqlLike, (error, results, fields) => {
                     if (error) throw ({ error });
-                    res.status(200).json({ message: "Vous n'aimez plus ce post !" });
+                    //result : like = 1 => vous n'aimez plus ce post
+                    let like = 0;
+                    res.status(200).json({ like });
                 });
             });
         } else {

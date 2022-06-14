@@ -1,5 +1,55 @@
 import instance from '../axios'
 
+/**
+ * 
+ * @param {array of object} arr tableau contenant toutes les publications
+ * @param {*} payload objet contenant l'Id du post à modifier et la valeur de like
+ */
+function replaceLike(arr, payload){
+    let like = payload.like;
+    let postId = payload.postId;
+    const index = arr.map(object => object.postId).indexOf(postId);
+        if(like == 1){
+            arr[index].likes += 1
+        } else {
+            arr[index].likes -= 1
+        }
+}
+
+/**
+ * Modifie la quantité de commentaires d'une publication
+ * @param {array of object} arr tableau contenant toutes les publications
+ * @param {object} payload objet contenant l'Id du post à modifier
+ */
+function increaseCommentNumber(arr, payload){
+    let postId = payload.postId;
+    const index = arr.map(object => object.postId).indexOf(postId);
+    arr[index].comments += 1
+}
+
+/**
+ * Modifie la quantité de commentaires d'une publication
+ * @param {array of object} arr tableau contenant toutes les publications
+ * @param {object} payload objet contenant l'Id du post à modifier
+ */
+function decreaseCommentNumber(arr, payload){
+    let postId = payload.postId;
+    const index = arr.map(object => object.postId).indexOf(postId);
+    arr[index].comments -= 1
+}
+
+/**
+ * Modifie la quantité de commentaires d'une publication
+ * @param {array of object} arr tableau contenant toutes les publications
+ * @param {object} payload objet contenant l'Id du post à modifier
+ */
+function updatePostItem(arr, payload){
+    let postId = payload.postId;
+    const index = arr.map(object => object.postId).indexOf(postId);
+    arr[index].content = payload.postContent;
+    arr[index].imageUrl = payload.postImage; 
+}
+
 export default {
     namespaced: true, 
     state:{
@@ -11,6 +61,7 @@ export default {
         postsByUserIdByLike: [],
     },
     getters:{
+        //Page d'accueil
         postsByDateLength(state){
             if(state.postsByDate){
                 return state.postsByDate.length
@@ -32,6 +83,7 @@ export default {
             return 0
             }
         },
+        //Page profil
         postsByUserIdByDateLength(state){
             if(state.postsByUserId){
                 return state.postsByUserId.length
@@ -60,18 +112,86 @@ export default {
         POSTS_BY_USER_ID(state, postsByUserId){
             state.postsByUserId = postsByUserId;
         },
+        INCREASE_COMMENT_NUMBER(state, payload){
+            let mode = payload.mode;
+            if(mode == 'recentPosts'){
+                let arr = state.postsByDate;
+                return increaseCommentNumber(arr, payload)
+            } else if (mode == 'popularPosts'){
+                let arr = state.postsByLike;
+                return increaseCommentNumber(arr, payload)
+            }else if ( mode == 'reportedPosts'){
+                let arr = state.reportedPosts;
+                return increaseCommentNumber(arr, payload)
+            } else if (mode == 'recentUserPosts'){
+                let arr = state.postsByUserId;
+                return increaseCommentNumber(arr, payload)
+            } else {
+                let arr = state.postsByUserIdByLike;
+                return increaseCommentNumber(arr, payload)
+            }
+        },
+        DECREASE_COMMENT_NUMBER(state, payload){
+            let mode = payload.mode;
+            if(mode == 'recentPosts'){
+                let arr = state.postsByDate;
+                return decreaseCommentNumber(arr, payload)
+            } else if (mode == 'popularPosts'){
+                let arr = state.postsByLike;
+                return decreaseCommentNumber(arr, payload)
+            }else if ( mode == 'reportedPosts'){
+                let arr = state.reportedPosts;
+                return decreaseCommentNumber(arr, payload)
+            } else if (mode == 'recentUserPosts'){
+                let arr = state.postsByUserId;
+                return decreaseCommentNumber(arr, payload)
+            } else {
+                let arr = state.postsByUserIdByLike;
+                return decreaseCommentNumber(arr, payload)
+            }
+        },
+        UPDATE_LIKE_NUMBER(state, payload){
+            let mode = payload.mode;
+            
+            if(mode == 'recentPosts'){
+                let arr = state.postsByDate;
+                return replaceLike(arr, payload)
+            } else if (mode == 'popularPosts'){
+                let arr = state.postsByLike;
+                return replaceLike(arr, payload)
+            }else if ( mode == 'reportedPosts'){
+                let arr = state.reportedPosts;
+                return replaceLike(arr, payload)
+            }else if (mode == 'recentUserPosts'){
+                let arr = state.postsByUserId;
+                return replaceLike(arr, payload)
+            } else {
+                let arr = state.postsByUserIdByLike;
+                return replaceLike(arr, payload)
+            }
+        },
         POSTS_BY_USERID_BY_LIKE(state, postsByUserIdByLike){
             state.postsByUserIdByLike = postsByUserIdByLike;
         },
-        UPDATE_POST(state, postsByDate, postId, postContent, postImage){
-            let index = state.postsByDate.findIndex(postsByDate => postsByDate.postId == postId);
-            state.postsByDate.splice(index, 1, postContent);
-            state.postsByDate.splice(index, 1, postImage);
+        UPDATE_POST(state, payload){
+            let mode = payload.mode;
+            if(mode == 'recentPosts'){
+                let arr = state.postsByDate;
+                return updatePostItem(arr, payload)
+            } else if (mode == 'popularPosts'){
+                let arr = state.postsByLike;
+                return updatePostItem(arr, payload)
+            }else if ( mode == 'reportedPosts'){
+                let arr = state.reportedPosts;
+                return updatePostItem(arr, payload)
+            } else if (mode == 'recentUserPosts'){
+                let arr = state.postsByUserId;
+                return updatePostItem(arr, payload)
+            } else {
+                let arr = state.postsByUserIdByLike;
+                return updatePostItem(arr, payload)
+            }
         },
-       /* UPDATE_COMMENTS__NUMBER(state, postByDate, postId){
-            let index = state.postsByDate.findIndex(postsByDate => postsByDate.postId == postId);
-            state.postByDate[index].likes += 1;
-        },*/
         DELETE_POST(state, postId ){
             let index = state.postsByDate.findIndex(postsByDate => postsByDate.postId == postId);
             state.postsByDate.splice(index, 1);
@@ -157,11 +277,19 @@ export default {
             });
         },
         updatePost: ({ commit }, postToUpdate)=>{
+            let mode = postToUpdate.mode;
+            console.log(mode)
             return new Promise ((resolve, reject) => {
             instance
-                .put(`/posts/${postToUpdate.postId}`, postToUpdate.fdUpdatedPost) //envoi de FORMDATA
+                .put(`/posts/${postToUpdate.postId}`, postToUpdate.postUpdate) //envoi de FORMDATA
                 .then(function (response) {
-                    commit('UPDATE_POST', postToUpdate.postId, postToUpdate.fdUpdatedPost.content, postToUpdate.fdUpdatedPost.image);
+                    console.log(response.data.results.content)
+                    commit('UPDATE_POST', {
+                            postId: postToUpdate.postId, 
+                            postContent: response.data.results.content,
+                            postImage: response.data.results.imageUrl,
+                            mode: mode
+                        });
                     resolve(response) 
                 })
                 .catch(function (error) {
@@ -173,11 +301,19 @@ export default {
         likePost: ({ commit, rootState }, postLike) => {
             let userId = rootState.user.userId;
             let like = postLike.like;
+            let mode = postLike.mode;
+            let request = {userId: userId, like: like}
             return new Promise ((resolve, reject) => {
             instance
-                .post(`/posts/${postLike.postId}/like`, {userId, like})
+                .post(`/posts/${postLike.postId}/like`, request)
                 .then(function (response) {
+                    console.log(response)
                     commit('SET_STATUS', 'post_liked', { root: true })
+                    commit('UPDATE_LIKE_NUMBER', {
+                            postId:postLike.postId, 
+                            like:response.data.like, 
+                            mode:mode
+                        });
                     resolve(response)
                 })
                 .catch(function (error) {

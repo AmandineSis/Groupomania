@@ -106,11 +106,10 @@ export default {
             userIdProfile: '',
             deleteBlock: false,
             postDisplay: 2,
-            popularPostDisplay: 2,
-            reportedPostDisplay: 2
+            popularPostDisplay: 2
         }
     },
-    beforeMount: 
+    mounted: 
         //Loading all recent posts from selected user to display
         function(){
             this.userIdProfile = parseInt(this.$route.params.userId);
@@ -156,6 +155,7 @@ export default {
             console.log(this.mode);
             this.getAllUserPopularPosts(userId)
         },
+        //Affiche 3 publications en plus
         loadMore() {
             if(this.selectedMode == 'recentUserPosts'){
                 if (this.postDisplay > this.postByUserLength) return;
@@ -312,7 +312,7 @@ font-size: 1em;
     border-radius: 5px;
     max-width: 500px;
     height: 50px;
-    margin: 50px auto;
+    margin: 100px auto 300px;
     &__text{
         color: #2c3e50;
         margin: 15px;

@@ -29,6 +29,7 @@
                 <PostSettings 
                     :postItem="postItem" 
                     :thisPage="currentPage" 
+                    :mode="selectedMode"
                     @hide-post-settings="closeSettings"/>
             </div>
             <!----- Report post ----->
@@ -75,7 +76,7 @@
                 </footer>
                 <div class="comment__container" v-if="showComment" >
                     <AddComment 
-                        :page="currentPage" 
+                        :mode="selectedMode" 
                         :postItem="postItem" /> 
                 </div>
             </div>
@@ -149,35 +150,16 @@ export default ({
             }
         },
         addLikePost(postId){
+            const mode = this.selectedMode;
             const postLike = {
                 postId,
-                like: 1
+                like: 1,
+                mode
             };
-           // let element;
-           // let top;
             //Ajout/Suppression d'un like
             this.likePost(postLike)
                 .then(() => {
                     console.log("likePost dispatch done !")
-                    //Mise à jour des publications sur la page d'acceuil
-                    if(this.currentPage == "homePage"){
-                        this.getAllRecentPosts();
-                        this.getAllPopularPosts();
-                        this.getAllReportedPosts();
-                        //this.scrollToElement();
-                      /*  top = this.$refs[postId].offsetTop;
-
-                        window.scrollTo(0, top);*/
-                    //Mise à jour des publications sur la page profil
-                    }else if(this.currentPage == "profilePage"){
-                        const userId = this.$route.params.userId;
-                        this.getPostsByUserId(userId);
-                        this.getPopularPostsByUserId(userId);
-                       // element = this.$refs[postId];
-                       // top = element.offsetTop;
-
-                       // window.scrollTo(0, top);
-                    }
                 })
         },
         displayComment(postId){ 

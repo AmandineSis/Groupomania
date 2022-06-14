@@ -1,95 +1,98 @@
 <template>
     <!-- Header navigation -->
     <!-- Screen width > 768px -->
-    <div v-if ="mq.current != 'phone'">
-        <nav class="topMenu" v-once>
-            <SettingsMenu class="topMenu__settings" v-once />
-            <router-link :to="`/profile/${userLoggedIn.userId}`">
-                <UserProfile/>
-            </router-link>
-        </nav> 
-    </div>
-    <!-- Screen width < 768px -->
-    <div v-else>
-        <nav class="topMenu" v-once>
-            <SettingsMenu class="topMenu__settings" v-once />
-        </nav> 
-        <UserProfile :phoneView="true"/>
-    </div>
-    <!-- Pop-up update menu -->
-    <transition name="bounce">
-        <UpdateMenu 
-            v-if="updateMenu" 
+    <div class="container">
+        <div v-if ="mq.current != 'phone'">
+            <nav class="topMenu" v-once>
+                <SettingsMenu class="topMenu__settings" v-once />
+                <router-link :to="`/profile/${userLoggedIn.userId}`">
+                    <UserProfile/>
+                </router-link>
+            </nav> 
+        </div>
+        <!-- Screen width < 768px -->
+        <div v-else>
+            <nav class="topMenu" v-once>
+                <SettingsMenu class="topMenu__settings" v-once />
+            </nav> 
+            <UserProfile :phoneView="true"/>
+        </div>
+        <!-- Pop-up update menu -->
+        <transition name="bounce">
+            <UpdateMenu 
+                v-if="updateMenu" 
+                :phoneView="mq.current"
+                :current-page="currentPage" 
+                :selected-mode="selectedMode"/>
+        </transition>
+
+        <AddPost 
             :phoneView="mq.current"
             :current-page="currentPage" 
-            :selected-mode="selectedMode"/>
-    </transition>
-    
-    <AddPost 
-        :phoneView="mq.current"
-        :current-page="currentPage" 
-        :selected-mode="selectedMode" 
-        v-once/>
+            :selected-mode="selectedMode" 
+            v-once/>
 
-    <!--Toggle entre selectedMode -->
-    <div class="toggle">
-        <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : selectedMode=='recentPosts'}" @click="showRecentPosts"> Récents </button>
-        <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : selectedMode=='popularPosts'}" @click="showPopularPosts"> Populaires </button>
-        <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : selectedMode=='reportedPosts'}" @click="showReportedPosts" v-if="user.moderator==1"> Signalés </button>
-    </div>
-
-    <!-- Loader visible pendant le chargement des publications  -->
-    <main class="loaderContainer" v-if="status == 'loading'">
-        <div class="lds-ring" ><div></div><div></div><div></div><div></div></div>
-    </main>
-
-    <main v-else>
-        <!------------------------------------POSTS BY DATE------------------------------------------------------------------>
-        <div class="postsContainer" v-if="selectedMode == 'recentPosts' && postLength!=0">  
-            <div >
-            <PostItem  
-                v-for="(postItem, index) in postByDateLoaded" 
-                :key="postItem.postId"
-                :post-item="postItem" 
-                :index="index"
-                :phoneView="mq.current"
-                :current-page="currentPage"
-                :selected-mode="selectedMode"/>  
+        <!--Toggle entre selectedMode -->
+        <div class="toggle">
+            <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : selectedMode=='recentPosts'}" @click="showRecentPosts"> Récents </button>
+            <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : selectedMode=='popularPosts'}" @click="showPopularPosts"> Populaires </button>
+            <button class="toggle__btn toggle__btn--isSelected" :class="{'toggle__btn--isActive' : selectedMode=='reportedPosts'}" @click="showReportedPosts" v-if="user.moderator==1"> Signalés </button>
         </div>
-        </div>
-        <div class="noPost" v-if="selectedMode == 'recentPosts' && postLength==0"> 
-            <p class="noPost__text">Il n'existe pas encore de publication !</p>
-        </div> 
-        <!------------------------------------POSTS BY LIKE------------------------------------------------------------------>
-        <div class="postsContainer" v-if="selectedMode == 'popularPosts'&& popularPostsLength!=0">
-            <PostItem 
-                v-for="popularPostItem in popularPostLoaded" 
-                :key="popularPostItem.postId" 
-                :post-item="popularPostItem"
+
+        <!-- Loader visible pendant le chargement des publications  -->
+        <main class="loaderContainer" v-if="status == 'loading'">
+            <div class="lds-ring" ><div></div><div></div><div></div><div></div></div>
+        </main>
+
+        <main v-else>
+            <!------------------------------------POSTS BY DATE------------------------------------------------------------------>
+            <div class="postsContainer" v-if="selectedMode == 'recentPosts' && postLength!=0">  
+                <div >
+                <PostItem  
+                    v-for="(postItem, index) in postByDateLoaded" 
+                    :key="postItem.postId"
+                    :post-item="postItem" 
+                    :index="index"
+                    :phoneView="mq.current"
+                    :current-page="currentPage"
+                    :selected-mode="selectedMode"/>  
+            </div>
+            </div>
+            <div class="noPost" v-if="selectedMode == 'recentPosts' && postLength==0"> 
+                <p class="noPost__text">Il n'existe pas encore de publication !</p>
+            </div> 
+            <!------------------------------------POSTS BY LIKE------------------------------------------------------------------>
+            <div class="postsContainer" v-if="selectedMode == 'popularPosts'&& popularPostsLength!=0">
+                <PostItem 
+                    v-for="popularPostItem in popularPostLoaded" 
+                    :key="popularPostItem.postId" 
+                    :post-item="popularPostItem"
+                    :current-page="currentPage"
+                    :selected-mode="selectedMode"
+                    v-once/>   
+            </div>
+            <div class="noPost" v-if="selectedMode == 'popularPosts' && popularPostsLength==0">
+                <p class="noPost__text">Il n'existe pas encore de publication !</p>
+            </div>
+            <!------------------------------------POSTS REPORTED------------------------------------------------------------------>
+            <div class="postsContainer" v-if="selectedMode == 'reportedPosts'&& reportedPostsLength!=0">
+                <PostItem 
+                v-for="reportedPostsItem in reportedPostLoaded" 
+                :key="reportedPostsItem.postId" 
+                :post-item="reportedPostsItem" 
                 :current-page="currentPage"
                 :selected-mode="selectedMode"/>   
-        </div>
-        <div class="noPost" v-if="selectedMode == 'popularPosts' && popularPostsLength==0">
-            <p class="noPost__text">Il n'existe pas encore de publication !</p>
-        </div>
-        <!------------------------------------POSTS REPORTED------------------------------------------------------------------>
-        <div class="postsContainer" v-if="selectedMode == 'reportedPosts'&& reportedPostsLength!=0">
-            <PostItem 
-            v-for="reportedPostsItem in reportedPostLoaded" 
-            :key="reportedPostsItem.postId" 
-            :post-item="reportedPostsItem" 
-            :current-page="currentPage"
-            :selected-mode="selectedMode"/>   
-        </div>
-        <div class="noPost" v-if="selectedMode == 'reportedPosts' && reportedPostsLength==0">
-            <p class="noPost__text">Aucune publication n'a été signalée !</p>
-        </div>
-        <!----Affiche plus de publications---->
-        
-    </main>
-    <button class="loadButton" @click="loadMore()" v-if="selectedMode == 'recentPosts' && postDisplay < postLength">Afficher plus...</button>
-    <button class="loadButton" @click="loadMore()" v-if="selectedMode == 'popularPosts' && popularPostDisplay < popularPostsLength">Afficher plus...</button>
-    <button class="loadButton" @click="loadMore()" v-if="selectedMode == 'reportedPosts'&& reportedPostDisplay < reportedPostsLength">Afficher plus...</button>
+            </div>
+            <div class="noPost" v-if="selectedMode == 'reportedPosts' && reportedPostsLength==0">
+                <p class="noPost__text">Aucune publication n'a été signalée !</p>
+            </div>
+            <!----Affiche plus de publications---->
+
+        </main>
+        <button class="loadButton" @click="loadMore()" v-if="selectedMode == 'recentPosts' && postDisplay < postLength">Afficher plus...</button>
+        <button class="loadButton" @click="loadMore()" v-if="selectedMode == 'popularPosts' && popularPostDisplay < popularPostsLength">Afficher plus...</button>
+        <button class="loadButton" @click="loadMore()" v-if="selectedMode == 'reportedPosts'&& reportedPostDisplay < reportedPostsLength">Afficher plus...</button>
+    </div>
     <MainFooter/>
 </template>
 
@@ -127,7 +130,8 @@ export default {
             selectedMode: 'recentPosts',
             postDisplay: 2,
             popularPostDisplay: 2,
-            reportedPostDisplay: 2
+            reportedPostDisplay: 2,
+            PostItemIsReady: false
         }
     },
     beforeMount: 
@@ -195,7 +199,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
-
+.container{
+    height: 100%;
+}
 .topMenu {
         position: absolute;
         top: 90px;
@@ -305,7 +311,7 @@ export default {
     border-radius: 5px;
     max-width: 500px;
     height: 50px;
-    margin: 50px auto;
+    margin: 100px auto 300px;
     &__text{
         margin: 15px;
     }

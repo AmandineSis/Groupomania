@@ -56,7 +56,10 @@ import { mapState, mapActions } from 'vuex';
 
 export default ({
     name: 'ComSettings',
-    props: {'comItem': Object},
+    props: {
+        comItem: Object,
+        mode: String
+        },
     data(){
         return {
             event:{
@@ -64,7 +67,6 @@ export default ({
                 comImage: ''
             },
             comUploadExists: true,
-            mode: 'homePage',
         }
     },
     computed: {
@@ -94,8 +96,9 @@ export default ({
             this.event.comImage = ''
         },
         deletePostComment(postId, comId) {
+            let mode = this.mode
             if (window.confirm('Êtes-vous sûrs de vouloir supprimer ce post ?')){
-                this.deleteComment({comId,postId})
+                this.deleteComment({comId,postId, mode})
                     .then(() => {
                         console.log("deleteComment dispatch done !");
                         this.getComments(postId)
@@ -152,7 +155,7 @@ export default ({
 
 <style scoped lang="scss">
     .updateCom{
-        width:100%;
+        max-width: 375px;
         height: auto;
         box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
         margin: 0;
