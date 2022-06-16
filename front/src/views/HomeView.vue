@@ -49,11 +49,9 @@
             <div class="postsContainer" v-if="selectedMode == 'recentPosts' && postLength!=0">  
                 <div >
                 <PostItem  
-                    v-for="(postItem, index) in postByDateLoaded" 
+                    v-for="postItem in postByDateLoaded" 
                     :key="postItem.postId"
-                    :post-item="postItem" 
-                    :index="index"
-                    :phoneView="mq.current"
+                    :post-item="postItem"
                     :current-page="currentPage"
                     :selected-mode="selectedMode"/>  
             </div>
@@ -89,9 +87,9 @@
             <!----Affiche plus de publications---->
 
         </main>
-        <button class="loadButton" @click="loadMore()" v-if="selectedMode == 'recentPosts' && postDisplay < postLength">Afficher plus...</button>
-        <button class="loadButton" @click="loadMore()" v-if="selectedMode == 'popularPosts' && popularPostDisplay < popularPostsLength">Afficher plus...</button>
-        <button class="loadButton" @click="loadMore()" v-if="selectedMode == 'reportedPosts'&& reportedPostDisplay < reportedPostsLength">Afficher plus...</button>
+        <button class="loadButton" @click.stop="loadMore()" v-if="selectedMode == 'recentPosts' && postDisplay < postLength">Afficher plus...</button>
+        <button class="loadButton" @click.stop="loadMore()" v-if="selectedMode == 'popularPosts' && popularPostDisplay < popularPostsLength">Afficher plus...</button>
+        <button class="loadButton" @click.stop="loadMore()" v-if="selectedMode == 'reportedPosts'&& reportedPostDisplay < reportedPostsLength">Afficher plus...</button>
     </div>
     <MainFooter/>
 </template>
@@ -143,6 +141,8 @@ export default {
             }
             //Chargement des publications
             this.getAllRecentPosts()  
+            this.getAllPopularPosts()
+            this.getAllReportedPosts()
             //Fermeture d'updateMenu si précedemment ouvert sur page profil 
             if(this.updateMenu){
                 this.UPDATE_MENU_TOGGLE()
@@ -172,21 +172,22 @@ export default {
         //toggle entre les différents onglets
         showRecentPosts(){
             this.selectedMode='recentPosts';
-            this.getAllRecentPosts()
+            this.posts;
+           // this.getAllRecentPosts()
         },    
         showPopularPosts(){
             this.selectedMode = 'popularPosts';
-            this.getAllPopularPosts()
+            this.popularPosts;
         },
         showReportedPosts(){
             this.selectedMode='reportedPosts';
-            this.getAllReportedPosts()
+            this.reportedPosts;
         },
         loadMore() {
             if(this.selectedMode == 'recentPosts'){
                 if (this.postDisplay > this.postLength) return;
                 this.postDisplay = this.postDisplay + 3;
-            } else if (this.selectedMode == 'popularPosts') {
+            } else if(this.selectedMode == 'popularPosts'){
                 if (this.popularPostDisplay > this.popularPostsLength) return;
                 this.popularPostDisplay = this.popularPostDisplay + 3;
             } else {
@@ -245,7 +246,7 @@ export default {
         color:#4E5166;
         font-weight: 800;
         font-size: 15px;
-        border-bottom: 1px  solid grey;
+        border-bottom: 1px  solid #4E5166;
         padding: 0px;
         width: 50%;
         height: 40px;

@@ -114,7 +114,8 @@ export default {
         function(){
             this.userIdProfile = parseInt(this.$route.params.userId);
             const userId = this.userIdProfile;
-            this.getAllUserPosts(userId)     
+            this.getAllUserPosts(userId)  
+            this.getAllUserPopularPosts(userId)   
             //Closing updateMenu if previously openend on homePage
             if(this.updateMenu){
                 this.UPDATE_MENU_TOGGLE()
@@ -146,14 +147,11 @@ export default {
         },
         getUserRecentPosts(){
             this.selectedMode='recentUserPosts';
-            const userId = this.$route.params.userId;
-            this.getAllUserPosts(userId)
+            this.postsByUser;
         },
         getUserPopularPosts(){
             this.selectedMode = 'popularUserPosts';
-            const userId = this.$route.params.userId;
-            console.log(this.mode);
-            this.getAllUserPopularPosts(userId)
+            this.popularPostsByUser;
         },
         //Affiche 3 publications en plus
         loadMore() {
@@ -228,10 +226,10 @@ export default {
     justify-content:  space-between;
     &__btn{
         background: white;
-        color:grey;
+        color:#4E5166;
         font-weight: 800;
         font-size: 15px;
-        border-bottom: 1px  solid grey;
+        border-bottom: 1px  solid #4E5166;
         padding: 0px;
         width: 50%;
         height: 40px;
@@ -314,7 +312,7 @@ font-size: 1em;
     height: 50px;
     margin: 100px auto 300px;
     &__text{
-        color: #2c3e50;
+        color: #4E5166;
         margin: 15px;
     }
 }

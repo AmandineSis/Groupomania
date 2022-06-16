@@ -62,7 +62,7 @@ exports.signup = (req, res, next) => {
             }
           });
         })
-        .catch(err => res.status(500).json({ message: "catch error" }));
+        .catch(err => res.status(500).json({ message: "erreur création nouvel utilisateur" }));
     }
   })
 

@@ -144,7 +144,7 @@ export default {
                     color: #ffffff;
                 }
                 &--disabled{
-                    background-color: grey;
+                    background-color: #4E5166;
                 }
             }
         }

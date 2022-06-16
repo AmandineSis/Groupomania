@@ -234,7 +234,7 @@ export default ({
                     background-color: white;
                     display: inline-block;
                     white-space: normal;
-                    color: grey;    
+                    color: #4E5166;    
             }
             &__addedImage{
                     

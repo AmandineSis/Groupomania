@@ -182,7 +182,7 @@ export default ({
         background-color: white;
         display: inline-block;
         white-space: normal;
-        color: grey;
+        color: #4E5166;
         &__sent{
             width: 95%;
             height: auto;
@@ -204,7 +204,7 @@ export default ({
         resize: none;
         padding: 5px 15px;
         background-color: white;
-        color: grey;
+        color: #4E5166;
         display: flex;
             flex-direction: row;
             justify-content: space-between;

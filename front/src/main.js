@@ -11,14 +11,17 @@ import { faEye, faUserSecret, faGear, faSignOutAlt, faMagnifyingGlass, faImage, 
 import { faHeart as farHeart, faComment as farComment } from '@fortawesome/free-regular-svg-icons'
 /******************************************************************* */
 
+
+
+const app = createApp(App)
+app.config.performance = false;
 /* Vue3Mq 'devices' preset
     phone	0
     tablet	768
     laptop	1370
     desktop	1906
     */
-createApp(App)
-    .use(Vue3Mq, {
+    app.use(Vue3Mq, {
       preset: 'devices'
     })
     .use(store)

@@ -1,22 +1,6 @@
 import instance from '../axios'
 
 /**
- * 
- * @param {array of object} arr tableau contenant toutes les publications
- * @param {*} payload objet contenant l'Id du post à modifier et la valeur de like
- */
-function replaceLike(arr, payload){
-    let like = payload.like;
-    let postId = payload.postId;
-    const index = arr.map(object => object.postId).indexOf(postId);
-        if(like == 1){
-            arr[index].likes += 1
-        } else {
-            arr[index].likes -= 1
-        }
-}
-
-/**
  * Modifie la quantité de commentaires d'une publication
  * @param {array of object} arr tableau contenant toutes les publications
  * @param {object} payload objet contenant l'Id du post à modifier
@@ -152,22 +136,25 @@ export default {
         },
         UPDATE_LIKE_NUMBER(state, payload){
             let mode = payload.mode;
+            let like = payload.like;
+            let postId = payload.postId;
+            const index1 = state.postsByDate.map(object => object.postId).indexOf(postId);
+            const index2 =  state.postsByLike.map(object => object.postId).indexOf(postId);
             
-            if(mode == 'recentPosts'){
-                let arr = state.postsByDate;
-                return replaceLike(arr, payload)
-            } else if (mode == 'popularPosts'){
-                let arr = state.postsByLike;
-                return replaceLike(arr, payload)
-            }else if ( mode == 'reportedPosts'){
-                let arr = state.reportedPosts;
-                return replaceLike(arr, payload)
-            }else if (mode == 'recentUserPosts'){
-                let arr = state.postsByUserId;
-                return replaceLike(arr, payload)
+            if(like == 1){
+                state.postsByDate[index1].likes += 1
+                state.postsByLike[index2].likes += 1
+                if (mode == 'reportedPosts') {
+                    const index3 = state.reportedPosts.map(object => object.postId).indexOf(postId);
+                    state.reportedPosts[index3].likes += 1
+                }
             } else {
-                let arr = state.postsByUserIdByLike;
-                return replaceLike(arr, payload)
+                state.postsByDate[index1].likes -= 1
+                state.postsByLike[index2].likes -= 1
+                if (mode == 'reportedPosts') {
+                    const index3 = state.reportedPosts.map(object => object.postId).indexOf(postId);
+                    state.reportedPosts[index3].likes -= 1
+                }
             }
         },
         POSTS_BY_USERID_BY_LIKE(state, postsByUserIdByLike){

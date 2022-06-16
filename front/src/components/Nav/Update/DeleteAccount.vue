@@ -134,7 +134,7 @@ export default {
                 background-color: #ee7575;
                 transition: .4s background-color;
                 &--disabled{
-                    background-color: grey;
+                    background-color: #4E5166;
                 }
             }
         }

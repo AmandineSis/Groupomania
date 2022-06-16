@@ -11,7 +11,7 @@
 	</router-link>
 	<!----Affichage du nom de l'utilisateur ----->
 	<div class="form__comments__content">
-		<router-link :to="`/profile/${comItem.userId}`" v-if="mq.current == 'phone'">
+		<router-link class="form__comments__content__link" :to="`/profile/${comItem.userId}`" v-if="mq.current == 'phone'">
 			<p class="form__comments__content__user" >{{ comItem.firstName }} {{ comItem.lastName }}</p>
 		</router-link>
 		<!----Contenu du commentaire----->
@@ -137,8 +137,11 @@ export default ({
 	&__content {
 		display: flex;
 		flex-direction: column;
-		
 		width:100%;
+		&__link{
+			margin: 0;
+			text-align: left;
+		}
 		&__user{
 			font-size: 0.9;
 			margin: 2px 10px;
@@ -156,7 +159,7 @@ export default ({
 		background-color: white;
 		display: inline-block;
 		white-space: normal;
-		color: grey;
+		color: #4E5166;
 		&__sent{
 			width: 100%;
 			height: auto;

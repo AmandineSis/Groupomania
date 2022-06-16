@@ -159,7 +159,7 @@ export default {
             &__delete{
                 position: relative;
                 left: -15px;
-                color: grey;
+                color: #4E5166;
             }
         }
         &__results{

@@ -156,11 +156,11 @@ export default {
                     color: #ffffff;
                 }
                 &--disabled{
-                    background-color: grey;
+                    background-color: #4E5166;
                     &:hover{
                         cursor:not-allowed;
                         background-color:#cecece;
-                        border: 2px solid grey;
+                        border: 2px solid #4E5166;
                         color: white;
                     }
                 }

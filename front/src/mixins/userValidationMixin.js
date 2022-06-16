@@ -40,10 +40,28 @@ export const userValidationMixin = {
     computed: {
         ...mapState({
             user: 'user',
+            status: 'status',
         }),
     },
     methods: {
-        //User data validation
+        //Validation des données sur AuthView
+        isAuthFirstNameValid() {
+            this.nameReg.test(this.event.firstName) 
+            ? (this.firstNameValid= true, this.error.firstNameError = false) 
+            : (this.firstNameValid= false, this.error.firstNameError = true);
+        },
+        isAuthLastNameValid() {
+            this.nameReg.test(this.event.lastName) 
+            ? (this.lastNameValid= true, this.error.lastNameError = false) 
+            : (this.lastNameValid= false, this.error.lastNameError = true);
+        },
+        isAuthEmailValid() {
+            let LowerCaseEmail= this.event.email.toLowerCase();
+            this.emailReg.test(LowerCaseEmail) 
+            ? (this.emailValid= true, this.error.emailError = false) 
+            : (this.emailValid= false, this.error.emailError = true);
+        },
+        //Validation des données mises à jour
         isFirstNameValid() {
             this.nameReg.test(this.event.firstName) 
             ? (this.firstNameUpdateValid= true, this.error.firstNameError = false) 

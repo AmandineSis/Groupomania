@@ -12,7 +12,7 @@
                 v-if=" mode == 'signup'"
                 class="form__input"
                 v-model="event.firstName"
-                v-on:change="isFirstNameValid"
+                v-on:change="isAuthFirstNameValid"
                 label="Prénom"
                 type="text"
                 required
@@ -22,7 +22,7 @@
                 v-if=" mode == 'signup'"
                 class="form__input"
                 v-model="event.lastName"
-                v-on:change="isLastNameValid"
+                v-on:change="isAuthLastNameValid"
                 label="Nom"
                 type="text"
                 required
@@ -31,7 +31,7 @@
             <BaseInput
                 class="form__input"
                 v-model="event.email"
-                v-on:change="isEmailValid"
+                v-on:change="isAuthEmailValid"
                 label="Email"
                 type="email"
                 required
@@ -137,7 +137,7 @@ export default ({
         createUserAccount() {
             const self = this;
             if(!this.signupValidation){
-                return  this.status = 'error_signup'
+                return this.$store.commit('SET_STATUS', 'error_signup')
             }else{
                 this.createAccount({
                         firstName: this.event.firstName,
@@ -230,11 +230,11 @@ export default ({
                 border: 2px solid #EE7575;
             }
             &--disabled{
-                background-color: grey;
+                background-color: #4E5166;
                 &:hover{
                     cursor:not-allowed;
                     background-color:#cecece;
-                    border: 2px solid grey;
+                    border: 2px solid #4E5166;
                     color: white;
                 }
             }

@@ -109,9 +109,7 @@ export default ({
     //props provenant de HomeView/ProfileView
     props: {
         postItem: Object,
-        index: Number,
         currentPage: String,
-        phoneView: String,
         selectedMode: String,
         commentsVisible: Boolean
     },
@@ -291,7 +289,7 @@ export default ({
         }
         &__text{
             background-color:white;
-            border: 0 1px 1px 1px solid grey;
+            border: 0 1px 1px 1px solid #4E5166;
             padding: 10px;
             text-align: left;
             margin: 0;
@@ -310,7 +308,7 @@ export default ({
             padding: 5px 0;
             &__icon{
                 margin: 0 5px;
-                color: grey;
+                color: #4E5166;
                 font-size: 1.2rem;
                 &__full{
                     color: #ee7575;
@@ -323,10 +321,10 @@ export default ({
             justify-content: space-around;
             background-color: white;
             padding:  0;
-            border-top: 1px solid grey;
+            border-top: 1px solid #4E5166;
             &__icon{
                 padding: 5px;
-                color: grey;
+                color: #4E5166;
                 font-size: 1.2rem;
                 width: 50%;
                 height: 30px;
