@@ -19,6 +19,7 @@ router.put('/:userId', AccntAuth, auth, userCtrl.updateUser);//PUT /api/user/:us
 router.put('/:userId/password', pswdAuth,auth, userCtrl.updatePassword);//PUT /api/user/:userId
 router.put('/:userId/profilePic', auth, multer, userCtrl.updateUserPicture);//PUT /api/user/:picId ==> endpoint à vérifier
 router.delete('/:userId', auth, userCtrl.deleteUser);//DELETE /api/user/:userId
+router.delete('/:userId/:moderatorId', auth, userCtrl.moderatorDeleteUser);//DELETE /api/user/:userId
 
 
 

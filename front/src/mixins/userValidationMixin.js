@@ -17,7 +17,7 @@ export const userValidationMixin = {
                 firstNameError:false,
                 lastNameError:false,
                 emailError: false,
-                emailExists: false,
+                emailExists: '',
             },
             nameReg: /^([a-zA-ZÀ-ÿ]{3,20}(['|s|-]{1}[a-zA-ZÀ-ÿ]{0,20})*)$/,
             emailReg: /^[a-z0-9]+([_|.|-]{1}[a-zA0-9]+)*@[a-z0-9]+([_|.|-]{1}[a-z0-9]+)*[.]{1}[a-z]{2,6}$/,

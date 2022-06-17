@@ -7,9 +7,9 @@
 
     <UserProfile :profileView="true"/>
     <!-----Delete button only visible to moderator and not showing on moderator profile------->
-    <button class="button" v-if="user.moderator == 1 && userIdProfile !== 1" @click="showDeleteBlock" >Supprimer cet utilisateur</button>
+    <button class="button" v-if="user.moderator == 1 && userIdProfile !== user.userId" @click="showDeleteBlock" >Supprimer cet utilisateur</button>
     <transition name="bounce">
-        <AdminDeleteContainer v-if="deleteUserMenu"/>
+        <AdminDeleteContainer :current-page="currentPage"  v-if="deleteUserMenu"/>
     </transition>
     <transition name="bounce">
         <UpdateMenu 
@@ -302,7 +302,7 @@ font-size: 1em;
 /******************POSTS********************* */
 .postsContainer{
     max-width: 500px;
-    height: auto;
+    min-height: 500px;
     margin:  50px auto;
 }
 .noPost {

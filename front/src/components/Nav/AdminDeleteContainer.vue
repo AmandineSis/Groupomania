@@ -4,7 +4,7 @@
 <template>
     <div class="userUpdate"  >
         <p>Entrer le mot de passe administrateur pour supprimer ce compte</p>
-        <DeleteAccount/>
+        <DeleteAccount :page="currentPage"/>
     </div>
 </template>
 
@@ -17,6 +17,9 @@ import { mapState } from 'vuex';
 
 export default {
     name: 'AdminDeleteContainer',
+    props: {
+        currentPage: String 
+    },
     components: {
         DeleteAccount
     },

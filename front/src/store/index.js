@@ -146,13 +146,30 @@ export default createStore({
         });
     },
     deleteUser: ({commit}, loginDetails)=>{
-      console.log(loginDetails.password);
       commit('SET_STATUS', 'loading');
       return new Promise ((resolve, reject) => {
         instance
-          .delete(`/user/${loginDetails.userId}`, 
-          { data: { password: loginDetails.password}}
-        
+          .delete(`/user/${loginDetails.userId}`, {data: {
+              password: loginDetails.password}
+            }
+          )
+          .then(function (response) {
+            commit('SET_STATUS', 'deleted')
+            resolve(response)
+          })
+          .catch(function (error) {
+            commit('SET_STATUS', 'error_delete')
+            reject(error)
+          });
+        });
+    },
+    moderatorDelete: ({commit}, loginDetails)=>{
+      commit('SET_STATUS', 'loading');
+      return new Promise ((resolve, reject) => {
+        instance
+          .delete(`/user/${loginDetails.userId}/${loginDetails.moderatorId}`, {data: {
+              password: loginDetails.password}
+            }
           )
           .then(function (response) {
             commit('SET_STATUS', 'deleted')

@@ -37,7 +37,7 @@
                 required
             />
             <p class="form__input__error" v-if="mode == 'signup' && error.emailError">Veuillez saisir un email valide</p>
-            <p class="form__input__error" v-if="mode == 'signup' && error.emailExists">Cet email existe déjà</p>
+            <p class="form__input__error" v-if="mode == 'signup' && error.emailExists">{{ error.emailExists }}</p>
             <BaseInput
                 class="form__input"
                 v-model="event.password"
@@ -148,7 +148,7 @@ export default ({
                         console.log('createAccount dispatch done');
                         self.logUser();
                     }), (err => {
-                        console.log(err)
+                        this.error.emailExists = err;
                     }))
             }
         }    

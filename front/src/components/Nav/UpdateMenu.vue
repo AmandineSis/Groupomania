@@ -13,12 +13,12 @@
                 <button class="updateMenu__btn" :class="{'updateMenu__btn--sizeUp' : phoneView == 'phone'}" @click="switchToIdentification">Modifier mes identifiants</button>
                 <button class="updateMenu__btn" :class="{'updateMenu__btn--sizeUp' : phoneView == 'phone'}" @click="switchToPassword">Modifier mot de passe</button>
                 <button class="updateMenu__btn" :class="{'updateMenu__btn--sizeUp' : phoneView == 'phone'}" @click="switchToProfilePicture">Modifier photo de profil</button>
-                <button class="updateMenu__btn updateMenu__btn--delete " :class="{'updateMenu__selection__btn--sizeUp' : phoneView == 'phone'}" v-if="user.userId != 1" @click="switchToDeleteAccount">Supprimer mon compte</button>
+                <button class="updateMenu__btn updateMenu__btn--delete " :class="{'updateMenu__selection__btn--sizeUp' : phoneView == 'phone'}" v-if="user.moderator != 1" @click="switchToDeleteAccount">Supprimer mon compte</button>
             </div>
             <UserUpdate v-if="menu == 'identification'" :media='phoneView' :selectedPage='currentPage' :selectedTab='selectedMode'/>
             <PasswordUpdate v-if="menu == 'password'" :media='phoneView'/>
             <PictureUpdate v-if="menu == 'profilePicture'" :media='phoneView' :selectedPage='currentPage' :selectedTab='selectedMode'/>
-            <DeleteAccount v-if="menu == 'deleteAccount'" :media='phoneView'/>
+            <DeleteAccount v-if="menu == 'deleteAccount'" :media='phoneView' :updateMenu='updateMenu'/>
         </div>
     </div> 
 </template>
@@ -51,7 +51,8 @@ export default {
     },
     data() {
         return {
-            menu: 'identification'
+            menu: 'identification',
+            updateMenu: 'updateMenu'
         }
     },
     computed: {

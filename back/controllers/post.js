@@ -195,7 +195,7 @@ exports.updatePost = (req, res, next) => {
                         db.query(sqlCom, (error, results, fields) => {
                             if (error) throw ({ error });
                             //post modifié : retourne post modifié
-                            res.status(200).json({ results: post});
+                            res.status(200).json({message: "post modifié", results: post});
                         });
                     });
                 })
@@ -208,7 +208,7 @@ exports.updatePost = (req, res, next) => {
                         db.query(sqlCom, (error, results, fields) => {
                             if (error) throw ({ error });
                             //post modifié : retourne post modifié
-                            res.status(200).json({ results: post});
+                            res.status(200).json({ message: "post modifié", results: post});
                         });
                     });
                 })
@@ -287,7 +287,7 @@ exports.likePost = (req, res, next) => {
                     if (error) throw ({ error });
                     //result : like = 1 => vous aimez ce post
                     let like = 1;
-                    res.status(200).json({ like });
+                    res.status(200).json({message: "vous aimez ce post", like });
 
                 });
             });
@@ -300,7 +300,7 @@ exports.likePost = (req, res, next) => {
                     if (error) throw ({ error });
                     //result : like = 1 => vous n'aimez plus ce post
                     let like = 0;
-                    res.status(200).json({ like });
+                    res.status(200).json({ message: "vous aimez ce post", like });
                 });
             });
         } else {

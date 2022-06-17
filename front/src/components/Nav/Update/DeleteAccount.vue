@@ -22,10 +22,18 @@
                 class="deleteUser__form__valid__button" 
                 :class="{'deleteUser__form__valid__button--disabled' : !event.password}" 
                 type= "button" 
-                @click="deleteAccount" >
+                @click="deleteAccount()"
+                v-if="updateMenu">
                 Valider
             </button>
-    
+            <button 
+                class="deleteUser__form__valid__button" 
+                :class="{'deleteUser__form__valid__button--disabled' : !event.password}" 
+                type= "button" 
+                @click="moderatorDeleteAccount()"
+                v-else>
+                Valider
+            </button>
         </div>
     </div>
 </template>
@@ -41,7 +49,9 @@ export default {
     name: 'DeleteAccount',
     //props provenant d'UpdateMenu
     props: {
-        media: String
+        media: String,
+        page: String,
+        updateMenu: String
     },
     components: {
         BaseInput
@@ -67,7 +77,7 @@ export default {
     },
     methods: {  
         ...mapMutations(['LOG_OUT']),
-        ...mapActions(['deleteUser']),
+        ...mapActions(['deleteUser', 'moderatorDelete']),
         deleteAccount(){
             const password = this.event.password;
             const userId = this.user.userId;
@@ -91,9 +101,32 @@ export default {
             }else{
                 window.alert('Veuillez entrer un mot de passe !');
             }
-        }           
-    }
+        },
+        moderatorDeleteAccount(){
+            const password = this.event.password;
+            const userId = this.$route.params.userId;
+            const moderatorId = this.user.userId
+            if (password != ""){
+                if (window.confirm(`Attention ! Toutes les données de cet utilisateur seront perdues, êtes-vous sûr de vouloir supprimer ?`)){
+                    this.moderatorDelete({userId, password, moderatorId})
+                    .then((() => {
+                        console.log('deleteUser dispatch done');
+                        this.$router.push('/home');
+                    }), (() => {
+                        window.alert('Mot de passe invalide !');
+                        this.event.password ="";
+                        this.passwordField= false;
+                    }))
+                }else{
+                    this.event.password = "";
+                    }
+            }else{
+                window.alert('Veuillez entrer un mot de passe !');
+            }
+        },           
+    }           
 }
+
 </script>
 
 <style scoped lang="scss">

@@ -67,7 +67,7 @@
                     :post-item="popularPostItem"
                     :current-page="currentPage"
                     :selected-mode="selectedMode"
-                    v-once/>   
+                    />   
             </div>
             <div class="noPost" v-if="selectedMode == 'popularPosts' && popularPostsLength==0">
                 <p class="noPost__text">Il n'existe pas encore de publication !</p>
@@ -173,7 +173,6 @@ export default {
         showRecentPosts(){
             this.selectedMode='recentPosts';
             this.posts;
-           // this.getAllRecentPosts()
         },    
         showPopularPosts(){
             this.selectedMode = 'popularPosts';
@@ -264,47 +263,47 @@ export default {
 /*****************LOADER********************* */
 .loaderContainer{
     width: 100%;
-    margin-top: 50px;
+    margin: 100px auto 300px
 }
 .lds-ring {
-  display: inline-block;
-  position: relative;
-  width: 80px;
-  height: 80px;
+    display: inline-block;
+    position: relative;
+    width: 80px;
+    height: 80px;
 }
 .lds-ring div {
-  box-sizing: border-box;
-  display: block;
-  position: absolute;
-  width: 64px;
-  height: 64px;
-  margin: 8px;
-  border: 8px solid #ee7575;
-  border-radius: 50%;
-  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-  border-color: #ee7575 transparent transparent transparent;
+    box-sizing: border-box;
+    display: block;
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    margin: 8px;
+    border: 8px solid #ee7575;
+    border-radius: 50%;
+    animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    border-color: #ee7575 transparent transparent transparent;
 }
 .lds-ring div:nth-child(1) {
-  animation-delay: -0.45s;
+    animation-delay: -0.45s;
 }
 .lds-ring div:nth-child(2) {
-  animation-delay: -0.3s;
+    animation-delay: -0.3s;
 }
 .lds-ring div:nth-child(3) {
-  animation-delay: -0.15s;
+    animation-delay: -0.15s;
 }
 @keyframes lds-ring {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 /******************POSTS********************* */
 .postsContainer{
     max-width: 500px;
-    height: auto;
+    min-height: 500px;
     margin:  50px auto;
 }
 .noPost {

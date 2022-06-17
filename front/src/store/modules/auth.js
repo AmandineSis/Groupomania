@@ -33,10 +33,18 @@ export default {
                 .then(function (response) {
                     commit('SET_STATUS', 'created',{ root: true })
                     resolve(response)
+                    console.log(response)
                 })
                 .catch(function (error) {
                     commit('SET_STATUS', 'error_create',{ root: true })
-                    reject(error)
+                    //console.log(error.response.message)
+                  
+                    if(error.response){
+                        console.log(error.response.data);
+                        console.log(error.response.status);
+                        console.log(error.response.headers);
+                        reject(error.response.data.message)
+                    }
                 });
             });
         },
