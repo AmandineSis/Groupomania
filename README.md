@@ -26,21 +26,29 @@ Le backend a été crée avec Node.js, Express.js et MySQL comme base de donnée
 
 <h3>MySQL</h3>
 
-Dans le fichier groupomania/backend/.env ,mettre le mot de passe d'accès à votre base de donnée et votre nom d'utilisateur si besoin (root par défaut)
+Dans le fichier groupomania/backend/.env <
+mettre le mot de passe d'accès à votre base de donnée et votre nom d'utilisateur si besoin (root par défaut)
 
 DB_USER=root
+
 DB_PASS=
+
 
 
 Ouvrir MySql command Line client puis effectuer ces deux lignes de commandes :
 
+
 CREATE DATABASE groupomaniadb;
+
 USE groupomaniadb;
+
 
 
 Importer le fichier groupomaniadb.sql (qui ce trouve a la racine du projet) en entrant la ligne de commande suivante:
 
+
 source (chemin vers le fichier groupomaniadb.sql);
+
 
 ---> Attention a indiquer le chemin avec des "/" et non des "\ ".
 
@@ -49,7 +57,9 @@ source (chemin vers le fichier groupomaniadb.sql);
 
 Ouvrir un terminal dans le dossier back puis effectuer les lignes de commandes suivantes :
 
+
 npm install
+
 nodemon server
 
 
@@ -57,10 +67,14 @@ nodemon server
 
 Le frontend a été réalisé avec Vue.js
 
+
 Ouvrir un autre terminal dans le dossier front puis effectuer les lignes de commandes suivantes :
 
+
 npm install
+
 npm run serve
+
 
 Ouvrir le navigateur a l'adresse http://localhost:8080/
 
