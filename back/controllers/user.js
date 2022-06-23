@@ -45,7 +45,7 @@ exports.signup = (req, res, next) => {
             req.body.email,
             hash,
             profilePic,
-            false
+            0
           );
           //Si tous les champs user ne sont pas remplis => erreur
           if (user.firstName == "" || user.lastName == "" || user.email == "" || user.password == "" ){
@@ -160,21 +160,31 @@ exports.updateUser = (req, res) => {
       if (userId !== req.token.userId) {
         return res.status(401).json({ message: "utilisateur non authorisé !" });
       }
-      //mise à jour de la BDD
-      const user = new User(
-        req.body.firstName,
-        req.body.lastName,
-        req.body.email
-      );
-      let sqlUpdate = 'UPDATE users SET firstName = ?, lastName = ?, email = ? WHERE userId =' + db.escape(userId);
-      db.query(sqlUpdate, [user.firstName, user.lastName, user.email], (error, results, fields) => {
+      let sql = 'SELECT * FROM users WHERE email= ?';
+      db.query(sql, [req.body.email], (error, results, fields) => {
         if (error) throw ({ error });
-        console.log(results);
-        res.status(200).json({ message: "utilisateur modifié !" })
-      })
+        let userEmailExists = results[0];
+        console.log(userEmailExists)
+        //si user existe => erreur "user already exists"
+        if (userEmailExists && userEmailExists.email !== userExists.email) {
+          return res.status(401).json({ message: "désolé, cet email existe déjà !",  });
+        //sinon crypter le mot de passe avec bcrypt et ajouter l'utilisateur à la BDD
+      } else {
+        //mise à jour de la BDD
+        const user = new User(
+          req.body.firstName,
+          req.body.lastName,
+          req.body.email
+        );
+        let sqlUpdate = 'UPDATE users SET firstName = ?, lastName = ?, email = ? WHERE userId =' + db.escape(userId);
+        db.query(sqlUpdate, [user.firstName, user.lastName, user.email], (error, results, fields) => {
+          if (error) throw ({ error });
+          console.log(results);
+          res.status(200).json({ message: "utilisateur modifié !" })
+        })
     }
   });
-};
+}})};
 
 //modification du mot de passe
 //req.body = { oldPswd: string, newPswd: string}

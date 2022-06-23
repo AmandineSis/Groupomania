@@ -37,8 +37,6 @@ export default {
                 })
                 .catch(function (error) {
                     commit('SET_STATUS', 'error_create',{ root: true })
-                    //console.log(error.response.message)
-                  
                     if(error.response){
                         console.log(error.response.data);
                         console.log(error.response.status);

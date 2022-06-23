@@ -23,7 +23,8 @@
                 :class="{'deleteUser__form__valid__button--disabled' : !event.password}" 
                 type= "button" 
                 @click="deleteAccount()"
-                v-if="updateMenu">
+                v-if="updateMenu"
+                :disabled="!event.password">
                 Valider
             </button>
             <button 
@@ -31,7 +32,8 @@
                 :class="{'deleteUser__form__valid__button--disabled' : !event.password}" 
                 type= "button" 
                 @click="moderatorDeleteAccount()"
-                v-else>
+                v-else
+                :disabled="!event.password">
                 Valider
             </button>
         </div>
@@ -167,7 +169,13 @@ export default {
                 background-color: #ee7575;
                 transition: .4s background-color;
                 &--disabled{
-                    background-color: #4E5166;
+                background-color: #4E5166;
+                    &:hover{
+                        cursor:not-allowed;
+                        background-color:#cecece;
+                        border: 2px solid #4E5166;
+                        color: white;
+                    }
                 }
             }
         }

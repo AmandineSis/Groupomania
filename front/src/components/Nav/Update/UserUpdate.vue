@@ -35,7 +35,7 @@
             <p class="userUpdate__form__input__error" v-if="error.emailExists">Cet email existe déjà</p>
         </form>
         <div class="userUpdate__form__valid">
-            <button class="userUpdate__form__valid__button" :class="{'userUpdate__form__valid__button--disabled' : !userDataValidation}" type="button" @click="updateUserInfos" >Valider</button>
+            <button class="userUpdate__form__valid__button" :class="{'userUpdate__form__valid__button--disabled' : !userDataValidation}" type="button" @click="updateUserInfos" :disabled="!userDataValidation">Valider</button>
         </div>
     </div>
 </template>
@@ -71,7 +71,7 @@ export default {
     
     computed: {
         userDataValidation(){
-            if ( this.firstNameUpdateValid &&  this.lastNameUpdateValid && this.emailUpdateValid) {
+            if ( this.firstNameUpdateValid && this.lastNameUpdateValid && this.emailUpdateValid) {
                 return true;
             }else{
                 return false;
@@ -80,7 +80,7 @@ export default {
         ...mapState({
             userLoggedIn: 'userLoggedIn',
             postComments: 'postComments',
-        }),
+        })
     },
     methods: {
         ...mapMutations(['SET_STATUS']),
@@ -120,6 +120,9 @@ export default {
                         }), (err => {
                             console.log(err)
                         })}))
+                        .catch((err) => {
+                            window.alert(err);
+                    })
             }
         }    
     }
@@ -168,12 +171,19 @@ export default {
                 background-color: #ee7575;
                 transition: .4s background-color;
                 &--disabled{
-                    background-color: #4E5166;
+                background-color: #4E5166;
+                &:hover{
+                    cursor:not-allowed;
+                    background-color:#cecece;
+                    border: 2px solid #4E5166;
+                    color: white;
                 }
+            }
                 &:hover {
-                    background-color: #a71e05;
-                    color: #ffffff;
-                }
+                background-color: white;
+                color: #EE7575;
+                border: 2px solid #EE7575;
+            }
                 &__delete{
                     color: #ee7575;
                     background-color: #ffffff;

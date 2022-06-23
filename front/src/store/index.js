@@ -103,7 +103,9 @@ export default createStore({
           })
           .catch(function (error) {
             commit('SET_STATUS', 'error_update')
-            reject(error)
+            if(error.response){
+              reject(error.response.data.message)
+          }
           });
         });
     },

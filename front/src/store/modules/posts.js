@@ -32,6 +32,8 @@ function updatePostItem(arr, payload){
     const index = arr.map(object => object.postId).indexOf(postId);
     arr[index].content = payload.postContent;
     arr[index].imageUrl = payload.postImage; 
+    arr[index].likes = 0;
+    arr[index].comments = 0
 }
 
 export default {

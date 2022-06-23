@@ -50,11 +50,11 @@
             <p class="form__input__error" v-if="mode == 'login' && status == 'error_login'">identifiants de connexion incorrects</p>
         
             <div class="form__valid">
-                <button class="form__valid__button" type= "button" :class="{'form__valid__button--disabled' : !loginValidation}" @click="logUser" v-if=" mode == 'login'">
+                <button class="form__valid__button" type= "button" :class="{'form__valid__button--disabled' : !loginValidation}" @click="logUser" v-if=" mode == 'login'" :disabled="!loginValidation">
                     <span v-if="status == 'loading'">Connexion en cours...</span>
                     <span v-else>Connexion</span>
                 </button>
-                <button  class="form__valid__button" type="button" :class="{'form__valid__button--disabled' : !signupValidation}" @click="createUserAccount" v-else>
+                <button  class="form__valid__button" type="button" :class="{'form__valid__button--disabled' : !signupValidation}" @click="createUserAccount" :disabled="!signupValidation" v-else>
                     <span v-if="status == 'loading'">Connexion en cours...</span>
                     <span v-else>Créer mon compte</span>
                 </button>

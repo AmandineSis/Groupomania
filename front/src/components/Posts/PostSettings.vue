@@ -80,6 +80,7 @@ export default ({
         homePostsMixin, 
         profilePostsMixin
     ],
+    //props provenant de postItems
     props: {
         postItem: Object,
         thisPage: String,

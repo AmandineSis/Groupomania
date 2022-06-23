@@ -9,7 +9,7 @@
             <label for="uploadImage" class="form__btn form__btn__upload">Parcourir...</label>
             <p class="pictureUpdate__form__name">{{this.profilePic.name}}</p>
             <div class="pictureUpdate__form__valid">
-                <button class="pictureUpdate__form__valid__button" :class="{'pictureUpdate__form__valid__button--disabled' : !profilePic}" type= "button" @click.prevent="updatePicture" > Valider
+                <button class="pictureUpdate__form__valid__button" :class="{'pictureUpdate__form__valid__button--disabled' : !profilePic}" type= "button" @click.prevent="updatePicture" :disabled="!profilePic" > Valider
                 </button>
             </div>
         </form>
@@ -144,7 +144,13 @@ export default {
                     color: #ffffff;
                 }
                 &--disabled{
-                    background-color: #4E5166;
+                background-color: #4E5166;
+                    &:hover{
+                        cursor:not-allowed;
+                        background-color:#cecece;
+                        border: 2px solid #4E5166;
+                        color: white;
+                    }
                 }
             }
         }

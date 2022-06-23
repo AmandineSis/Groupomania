@@ -33,12 +33,13 @@
 
                 </button>
             </div>
+             <p class="passwordUpdate__error" v-if="error.passwordError">Veuillez saisir au moins 8 caratères, une majuscule, une minuscule, un chiffre et un caractère spécial</p>
         </form>
         <!--------------Validation du mot de passe---------------->
         <div class="passwordUpdate__form__valid">
             <button class="passwordUpdate__form__valid__button" :class="{'passwordUpdate__form__valid__button--disabled' : !newPasswordValid}" type= "button" @click="updateNewPassword" > Valider
             </button>
-            <p v-if="error.passwordError">Veuillez saisir au moins 8 caratères, une majuscule, une minuscule, un chiffre et un caractère spécial</p>
+           
         </div>
     </div>
 </template>
@@ -171,5 +172,9 @@ export default {
         padding: 10px;
         background-color: white;
     }  
+    &__error{
+        font-size: 13px;
+        color: #ee7575;
+    }
 }    
 </style>

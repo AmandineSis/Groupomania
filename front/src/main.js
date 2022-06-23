@@ -14,7 +14,9 @@ import { faHeart as farHeart, faComment as farComment } from '@fortawesome/free-
 
 
 const app = createApp(App)
-app.config.performance = false;
+//Décommenter pour rendre Vuex store invisible
+//app.config.performance = false;
+
 /* Vue3Mq 'devices' preset
     phone	0
     tablet	768
