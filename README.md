@@ -1,10 +1,10 @@
 <h1>GROUPOMANIA - Réseau social d'entreprise</h1>
 <h2>COMPETENCES EVALUEES</h2>
 
-    <li>Authentifier un utilisateur et maintenir sa session
-    <li>Personnaliser le contenu envoyé à un client web
-    <li>Gérer un stockage de données à l'aide de SQL
-    <li>Implémenter un stockage de données sécurisé en utilisant SQL
+    -Authentifier un utilisateur et maintenir sa session
+    -Personnaliser le contenu envoyé à un client web
+    -Gérer un stockage de données à l'aide de SQL
+    -Implémenter un stockage de données sécurisé en utilisant SQL
 
 <h2>INSTALLATION</h2>
 
@@ -12,9 +12,9 @@
 
 Il vous faut avoir installé sur votre machine :
 
-    <li>Git : https://git-scm.com/downloads
-    <li>Node.js : https://nodejs.org/en/
-    <li>MySql : https://dev.mysql.com/downloads/installer/
+    -Git : https://git-scm.com/downloads
+    -Node.js : https://nodejs.org/en/
+    -MySql : https://dev.mysql.com/downloads/installer/
 
 Initialiser un dossier Git puis cloner ce repo à l'intérieur :
 
@@ -64,19 +64,19 @@ Ouvrir le navigateur a l'adresse http://localhost:8080/
 
 Le site permet de
 
-    <li>Partager des posts (avec ou sans photos)
-    <li>modifier, supprimer ou signaler des posts
-    <li>Commenter et liker des posts
-    <li>modifier ou supprimer des commentaires
-    <li>Personnaliser son compte (modification des données utilisateurs/photo de profil)
-    <li>rechercher des utilisateurs
-    <li>supprimer son compte
+    -Partager des posts (avec ou sans photos)
+    -modifier, supprimer ou signaler des posts
+    -Commenter et liker des posts
+    -modifier ou supprimer des commentaires
+    -Personnaliser son compte (modification des données utilisateurs/photo de profil)
+    -rechercher des utilisateurs
+    -supprimer son compte
 
 Un compte admin est présent pour la modération:
     
-    <li>suppression/modification des posts/commentaires d'autres utilisateurs
-    <li>gestion des signalement de post
-    <li>suppression de compte utilisateur
+    -suppression/modification des posts/commentaires d'autres utilisateurs
+    -gestion des signalement de post
+    -suppression de compte utilisateur
     
 Voici les codes d'accès admin :
 
