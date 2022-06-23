@@ -31,10 +31,12 @@ Dans le fichier groupomania/backend/.env ,mettre le mot de passe d'accès à vot
 DB_USER=root
 DB_PASS=
 
+
 Ouvrir MySql command Line client puis effectuer ces deux lignes de commandes :
 
 CREATE DATABASE groupomaniadb;
 USE groupomaniadb;
+
 
 Importer le fichier groupomaniadb.sql (qui ce trouve a la racine du projet) en entrant la ligne de commande suivante:
 
@@ -42,12 +44,14 @@ source (chemin vers le fichier groupomaniadb.sql);
 
 ---> Attention a indiquer le chemin avec des "/" et non des "\ ".
 
+
 <h3>Dossier Back</h3>
 
 Ouvrir un terminal dans le dossier back puis effectuer les lignes de commandes suivantes :
 
 npm install
 nodemon server
+
 
 <h2>FRONT END</h2>
 
@@ -59,6 +63,7 @@ npm install
 npm run serve
 
 Ouvrir le navigateur a l'adresse http://localhost:8080/
+
 
 <h2>FONCTIONNALITES</h2>
 
