@@ -1,7 +1,7 @@
 /******************************************************************************************** */
 /**Configuration de la connexion à la BDD Groupomania                                         */
 /******************************************************************************************** */
-
+require('dotenv').config();
 //Importation du module 'mysql'
 const mysql = require('mysql');
 

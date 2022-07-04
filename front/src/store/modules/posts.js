@@ -330,6 +330,8 @@ export default {
                     .post(`/posts/${postReport.postId}/report`, {userId, report})
                     .then(function (response) {
                         commit('SET_STATUS', 'post_reported', { root: true })
+                        this.getReportedPosts();
+                        this.getPostsByDate();
                         resolve(response)
                     })
                     .catch(function (error) {
