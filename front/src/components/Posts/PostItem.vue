@@ -3,16 +3,16 @@
 <!------------------------------------------------------------------------------------>
 
 <template>
-<!---------------Reported posts style visible to moderator only---------------------------->
+<!--Reported posts style visible to moderator only-->
     <div class="posts"  :class="{'posts__reported' : postItem.report>=1 && user.moderator == 1 && selectedMode != 'reportedPosts'}" ref="postItem.postId">
 
         <header class="posts__header"  >
-            <!-----------------Link to user profilePage---------------->
+            <!--Link to user profilePage-->
             <router-link class="posts__header__user" :to="`/profile/${postItem.userId}`">
                 <img class="posts__header__user__picture" :src="postItem.profilePicUrl" alt="profile picture">
                 <h2 class="posts__header__user__id">{{postItem.firstName}} {{postItem.lastName}}</h2>
             </router-link>
-            <!------------------------Settings------------------------->
+            <!--Settings-->
             <div class="posts__header__settings">
                 <p class="posts__header__settings__date" >
                     <span>Publié le {{ new Date(postItem.created).toLocaleString() }}</span>
