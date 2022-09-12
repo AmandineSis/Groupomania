@@ -2,7 +2,7 @@
 <!--COMPOSANT MODIFICATION DE LA PHOTO DE PROFILE-->
 
 <template>
-    <div class="pictureUpdate" :class="{'pictureUpdate--sizeUp' : media == 'phone'}" >
+    <div class="pictureUpdate" :class="{'pictureUpdate--sizeUp' : mq.current == 'phone'}" >
         <form class="pictureUpdate__form">
             <input id="uploadImage" type="file" accept="image/jpeg, image/png, image/jpg" @change="updloadProfilePicture">
             <label for="uploadImage" class="form__btn form__btn__upload">Parcourir...</label>
@@ -25,6 +25,8 @@ import { profilePostsMixin } from '@/mixins/profilePostsMixin'
 
 
 export default {
+    //ajout de mediaqueries
+    inject: ["mq"],
     name: 'PictureUpdate',
     mixins: [
         homePostsMixin,
@@ -32,7 +34,6 @@ export default {
     ],
     //props provenant d'UpdateMenu
     props: {
-        media: String,
         selectedPage: String,
         selectedTab: String,
     },

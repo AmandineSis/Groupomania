@@ -14,7 +14,6 @@
     <transition name="bounce">
         <UpdateMenu 
             v-if="updateMenu" 
-            :phoneView="mq.current"
             :current-page="currentPage" 
             :selected-mode="selectedMode"/>
     </transition>

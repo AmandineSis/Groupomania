@@ -196,6 +196,7 @@ export default ({
     flex-direction: column;
     justify-content: space-around;
     padding: 20px 0 10px;
+
     &__input{
         border:none;
         border-bottom: 1px solid #999999;
@@ -241,6 +242,8 @@ export default ({
         }
     }
 }
+
+ 
 </style>
 
 

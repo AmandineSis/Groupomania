@@ -2,12 +2,12 @@
 <!--COMPOSANT MODIFICATION MOT DE PASSE-->
 
 <template>
-    <div class="passwordUpdate"  :class="{'passwordUpdate--sizeUp' : media == 'phone'}">
+    <div class="passwordUpdate"  :class="{'passwordUpdate--sizeUp' : mq.current == 'phone'}">
         <form class="passwordUpdate__form">
             <div class="passwordUpdate__form__container">
                 <BaseInput
                             class="passwordUpdate__form__input"
-                            :class="{'passwordUpdate__form__input--sizeUp' : media == 'phone'}"
+                            :class="{'passwordUpdate__form__input--sizeUp' : mq.current == 'phone'}"
                             v-model="event.oldPassword"
                             label="Ancien mot de passe"
                             :type="oldPasswordFieldType"
@@ -20,7 +20,7 @@
             <div class="passwordUpdate__form__container">
                 <BaseInput
                             class="passwordUpdate__form__input"
-                            :class="{'passwordUpdate__form__input--sizeUp' : media == 'phone'}"
+                            :class="{'passwordUpdate__form__input--sizeUp' : mq.current == 'phone'}"
                             v-model="event.newPassword"
                             v-on:change="isNewPasswordValid"
                             label="Nouveau mot de passe"
@@ -52,13 +52,10 @@ import { mapActions } from 'vuex'
 import { passwordValidationMixin } from '@/mixins/passwordValidationMixin'
 
 export default {
-    
+    //ajout de mediaqueries
+    inject: ["mq"],
     name: 'PasswordUpdate',
     mixins: [passwordValidationMixin],
-    //props provenant d'UpdateMenu
-    props: {
-        media: String
-    },
     components: {
         BaseInput
     },

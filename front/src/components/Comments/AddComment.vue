@@ -12,7 +12,7 @@
                 :selectedMode="mode"/>
         </div> 
     </div> 
-    <div class="posts__review__comments">
+    <div class="posts__review__comments" :class="{'posts__review__comments--square': mq.current=='phone'}">
         <!-- Ajout d'un commentaire -->
         <form class="form__comments" >
             <!--Upload nouvelle image-->
@@ -53,6 +53,8 @@ import { homePostsMixin } from '@/mixins/homePostsMixin'
 import { profilePostsMixin } from '@/mixins/profilePostsMixin'
 
 export default ({
+    //ajout de mediaqueries
+    inject: ["mq"],
     name: 'AddComment',
     mixins: [
         homePostsMixin, 
@@ -157,6 +159,9 @@ export default ({
     padding: 10px 0;
     border-radius: 0 0 20px 20px;
     margin: 0;
+    &--square{
+        border-radius: 0;
+    }
 }
 .form__comments {
     display: flex;

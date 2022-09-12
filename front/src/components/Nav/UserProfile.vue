@@ -3,15 +3,15 @@
 
 <template>
     <!-- UserProfile sur page d'accueil -->
-    <div class="userProfile" v-if="!profileView && !phoneView" >
+    <div class="userProfile" v-if="!profileView && mq.current !== 'phone'" >
         <router-link class="userProfile__link" :to="`/profile/${userLoggedIn.userId}`">
             <p class="userProfile__fullname">{{ fullNameUserLoggedIn }}</p> 
             <img class="userProfile__picture" :src="userLoggedIn.profilePicUrl" alt="photo de profil">
         </router-link>
     </div>
-    <router-link :to="`/profile/${userLoggedIn.userId}`" class="userProfile" :class="{'userProfile--inBlock' : phoneView}" v-if="phoneView" >  
-            <p class="userProfile__fullname" :class="{'userProfile__fullname--black' : phoneView}" >{{ fullNameUserLoggedIn }}</p> 
-            <img class="userProfile__picture" :class="{'userProfile__picture--sizeUp' : phoneView}" :src="userLoggedIn.profilePicUrl" alt="photo de profil" >
+    <router-link :to="`/profile/${userLoggedIn.userId}`" class="userProfile" :class="{'userProfile--inBlock' : mq.current=='phone'}" v-if="mq.current=='phone'" >  
+            <p class="userProfile__fullname" :class="{'userProfile__fullname--black' : mq.current=='phone'}" >{{ fullNameUserLoggedIn }}</p> 
+            <img class="userProfile__picture" :class="{'userProfile__picture--sizeUp' : mq.current=='phone'}" :src="userLoggedIn.profilePicUrl" alt="photo de profil" >
     </router-link>
 
     <!-- UserProfile sur page profil -->
@@ -29,11 +29,12 @@
 import { mapState, mapGetters, mapActions } from 'vuex';
 
 export default {
+    //ajout de mediaqueries
+    inject: ["mq"],
     name: 'UserProfile',
     //Props from profileView.vue
     props: {
         profileView: Boolean,
-        phoneView: Boolean
     },
     beforeMount:
         function(){

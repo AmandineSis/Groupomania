@@ -2,7 +2,7 @@
 <!--COMPOSANT SUPPRESSION DE L'UTILISATEUR-->
 
 <template>
-    <div class="deleteUser" :class="{'deleteUser--sizeUp' : media == 'phone'}">
+    <div class="deleteUser" :class="{'deleteUser--sizeUp' : mq.current == 'phone'}">
         <p class="deleteUser__text" v-if="updateMenuIsActive">
             Entrez votre mot de passe pour supprimer ce compte :
         </p>
@@ -47,10 +47,11 @@ import BaseInput from '@/components/Base/BaseInput.vue';
 import {  mapState, mapMutations, mapActions } from 'vuex'
 
 export default {
+    //ajout de mediaqueries
+    inject: ["mq"],
     name: 'DeleteAccount',
     //props provenant d'UpdateMenu
     props: {
-        media: String,
         page: String,
         updateMenu: String
     },

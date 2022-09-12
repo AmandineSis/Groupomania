@@ -2,10 +2,11 @@
 <!--COMPOSANT AJOUT D'UNE PUBLICATION-->
 
 <template>
-    <div class="newPost" >
+    <div class="newPost" :class="{'newPost--square' : mq.current=='phone'}">
         <form class="form">
             <textarea 
-                class="form__input"
+                class="form__input" 
+                :class="{'form__input--square' : mq.current=='phone'}"
                 rows ="5" 
                 v-model="post"
                 name ="newPost"
@@ -17,10 +18,20 @@
                 <font-awesome-icon class="form__addedImage__icon" icon="xmark" @click="deleteUpload" />
             </div>
             <div class="form__valid">
-                <label for="uploadImage" class="form__btn form__btn__upload"><font-awesome-icon icon="image" /></label>
-                <input id="uploadImage" type="file" accept="image/jpeg, image/png, image/jpg" @change="uploadImage">
+                <label 
+                    for="uploadImage" 
+                    class="form__btn form__btn__upload"
+                    :class="{'form__btn__upload--square' : mq.current=='phone'}">
+                    <font-awesome-icon icon="image" />
+                </label>
+                <input 
+                    id="uploadImage" 
+                    type="file" 
+                    accept="image/jpeg, image/png, image/jpg" 
+                    @change="uploadImage">
                 <button
                     class="form__btn form__btn__submit"
+                    :class="{'form__btn__submit--square' : mq.current=='phone'}"
                     type="submit"
                     @click.prevent="addNewPost">
                     <font-awesome-icon icon="paper-plane" />
@@ -39,6 +50,8 @@ import { homePostsMixin } from '@/mixins/homePostsMixin'
 import { profilePostsMixin } from '@/mixins/profilePostsMixin'
 
 export default ({
+    //ajout de mediaqueries
+    inject: ["mq"],
     name: 'AddPost',
     mixins: [
         homePostsMixin, 
@@ -114,6 +127,9 @@ export default ({
         align-items: center;
         border-radius: 20px;
         box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+        &--square{
+            border-radius: 0px;
+        }
     }
     /******NEW POST CONTENT********* */
     .form {
@@ -129,6 +145,9 @@ export default ({
             display: inline-block;
             white-space: normal;
             color: #4E5166;
+            &--square{
+            border-radius: 0px;
+        }
         }
         &__addedImage{
             display: flex;
@@ -164,6 +183,9 @@ export default ({
             &__submit {
                 border-radius: 0 0 20px 0;
                 border-left: solid 1.5px #ffffff;
+                &--square{
+                    border-radius: 0;
+                }
             }
             &__upload {
                 display: flex;
@@ -171,6 +193,9 @@ export default ({
                 align-items: center;
                 border-radius: 0 0 0 20px;
                 border-right: solid 1.5px #ffffff;
+                &--square{
+                    border-radius: 0;
+                }
             }
             &:hover {
                 background-color:  #ffffff;

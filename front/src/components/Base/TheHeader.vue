@@ -1,11 +1,15 @@
 <template>
-    <header class="mainHeader" v-once>
-        <img class="mainHeader__logo" alt="logo groupomania" src="@/assets/images/logo.png">
+    <header class="mainHeader" :class="{'mainHeader--small': mq.current=='phone'}" v-once>
+        <img class="mainHeader__logo" alt="logo groupomania" src="@/assets/images/logo.png" v-if="mq.current !== 'phone'">
+        <img class="mainHeader__logo--small" alt="logo groupomania" src="@/assets/images/logo_text.png" v-else>
+        
     </header>
 </template>
 
 <script>
 export default {
+     //ajout de mediaqueries
+    inject: ["mq"],
     name: 'MainHeader'
 }
 </script>
@@ -17,6 +21,7 @@ export default {
         background-color: #4E5166;
         position: relative;
         z-index: -10;
+       
         &__logo {
         width: 275px;
         height: 275px;
@@ -26,6 +31,11 @@ export default {
         margin-left: 20px;
         position: absolute;
         z-index: -1;
+         &--small{
+            height: 25px;
+            margin-top : 20px;
+
+        }
         }
     
     }

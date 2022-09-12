@@ -2,11 +2,11 @@
 <!-- COMPOSANT MODIFICATION DES DONNEES UTILISATEUR-->
 
 <template>
-    <div class="userUpdate" :class="{'userUpdate--sizeUp' : media == 'phone'}">
+    <div class="userUpdate" :class="{'userUpdate--sizeUp' : mq.current == 'phone'}">
         <form class="userUpdate__form">
             <BaseInput
                 class="userUpdate__form__input"
-                :class="{'userUpdate__form__input--sizeUp' : media == 'phone'}"
+                :class="{'userUpdate__form__input--sizeUp' : mq.current == 'phone'}"
                 :value="event.firstName = userLoggedIn.firstName"
                 @change="isFirstNameValid"
                 @input="event.firstName = $event.target.value"
@@ -15,7 +15,7 @@
             <p class="userUpdate__form__input__error" v-if="error.firstNameError">Veuillez saisir au moins 3 caratères alphabétiques</p>
             <BaseInput
                 class="userUpdate__form__input"
-                :class="{'userUpdate__form__input--sizeUp' : media == 'phone'}"
+                :class="{'userUpdate__form__input--sizeUp' : mq.current == 'phone'}"
                 :value="event.lastName = userLoggedIn.lastName"
                 @change="isLastNameValid"
                 @input="event.lastName = $event.target.value "
@@ -24,7 +24,7 @@
             <p class="userUpdate__form__input__error" v-if="error.lastNameError">Veuillez saisir au moins 3 caratères alphabétiques</p>
             <BaseInput
                 class="userUpdate__form__input"
-                :class="{'userUpdate__form__input--sizeUp' : media == 'phone'}"
+                :class="{'userUpdate__form__input--sizeUp' : mq.current == 'phone'}"
                 :value="event.email = userLoggedIn.email"
                 @change="isEmailValid"
                 @input="event.email = $event.target.value "
@@ -52,6 +52,8 @@ import { profilePostsMixin } from '@/mixins/profilePostsMixin'
 
 
 export default {
+    //ajout de mediaqueries
+    inject: ["mq"],
     name: 'UserUpdate',
     mixins: [
         userValidationMixin, 
@@ -63,7 +65,6 @@ export default {
     },
     //props provenant d'UpdateMenu
     props: {
-        media: String,
         selectedPage: String,
         selectedTab: String,
     },

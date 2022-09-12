@@ -2,7 +2,7 @@
     <!-- Header navigation -->
     <!-- Screen width > 768px -->
     <div class="container">
-        <div v-if ="mq.current != 'phone'">
+        <div v-if ="mq.current !== 'phone'">
             <nav class="topMenu" v-once>
                 <SettingsMenu class="topMenu__settings" v-once />
                 <router-link :to="`/profile/${userLoggedIn.userId}`">
@@ -12,22 +12,21 @@
         </div>
         <!-- Screen width < 768px -->
         <div v-else>
-            <nav class="topMenu" v-once>
-                <SettingsMenu class="topMenu__settings" v-once />
+            <font-awesome-icon class="burgerMenu" icon="bars" @click="showSettingsMenu"/>
+            <nav class="topMenu" v-if="SettingsMenuVisible">
+                <SettingsMenu class="topMenu__settings" />
             </nav> 
-            <UserProfile :phoneView="true"/>
+            <UserProfile/>
         </div>
         <!-- Pop-up update menu -->
         <transition name="bounce">
             <UpdateMenu 
                 v-if="updateMenu" 
-                :phoneView="mq.current"
                 :current-page="currentPage" 
                 :selected-mode="selectedMode"/>
         </transition>
 
         <AddPost 
-            :phoneView="mq.current"
             :current-page="currentPage" 
             :selected-mode="selectedMode" 
             v-once/>
@@ -126,6 +125,7 @@ export default {
         return{
             currentPage: "homePage",
             selectedMode: 'recentPosts',
+            SettingsMenuVisible: false,
             postDisplay: 2,
             popularPostDisplay: 2,
             reportedPostDisplay: 2,
@@ -170,6 +170,9 @@ export default {
     methods: {
         ...mapMutations('toggle',['UPDATE_MENU_TOGGLE']),
         //toggle entre les différents onglets
+        showSettingsMenu(){
+            this.SettingsMenuVisible != this.SettingsMenuVisible;
+        },
         showRecentPosts(){
             this.selectedMode='recentPosts';
             this.posts;
@@ -201,6 +204,14 @@ export default {
 <style scoped lang="scss">
 .container{
     height: 100%;
+}
+.burgerMenu{
+    color: white;
+
+    position: absolute;
+    top: 20px;
+    left: 10px;
+    height: 25px;
 }
 .topMenu {
         position: absolute;

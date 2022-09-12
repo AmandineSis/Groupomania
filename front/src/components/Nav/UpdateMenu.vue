@@ -2,22 +2,22 @@
 <!--COMPOSANT MENU UPDATE-->
 
 <template>
-    <div class="updateMenu" :class="{'updateMenu--sizeUp' : phoneView == 'phone'}">
+    <div class="updateMenu" :class="{'updateMenu--square' : mq.current == 'phone'}">
         <div class="updateMenu__top">
-            <button class="updateMenu__btn updateMenu__btn--close " :class="{'updateMenu__selection__btn--sizeUp' : phoneView}" @click="closeUpdate"><font-awesome-icon class="updateMenu__close__icon" icon="xmark"/></button>
+            <button class="updateMenu__btn updateMenu__btn--close " :class="{'updateMenu__selection__btn--sizeUp' : mq.current == 'phone'}" @click="closeUpdate"><font-awesome-icon class="updateMenu__close__icon" icon="xmark"/></button>
         </div>
-        <div class="updateMenu__main" :class="{'updateMenu__main--sizeUp' : phoneView == 'phone'}">
+        <div class="updateMenu__main" :class="{'updateMenu__main--sizeUp' : mq.current == 'phone'}">
 
-            <div class="updateMenu__selection" :class="{'updateMenu__selection--sizeUp' : phoneView == 'phone'}">
-                <button class="updateMenu__btn" :class="{'updateMenu__btn--sizeUp' : phoneView == 'phone'}" @click="switchToIdentification">Modifier mes identifiants</button>
-                <button class="updateMenu__btn" :class="{'updateMenu__btn--sizeUp' : phoneView == 'phone'}" @click="switchToPassword">Modifier mot de passe</button>
-                <button class="updateMenu__btn" :class="{'updateMenu__btn--sizeUp' : phoneView == 'phone'}" @click="switchToProfilePicture">Modifier photo de profil</button>
-                <button class="updateMenu__btn updateMenu__btn--delete " :class="{'updateMenu__selection__btn--sizeUp' : phoneView == 'phone'}" v-if="user.moderator != 1" @click="switchToDeleteAccount">Supprimer mon compte</button>
+            <div class="updateMenu__selection" :class="{'updateMenu__selection--sizeUp' : mq.current == 'phone'}">
+                <button class="updateMenu__btn" :class="{'updateMenu__btn--sizeUp' : mq.current == 'phone'}" @click="switchToIdentification">Modifier mes identifiants</button>
+                <button class="updateMenu__btn" :class="{'updateMenu__btn--sizeUp' : mq.current == 'phone'}" @click="switchToPassword">Modifier mot de passe</button>
+                <button class="updateMenu__btn" :class="{'updateMenu__btn--sizeUp' : mq.current == 'phone'}" @click="switchToProfilePicture">Modifier photo de profil</button>
+                <button class="updateMenu__btn updateMenu__btn--delete " :class="{'updateMenu__selection__btn--sizeUp' : mq.current == 'phone'}" v-if="user.moderator != 1" @click="switchToDeleteAccount">Supprimer mon compte</button>
             </div>
-            <UserUpdate v-if="menu == 'identification'" :media='phoneView' :selectedPage='currentPage' :selectedTab='selectedMode'/>
-            <PasswordUpdate v-if="menu == 'password'" :media='phoneView'/>
-            <PictureUpdate v-if="menu == 'profilePicture'" :media='phoneView' :selectedPage='currentPage' :selectedTab='selectedMode'/>
-            <DeleteAccount v-if="menu == 'deleteAccount'" :media='phoneView' :updateMenu='updateMenu'/>
+            <UserUpdate v-if="menu == 'identification'" :selectedPage='currentPage' :selectedTab='selectedMode'/>
+            <PasswordUpdate v-if="menu == 'password'"/>
+            <PictureUpdate v-if="menu == 'profilePicture'" :selectedPage='currentPage' :selectedTab='selectedMode'/>
+            <DeleteAccount v-if="menu == 'deleteAccount'" :updateMenu='updateMenu'/>
         </div>
     </div> 
 </template>
@@ -34,11 +34,11 @@ import DeleteAccount from '@/components//Nav/Update/DeleteAccount.vue';
 import { mapState, mapMutations } from 'vuex';
 
 export default {
-
+//ajout de mediaqueries
+    inject: ["mq"],
     name: 'UpdateMenu',
     //props provenant de HomeView
     props: {
-        phoneView: String,
         currentPage: String,
         selectedMode: String,
     },
@@ -93,7 +93,7 @@ export default {
     align-items: center;
     border-radius: 20px;
     box-shadow: rgba(0, 0, 0, 0.6) 0px 5px 15px;
-    &--sizeUp{
+    &--square{
         border-radius: 0;
     }
     &__top{

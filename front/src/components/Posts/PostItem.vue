@@ -3,7 +3,7 @@
 
 <template>
 <!--Reported posts style visible to moderator only-->
-    <div class="posts"  :class="{'posts__reported' : postItem.report>=1 && user.moderator == 1 && selectedMode != 'reportedPosts'}" ref="postItem.postId">
+    <div class="posts"  :class="[{'posts--reported' : postItem.report>=1 && user.moderator == 1 && selectedMode != 'reportedPosts'},{'posts--square': mq.current=='phone'}]" ref="postItem.postId" >
 
         <header class="posts__header"  >
             <!--Link to user profilePage-->
@@ -12,7 +12,7 @@
                 <h2 class="posts__header__user__id">{{postItem.firstName}} {{postItem.lastName}}</h2>
             </router-link>
             <!--Settings-->
-            <div class="posts__header__settings">
+            <div class="posts__header__settings" :class="{'posts__header__settings--square': mq.current=='phone'}">
                 <p class="posts__header__settings__date" >
                     <span>Publié le {{ new Date(postItem.created).toLocaleString() }}</span>
                 </p>
@@ -96,6 +96,8 @@ import { homePostsMixin } from '@/mixins/homePostsMixin'
 import { profilePostsMixin } from '@/mixins/profilePostsMixin'
 
 export default ({
+     //ajout de mediaqueries
+    inject: ["mq"],
     name: 'PostItem',
      mixins: [
         homePostsMixin, 
@@ -115,7 +117,8 @@ export default ({
     data(){
         return {
             showPostSettings: false,
-            showComment: false
+            showComment: false,
+           
         }
     },
     computed: {
@@ -202,10 +205,10 @@ export default ({
 .posts {
     margin:  50px auto;
     border-radius: 20px 20px 0 0;
-    &--sizeUp{
+    &--square{
         border-radius: 0;
     }
-    &__reported{
+    &--reported{
         border: 3px solid #ee7575;
     }
     &__header{
@@ -241,6 +244,9 @@ export default ({
             display: flex;
             flex-direction: row;
             justify-content: space-between;
+            &--square{
+                border-radius: 0;
+            }
             &__date{
                 margin: 0 80px;
                 color: #ffffff;
