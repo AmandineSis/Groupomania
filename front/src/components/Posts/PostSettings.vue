@@ -1,11 +1,10 @@
-<!------------------------------------------------------------------------------------>
-<!--                     COMPOSANT SETTINGS PUBLICATIONS                            -->
-<!------------------------------------------------------------------------------------>
+
+<!-- COMPOSANT SETTINGS PUBLICATIONS-->
 
 <template>
     <div class="updatePost">
         <form class="updatePost__form"  >
-            <!-------------------------------Post content------------------------------------->
+            <!--Post content-->
             <textarea 
                 class="updatePost__form__input"
                 rows ="5" 
@@ -13,7 +12,7 @@
                 :value="event.content=postItem.content"
                 @change="event.content = $event.target.value"
             ></textarea>
-            <!------------------------Display/Delete post image------------------------->
+            <!--Display/Delete post image-->
             <div class="updatePost__form__addedImage" v-if="postItem.imageUrl && !event.image.name && postUploadExists" >
                 <p class="updatePost__form__addedImage__image" >{{postItem.imageUrl}}</p>
                 <font-awesome-icon 
@@ -29,21 +28,21 @@
                     @click="deleteUpdatedFile" />
             </div>
             <div class="updatePost__form__valid">
-                <!----------------------------Delete post ---------------------------------------->
+                <!--Delete post-->
                 <button 
                     class="updatePost__form__btn updatePost__form__btn__delete" 
                     v-if=" user.moderator == 1 || user.userId== postItem.userId" 
                     @click="postDelete(postItem.postId)">
                     Supprimer
                 </button>
-                <!-------------------------Remove post report ---------------------------------------->
+                <!--Remove post report-->
                 <button 
                     class="updatePost__form__btn updatePost__form__btn__deleteReport" 
                     v-if=" user.moderator == 1 && postItem.report>0" 
                     @click="unreportPost(postItem.postId)">
                     Supprimer le signalement
                 </button>
-                <!----------------------------Upload post image ---------------------------------------->
+                <!--Upload post image-->
                 <label 
                     for="uploadUpdatedImage" 
                     class="updatePost__form__btn updatePost__form__btn__upload">
@@ -54,7 +53,7 @@
                     type="file" 
                     accept="image/jpeg, image/png, image/jpg" 
                     @change="updateImage">
-                <!----------------------------Valid post update ---------------------------------------->
+                <!--Valid post update -->
                 <button 
                     class="updatePost__form__btn updatePost__form__btn__submit" 
                     type="submit" 

@@ -1,6 +1,5 @@
-<!------------------------------------------------------------------------------------>
-<!--                 MODFICATION/SUPPRESSION DES COMMENTAIRES                       -->
-<!------------------------------------------------------------------------------------>
+
+<!-- MODFICATION/SUPPRESSION DES COMMENTAIRES-->
 
 <template>
     <div class="updateCom"  >
@@ -12,7 +11,7 @@
                 :value="event.comContent = comItem.commentContent"
                 @change="event.comContent = $event.target.value"
             ></textarea>
-            <!------------------------Affichage/modification de l'image------------------------->
+            <!--Affichage/modification de l'image-->
             <div class="updateCom__form__addedImage" v-if="comItem.imageUrl && !event.comImage.name && comUploadExists" >
                 <p class="updateCom__form__addedImage__name" >{{comItem.imageUrl}}</p>
                 <font-awesome-icon 
@@ -28,16 +27,16 @@
                     @click="deleteUpdatedFile" />
             </div>
             <div class="updateCom__form__valid">
-                <!----------------------------Suppression du commentaire---------------------------------------->
+                <!--Suppression du commentaire-->
                 <button 
                     class="updateCom__form__btn updateCom__form__btn__delete" 
                     @click.prevent="deletePostComment(comItem.postId, comItem.comId)" >
                     supprimer
                 </button>
-                <!----------------------------Ajout d'une nouvelle image ---------------------------------------->
+                <!--Ajout d'une nouvelle image-->
                 <label for="uploadUpdatedImage" class="updateCom__form__btn updateCom__form__btn__upload"><font-awesome-icon icon="image" /></label>
                 <input id="uploadUpdatedImage" type="file" @change="updateComImage">
-                <!----------------------------Validation du commentaire ---------------------------------------->
+                <!--Validation du commentaire-->
                 <button
                     class="updateCom__form__btn updateCom__form__btn__submit"
                     type="submit"

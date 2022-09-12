@@ -45,7 +45,7 @@
         </main>
 
         <main v-else>
-            <!------------------------------------POSTS BY DATE------------------------------------------------------------------>
+            <!--POSTS BY DATE-->
             <div class="postsContainer" v-if="selectedMode == 'recentPosts' && postLength!=0">  
                 <div >
                 <PostItem  
@@ -59,7 +59,7 @@
             <div class="noPost" v-if="selectedMode == 'recentPosts' && postLength==0"> 
                 <p class="noPost__text">Il n'existe pas encore de publication !</p>
             </div> 
-            <!------------------------------------POSTS BY LIKE------------------------------------------------------------------>
+            <!--POSTS BY LIKE-->
             <div class="postsContainer" v-if="selectedMode == 'popularPosts'&& popularPostsLength!=0">
                 <PostItem 
                     v-for="popularPostItem in popularPostLoaded" 
@@ -72,7 +72,7 @@
             <div class="noPost" v-if="selectedMode == 'popularPosts' && popularPostsLength==0">
                 <p class="noPost__text">Il n'existe pas encore de publication !</p>
             </div>
-            <!------------------------------------POSTS REPORTED------------------------------------------------------------------>
+            <!--POSTS REPORTED-->
             <div class="postsContainer" v-if="selectedMode == 'reportedPosts'&& reportedPostsLength!=0">
                 <PostItem 
                 v-for="reportedPostsItem in reportedPostLoaded" 
@@ -84,7 +84,7 @@
             <div class="noPost" v-if="selectedMode == 'reportedPosts' && reportedPostsLength==0">
                 <p class="noPost__text">Aucune publication n'a été signalée !</p>
             </div>
-            <!----Affiche plus de publications---->
+            <!--Affiche plus de publications-->
 
         </main>
         <button class="loadButton" @click.stop="loadMore()" v-if="selectedMode == 'recentPosts' && postDisplay < postLength">Afficher plus...</button>

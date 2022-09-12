@@ -1,6 +1,5 @@
-<!------------------------------------------------------------------------------------>
-<!--                 COMPOSANT CONTENEUR SUPPRESSION DE COMPTE UTILISATEUR          -->
-<!------------------------------------------------------------------------------------>
+<!--COMPOSANT CONTENEUR SUPPRESSION DE COMPTE UTILISATEUR-->
+
 <template>
     <div class="userUpdate"  >
         <p>Entrer le mot de passe administrateur pour supprimer ce compte</p>

@@ -1,6 +1,5 @@
-<!------------------------------------------------------------------------------------>
-<!--                 COMPOSANT SUPPRESSION DE L'UTILISATEUR                         -->
-<!------------------------------------------------------------------------------------>
+
+<!--COMPOSANT SUPPRESSION DE L'UTILISATEUR-->
 
 <template>
     <div class="deleteUser" :class="{'deleteUser--sizeUp' : media == 'phone'}">

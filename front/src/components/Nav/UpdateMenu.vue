@@ -1,6 +1,5 @@
-<!------------------------------------------------------------------------------------>
-<!--                         COMPOSANT MENU UPDATE                                  -->
-<!------------------------------------------------------------------------------------>
+
+<!--COMPOSANT MENU UPDATE-->
 
 <template>
     <div class="updateMenu" :class="{'updateMenu--sizeUp' : phoneView == 'phone'}">

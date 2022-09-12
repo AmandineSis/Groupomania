@@ -1,20 +1,20 @@
-<!------------------------------------------------------------------------------------>
-<!--                            COMPOSANT COMMENTAIRES                              -->
-<!------------------------------------------------------------------------------------>
+
+<!--COMPOSANT COMMENTAIRES-->
+
 
 <template>
 
 <div class="CommentItem">
-	<!----Affichage de la photo de profil visible sur tablette et desktop ----->
+	<!--Affichage de la photo de profil visible sur tablette et desktop-->
 	<router-link :to="`/profile/${comItem.userId}`" v-if="mq.current != 'phone'">
 		<img class="form__comments__profile" :src="comItem.profilePicUrl" alt="" v-if="mq.current != 'phone'">
 	</router-link>
-	<!----Affichage du nom de l'utilisateur ----->
+	<!--Affichage du nom de l'utilisateur -->
 	<div class="form__comments__content">
 		<router-link class="form__comments__content__link" :to="`/profile/${comItem.userId}`" v-if="mq.current == 'phone'">
 			<p class="form__comments__content__user" >{{ comItem.firstName }} {{ comItem.lastName }}</p>
 		</router-link>
-		<!----Contenu du commentaire----->
+		<!--Contenu du commentaire--->
 		<div class="form__comments__container">	
 			<div class="form__comments__popup" v-if="showComSettings && comItem">
 				<ComSettings 
@@ -37,7 +37,7 @@
 			</div>
 		</div>	
 	</div>
-	<!----Settings visibles uniquement par le propriétaire du commentaire ou le modérateur ----->
+	<!--Settings visibles uniquement par le propriétaire du commentaire ou le modérateur-->
 	<div class="form__comments__settings">    
 		<span class="form__comments__settings__nav" @click="openComSettings" >
             <font-awesome-icon 

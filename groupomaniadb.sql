@@ -21,7 +21,7 @@ SET time_zone = "+00:00";
 -- Base de données : `groupomaniadb`
 --
 
--- --------------------------------------------------------
+-- 
 
 --
 -- Structure de la table `comments`
@@ -51,7 +51,7 @@ INSERT INTO `comments` (`comId`, `userId`, `commentContent`, `postId`, `imageUrl
 (175, 8, 'Salut ! ', 64, NULL),
 (176, 18, 'Il est déjà parti !', 65, NULL);
 
--- --------------------------------------------------------
+-- 
 
 --
 -- Structure de la table `likes`
@@ -82,7 +82,7 @@ INSERT INTO `likes` (`likeId`, `userId`, `postId`) VALUES
 (87, 18, 59),
 (88, 18, 46);
 
--- --------------------------------------------------------
+-- 
 
 --
 -- Structure de la table `posts`
@@ -114,7 +114,7 @@ INSERT INTO `posts` (`postId`, `userId`, `created`, `content`, `likes`, `comment
 (65, 8, '2022-06-23 17:16:12', 'Quelqu\'un a vu Luke ?!', 1, 1, 'http://localhost:3000/images/post/DcWCTnhX0AE_SxF.png1655997372215.png', 0),
 (66, 18, '2022-06-23 17:17:44', 'J\'espère que notre réseau social vous plaît ! :D', 0, 0, 'http://localhost:3000/images/post/beachsunnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn.jpg1655997464236.jpg', 0);
 
--- --------------------------------------------------------
+-- 
 
 --
 -- Structure de la table `report`
@@ -130,7 +130,7 @@ CREATE TABLE IF NOT EXISTS `report` (
   KEY `fk_report_posts` (`postId`)
 ) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb3;
 
--- --------------------------------------------------------
+--
 
 --
 -- Structure de la table `users`

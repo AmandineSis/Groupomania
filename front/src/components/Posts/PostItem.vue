@@ -1,6 +1,5 @@
-<!------------------------------------------------------------------------------------>
-<!--                     COMPOSANT PUBLICATIONS                                     -->
-<!------------------------------------------------------------------------------------>
+
+<!--COMPOSANT PUBLICATIONS-->
 
 <template>
 <!--Reported posts style visible to moderator only-->
@@ -32,13 +31,13 @@
                     :mode="selectedMode"
                     @hide-post-settings="closeSettings"/>
             </div>
-            <!----- Report post ----->
+            <!-- Report post-->
             <div class="posts__content__settings" v-if="showPostSettings && user.moderator == 0 && user.userId != postItem.userId" >
                 <button class="posts__content__settings__button" @click="postReport(postItem.postId)" >
                     <span>Signaler</span>
                 </button>
             </div>
-            <!------ Post content ---->
+            <!-- Post content-->
             <div class="post__container" v-if="!showPostSettings || showPostSettings && user.moderator == 0 && user.userId!= postItem.userId || !showPostSettings && user.moderator == 1">
                 <div class="posts__content" >
                     <p class="posts__content__text" v-if="postItem.content" >{{postItem.content}}</p>

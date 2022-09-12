@@ -1,6 +1,5 @@
-<!------------------------------------------------------------------------------------>
-<!--                 COMPOSANT MODIFICATION MOT DE PASSE                            -->
-<!------------------------------------------------------------------------------------>
+
+<!--COMPOSANT MODIFICATION MOT DE PASSE-->
 
 <template>
     <div class="passwordUpdate"  :class="{'passwordUpdate--sizeUp' : media == 'phone'}">
@@ -35,7 +34,7 @@
             </div>
              <p class="passwordUpdate__error" v-if="error.passwordError">Veuillez saisir au moins 8 caratères, une majuscule, une minuscule, un chiffre et un caractère spécial</p>
         </form>
-        <!--------------Validation du mot de passe---------------->
+        <!--Validation du mot de passe-->
         <div class="passwordUpdate__form__valid">
             <button class="passwordUpdate__form__valid__button" :class="{'passwordUpdate__form__valid__button--disabled' : !newPasswordValid}" type= "button" @click="updateNewPassword" > Valider
             </button>

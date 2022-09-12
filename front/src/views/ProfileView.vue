@@ -6,7 +6,7 @@
     </nav> 
 
     <UserProfile :profileView="true"/>
-    <!-----Delete button only visible to moderator and not showing on moderator profile------->
+    <!--Delete button only visible to moderator and not showing on moderator profile-->
     <button class="button" v-if="user.moderator == 1 && userIdProfile !== user.userId" @click="showDeleteBlock" >Supprimer cet utilisateur</button>
     <transition name="bounce">
         <AdminDeleteContainer :current-page="currentPage"  v-if="deleteUserMenu"/>
@@ -38,7 +38,7 @@
     </main>
 
     <main v-else>
-        <!------------------------------------POSTS BY DATE------------------------------------------------------------------>
+        <!--POSTS BY DATE-->
         <div class="postsContainer" v-if="selectedMode == 'recentUserPosts' && postByUserLength!=0">  
             <PostItem 
                 v-for="postItem in postByDateByUserLoaded" 
@@ -50,7 +50,7 @@
         <div class="noPost" v-if="selectedMode == 'recentUserPosts' && postByUserLength==0"> 
             <p class="noPost__text">Il n'existe pas encore de publication !</p>
         </div> 
-        <!------------------------------------POSTS BY LIKE------------------------------------------------------------------>
+        <!--POSTS BY LIKE-->
         <div class="postsContainer" v-if="selectedMode == 'popularUserPosts'&& popularPostsByUserLength!=0">
             <PostItem 
                 v-for="popularPostItem in popularPostByUserLoaded" 

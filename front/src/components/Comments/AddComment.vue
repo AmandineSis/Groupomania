@@ -1,10 +1,9 @@
-<!------------------------------------------------------------------------------------>
-<!--                  COMPOSANT AFFICHAGE/AJOUT DES COMMENTAIRES                    -->
-<!------------------------------------------------------------------------------------>
+                                                   
+<!--COMPOSANT AFFICHAGE/AJOUT DES COMMENTAIRES-->
 
 <template>
     <div class="posts__review__comments__added">   
-        <!-----------Affichage des commentaire de la publication-------------->
+        <!--Affichage des commentaire de la publication-->
         <div class="recentComments" v-if="postComments" >
             <CommentItem 
                 v-for="comItem in postComments " 
@@ -14,12 +13,12 @@
         </div> 
     </div> 
     <div class="posts__review__comments">
-        <!------------- Ajout d'un commentaire  -------------->
+        <!-- Ajout d'un commentaire -->
         <form class="form__comments" >
-            <!-----Upload nouvelle image----->
+            <!--Upload nouvelle image-->
             <label for="uploadCommentImage" class="form__comments__btn form__comments__btn__upload"><font-awesome-icon icon="image" /></label>
             <input id="uploadCommentImage" type="file" accept="image/jpeg, image/png, image/jpg" @change="addCommentImage" >
-            <!--------contenu du commentaire------->
+            <!--contenu du commentaire-->
             <div class="form__comments__content">
                 <textarea 
                     class="form__comments__input"
@@ -33,7 +32,7 @@
                 <font-awesome-icon class="form__comments__image__icon" icon="xmark" @click="deleteUpload" />
                 </div>
             </div>
-            <!--------Validation------->
+            <!--Validation-->
             <button 
                 class="form__comments__btn form__comments__btn__submit" 
                 type="button" 

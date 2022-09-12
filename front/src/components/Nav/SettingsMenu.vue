@@ -1,25 +1,24 @@
-<!------------------------------------------------------------------------------------>
-<!--                 COMPOSANT LOGOUT/SETTINGS/RECHERCHE                            -->
-<!------------------------------------------------------------------------------------>
+
+<!--COMPOSANT LOGOUT/SETTINGS/RECHERCHE-->
 
 <template>
     <ul class="settings__list">
-        <!-----------Logout--------------->
+        <!--Logout-->
         <li class="settings__list__item">
             <router-link to="/">
                 <font-awesome-icon class="settings__icon" icon="sign-out-alt"  @click="logoutUser"/>
             </router-link>
         </li>
-        <!---------UpdateMenu toggle--------------->
+        <!--UpdateMenu toggle-->
         <li class="settings__list__item">
             <font-awesome-icon class="settings__icon" icon="gear" @click="showUpdate"/>
         </li>
-        <!---------SearchUser--------------->
+        <!---SearchUser-->
         <li class="settings__list__item">
             <font-awesome-icon class="settings__icon" icon="magnifying-glass" @click="showSearchBar"/>
             
             <transition name="grow">
-                <!---------champ de recherche utilisateur--------------->
+                <!--champ de recherche utilisateur-->
                 <form  v-if="searchBarIsActive" method="POST"> 
                     <div class="settings__searchForm" >  
                         <BaseInput 
@@ -34,7 +33,7 @@
                         <font-awesome-icon class="settings__searchForm__input__delete" icon="xmark" @click="deleteSearch" />
                     </div>
 
-                    <!---------Résultat de la recherche --------------->
+                    <!--Résultat de la recherche-->
                     <div class="settings__searchForm__results" v-if="searchResults && event.userSearch != ''">
                         <div class="result" v-for="result in searchResults" :key="result.userId" >
                             <router-link  class="result__link" :to="{ name: 'Profile', params: { userId: result.userId }}" :key="$route.params">

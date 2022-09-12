@@ -1,6 +1,5 @@
-<!------------------------------------------------------------------------------------>
-<!--                 COMPOSANT MODIFICATION DES DONNEES UTILISATEUR                 -->
-<!------------------------------------------------------------------------------------>
+
+<!-- COMPOSANT MODIFICATION DES DONNEES UTILISATEUR-->
 
 <template>
     <div class="userUpdate" :class="{'userUpdate--sizeUp' : media == 'phone'}">

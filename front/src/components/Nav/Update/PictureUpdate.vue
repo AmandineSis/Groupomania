@@ -1,6 +1,5 @@
-<!------------------------------------------------------------------------------------>
-<!--                 COMPOSANT MODIFICATION DE LA PHOTO DE PROFILE                  -->
-<!------------------------------------------------------------------------------------>
+
+<!--COMPOSANT MODIFICATION DE LA PHOTO DE PROFILE-->
 
 <template>
     <div class="pictureUpdate" :class="{'pictureUpdate--sizeUp' : media == 'phone'}" >

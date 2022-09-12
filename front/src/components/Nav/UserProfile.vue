@@ -1,6 +1,5 @@
-<!------------------------------------------------------------------------------------>
-<!--                 COMPOSANT AFFICHAGE NOM ET PHOTO DE L'UTILISATEUR              -->
-<!------------------------------------------------------------------------------------>
+
+<!--COMPOSANT AFFICHAGE NOM ET PHOTO DE L'UTILISATEUR-->
 
 <template>
     <!-- UserProfile sur page d'accueil -->
