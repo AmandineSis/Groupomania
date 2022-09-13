@@ -1,23 +1,29 @@
 <template>
     <!-- Header navigation -->
-    <!-- Screen width > 768px -->
     <div class="container">
+
+        <!-- Screen width > 768px -->
         <div v-if ="mq.current !== 'phone'">
-            <nav class="topMenu" v-once>
+            <div class="topMenu" v-once>
                 <SettingsMenu class="topMenu__settings" v-once />
                 <router-link :to="`/profile/${userLoggedIn.userId}`">
                     <UserProfile/>
                 </router-link>
-            </nav> 
+            </div> 
         </div>
+
         <!-- Screen width < 768px -->
         <div v-else>
-            <font-awesome-icon class="burgerMenu" icon="bars" @click="showSettingsMenu"/>
-            <nav class="topMenu" v-if="SettingsMenuVisible">
-                <SettingsMenu class="topMenu__settings" />
-            </nav> 
+            <font-awesome-icon 
+                class="burgerMenu" 
+                icon="bars" 
+                @click="showSettingsMenu" v-once/>
+            
+                <SettingsMenu class="topMenu__settings--small" v-if="settingsMenu"/>
+          
             <UserProfile/>
         </div>
+
         <!-- Pop-up update menu -->
         <transition name="bounce">
             <UpdateMenu 
@@ -125,7 +131,7 @@ export default {
         return{
             currentPage: "homePage",
             selectedMode: 'recentPosts',
-            SettingsMenuVisible: false,
+            settingsMenuVisible: false,
             postDisplay: 2,
             popularPostDisplay: 2,
             reportedPostDisplay: 2,
@@ -164,14 +170,15 @@ export default {
             userLoggedIn: 'userLoggedIn',
         }),
         ...mapState('toggle',{
-            updateMenu: 'updateMenuIsActive'
+            updateMenu: 'updateMenuIsActive',
+            settingsMenu: 'settingsMenuIsActive'
         }),
     }, 
     methods: {
-        ...mapMutations('toggle',['UPDATE_MENU_TOGGLE']),
+        ...mapMutations('toggle',['UPDATE_MENU_TOGGLE', 'SETTINGS_MENU_TOGGLE']),
         //toggle entre les différents onglets
         showSettingsMenu(){
-            this.SettingsMenuVisible != this.SettingsMenuVisible;
+            this.SETTINGS_MENU_TOGGLE();
         },
         showRecentPosts(){
             this.selectedMode='recentPosts';
@@ -225,6 +232,11 @@ export default {
         &__settings{
             width: 50%;
             margin-left: 15px;
+            &--small{
+                width: 100%;
+                margin: 0;
+                background-color:#4E5166;
+            }
         }
     }
 /***********UPDATE MENU ANIMATION********* */    

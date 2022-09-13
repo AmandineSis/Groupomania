@@ -2,51 +2,58 @@
 <!--COMPOSANT LOGOUT/SETTINGS/RECHERCHE-->
 
 <template>
-    <ul class="settings__list">
-        <!--Logout-->
-        <li class="settings__list__item">
-            <router-link to="/">
-                <font-awesome-icon class="settings__icon" icon="sign-out-alt"  @click="logoutUser"/>
-            </router-link>
-        </li>
-        <!--UpdateMenu toggle-->
-        <li class="settings__list__item">
-            <font-awesome-icon class="settings__icon" icon="gear" @click="showUpdate"/>
-        </li>
-        <!---SearchUser-->
-        <li class="settings__list__item">
-            <font-awesome-icon class="settings__icon" icon="magnifying-glass" @click="showSearchBar"/>
-            
-            <transition name="grow">
-                <!--champ de recherche utilisateur-->
-                <form  v-if="searchBarIsActive" method="POST"> 
-                    <div class="settings__searchForm" >  
-                        <BaseInput 
-                            class="settings__searchForm__input" 
-                            v-model="event.userSearch"
-                            type="search" 
-                            name="user" 
-                            label="Rechercher..."
-                            @keyup="getSearchResults"
-                            @blur="closeSearch"
-                            />
-                        <font-awesome-icon class="settings__searchForm__input__delete" icon="xmark" @click="deleteSearch" />
-                    </div>
-
-                    <!--Résultat de la recherche-->
-                    <div class="settings__searchForm__results" v-if="searchResults && event.userSearch != ''">
-                        <div class="result" v-for="result in searchResults" :key="result.userId" >
-                            <router-link  class="result__link" :to="{ name: 'Profile', params: { userId: result.userId }}" :key="$route.params">
-                                <img class="result__image" :src="result.profilePicUrl" alt="profile picture"/>
-                                <p class="result__name">{{ result.firstName }} {{ result.lastName }}</p>
-                            </router-link>
+    <nav class="settings__container" v-if="mq.current != 'phone' || settingsMenuIsActive ">
+        
+        <ul class="settings__list" :class="{'settings__list--small': mq.current=='phone'}">
+            <!--Logout-->
+            <li class="settings__list__item" >
+                <router-link to="/">
+                    <font-awesome-icon class="settings__icon" icon="sign-out-alt"  @click="logoutUser" />
+                </router-link>
+            </li>
+            <!--UpdateMenu toggle-->
+            <li class="settings__list__item">
+                <font-awesome-icon class="settings__icon" icon="gear" @click="showUpdate"/>
+            </li>
+            <!---SearchUser-->
+            <li class="settings__list__item">
+                <font-awesome-icon class="settings__icon" icon="magnifying-glass" @click="showSearchBar"/>
+                
+                <transition name="grow">
+                    <!--champ de recherche utilisateur-->
+                    <form  v-if="searchBarIsActive" method="POST"> 
+                        <div class="settings__searchForm" >  
+                            <BaseInput 
+                                class="settings__searchForm__input" 
+                                v-model="event.userSearch"
+                                type="search" 
+                                name="user" 
+                                label="Rechercher..."
+                                @keyup="getSearchResults"
+                                @blur="closeSearch"
+                                />
+                            <font-awesome-icon class="settings__searchForm__input__delete" icon="xmark" @click="deleteSearch" />
                         </div>
-                    </div>
-                </form>
-            </transition>    
-        </li>
-    </ul>
 
+                        <!--Résultat de la recherche-->
+                        <div class="settings__searchForm__results" v-if="searchResults && event.userSearch != ''">
+                            <div class="result" v-for="result in searchResults" :key="result.userId" >
+                                <router-link  class="result__link" :to="{ name: 'Profile', params: { userId: result.userId }}" :key="$route.params">
+                                    <img class="result__image" :src="result.profilePicUrl" alt="profile picture"/>
+                                    <p class="result__name">{{ result.firstName }} {{ result.lastName }}</p>
+                                </router-link>
+                            </div>
+                        </div>
+                    </form>
+                </transition>    
+            </li>
+        </ul>
+        <div class="settings__container--small" v-if="settingsMenuIsActive">
+            <router-link class="topMenu__home" :to="`/home/`" ><font-awesome-icon icon="house" /></router-link>  
+        </div>
+        
+    </nav>
+   
 </template>
 
 <script>
@@ -57,6 +64,8 @@ import BaseInput from '@/components/Base/BaseInput.vue'
 import { mapState, mapActions, mapMutations  } from 'vuex';
 
 export default {
+    //ajout de mediaqueries
+    inject: ["mq"],
     name: 'SettingsMenuu',
     components: {
         BaseInput
@@ -75,7 +84,8 @@ export default {
             searchResults: 'searchResults'
         }),
         ...mapState('toggle',{
-            searchBarIsActive: 'searchBarIsActive'
+            searchBarIsActive: 'searchBarIsActive',
+            settingsMenuIsActive: 'settingsMenuIsActive'
         })
     },
     methods: {
@@ -121,12 +131,27 @@ export default {
 <style scoped lang="scss">
 
 .settings{
+    &__container{
+        display: flex;
+        justify-content: space-between;
+        &--small{
+            background-color: #4e5166;
+            margin: auto 10px;
+            color: white;
+            text-align: center;
+        }
+    }
     &__list {
         display: flex;
         flex-direction: row;
         justify-content: left;
         align-items: top;
         margin-left: 15px;
+        &--small{
+            height: 30px;
+            align-items: center;
+            margin-left: 0;
+        }
         &__item {
             display: flex;
             flex-direction: row;
@@ -170,6 +195,7 @@ export default {
             z-index: 99;
         }
     }
+    
 }
 /**********SEARCHBAR ANIMATION********* */  
 .grow-enter-active {

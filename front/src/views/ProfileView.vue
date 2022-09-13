@@ -1,10 +1,26 @@
 
 <template>
-    <nav class="topMenu" v-once>
-        <SettingsMenu class="topMenu__settings" v-once />
-        <router-link class="topMenu__home" :to="`/home/`" ><font-awesome-icon icon="house"/></router-link>
-    </nav> 
+<!-- Header navigation -->
+    <div class="container">
 
+        <!-- Screen width > 768px -->
+        <div class="topMenu" v-if="mq.current != 'phone'" v-once>
+            <SettingsMenu class="topMenu__settings" v-once />
+            <router-link class="topMenu__home" :to="`/home/`"   ><font-awesome-icon icon="house"/></router-link>
+        </div> 
+
+        <!-- Screen width < 768px -->
+        <div v-else>
+           <font-awesome-icon 
+               class="burgerMenu" 
+               icon="bars" 
+               @click="showSettingsMenu" 
+               v-once/>
+
+            <SettingsMenu class="topMenu__settings--small"  v-if="settingsMenu"/>
+            
+        </div>
+    </div>
     <UserProfile :profileView="true"/>
     <!--Delete button only visible to moderator and not showing on moderator profile-->
     <button class="button" v-if="user.moderator == 1 && userIdProfile !== user.userId" @click="showDeleteBlock" >Supprimer cet utilisateur</button>
@@ -62,8 +78,17 @@
             <p class="noPost__text">Il n'existe pas encore de publication !</p>
         </div>
     </main>
-    <button class="loadButton" @click="loadMore()" v-if="selectedMode == 'recentUserPosts' && postDisplay < postByUserLength">Afficher plus...</button>
-    <button class="loadButton" @click="loadMore()" v-if="selectedMode == 'popularUserPosts' && popularPostDisplay < popularPostsByUserLength">Afficher plus...</button>
+
+    <button 
+        class="loadButton" 
+        @click="loadMore()" 
+        v-if="selectedMode == 'recentUserPosts' && postDisplay < postByUserLength">
+        Afficher plus...</button>
+    <button 
+        class="loadButton" 
+        @click="loadMore()" 
+        v-if="selectedMode == 'popularUserPosts' && popularPostDisplay < popularPostsByUserLength">
+        Afficher plus...</button>
     <MainFooter/>
 </template>
 
@@ -133,16 +158,20 @@ export default {
         }),
         ...mapState('toggle',{
             updateMenu: 'updateMenuIsActive',
-            deleteUserMenu: 'deleteUserBlockIsActive'
+            deleteUserMenu: 'deleteUserBlockIsActive',
+            settingsMenu: 'settingsMenuIsActive'
         }),
     },
     methods: {
-        ...mapMutations('toggle',['UPDATE_MENU_TOGGLE','UPDATE_MENU_CLOSE','DELETE_USER_CLOSE', 'DELETE_USER_TOGGLE']),
+        ...mapMutations('toggle',['UPDATE_MENU_TOGGLE','UPDATE_MENU_CLOSE','DELETE_USER_CLOSE', 'SETTINGS_MENU_TOGGLE','DELETE_USER_TOGGLE']),
         //toggle delete block
         showDeleteBlock(){
             //this.deleteBlock = !this.deleteBlock;
             this.UPDATE_MENU_CLOSE()
             this.DELETE_USER_TOGGLE()
+        },
+        showSettingsMenu(){
+            this.SETTINGS_MENU_TOGGLE();
         },
         getUserRecentPosts(){
             this.selectedMode='recentUserPosts';
@@ -177,7 +206,17 @@ export default {
 <style scoped lang="scss">
 
 /************************** TOPNAV ******************* */
+.container{
+    height: 100%;
+}
+.burgerMenu{
+    color: white;
 
+    position: absolute;
+    top: 20px;
+    left: 10px;
+    height: 25px;
+}
 .topMenu {
         position: absolute;
         top: 90px;
@@ -190,6 +229,11 @@ export default {
         &__settings{
             width: 50%;
             margin-left: 15px;
+            &--small{
+                width: 100%;
+                margin: 0;
+                background-color:#4E5166;
+            }
         }
         &__home{
             color: white;

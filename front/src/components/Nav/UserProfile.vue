@@ -91,7 +91,7 @@ export default {
     }
     &--inBlock{
         flex-direction: column-reverse;
-        margin: 20px 0;
+        margin: 20px 0 0 0;
         padding-bottom: 0;
         position: static;
         z-index: 0;

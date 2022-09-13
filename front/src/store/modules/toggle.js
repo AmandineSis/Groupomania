@@ -7,6 +7,7 @@ export default {
     state:{
         //Header Nav
         updateMenuIsActive:false,
+        settingsMenuIsActive: false,
         searchBarIsActive:false,
         deleteUserBlockIsActive: false,
     },
@@ -19,6 +20,9 @@ export default {
         },
         UPDATE_MENU_CLOSE(state){
             state.updateMenuIsActive = false
+        },
+        SETTINGS_MENU_TOGGLE(state){
+            state.settingsMenuIsActive = !state.settingsMenuIsActive
         },
         SEARCH_BAR_TOGGLE(state){
             state.searchBarIsActive = !state.searchBarIsActive
