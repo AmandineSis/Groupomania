@@ -1,4 +1,7 @@
 <h1>GROUPOMANIA - Réseau social d'entreprise</h1>
+
+<img src='screenshots/groupomania_screenshot_ipad_portrait.png' width="300">
+
 <h2>COMPETENCES EVALUEES</h2>
 
     -Authentifier un utilisateur et maintenir sa session
