@@ -14,7 +14,7 @@
 		<router-link class="form__comments__content__link" :to="`/profile/${comItem.userId}`" v-if="mq.current == 'phone'">
 			<p class="form__comments__content__user" >{{ comItem.firstName }} {{ comItem.lastName }}</p>
 		</router-link>
-		<!--Contenu du commentaire--->
+		<!--Contenu du commentaire -->
 		<div class="form__comments__container">	
 			<div class="form__comments__popup" v-if="showComSettings && comItem">
 				<ComSettings 
